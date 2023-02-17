@@ -1,15 +1,26 @@
-import * as React from 'react'
-import { Form } from 'react-bootstrap'
-import ButtonWithIcon from '../../assets/ButtonWithIcon'
+import React from 'react'
+import { useState } from 'react'
 import { SynapseClient } from '../../utils'
 import {
-  getEndpoint,
   BackendDestinationEnum,
+  getEndpoint,
 } from '../../utils/functions/getEndpoint'
 import { GoogleIcon24 } from '../../assets/GoogleIcon24'
-import { Button, IconButton, Link } from '@mui/material'
+import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  Link,
+  TextField,
+  useTheme,
+} from '@mui/material'
 import IconSvg from '../IconSvg'
 import FullWidthAlert from '../FullWidthAlert'
+import useLogin from '../../utils/hooks/useLogin'
+import { SynapseClientError } from '../../utils/SynapseClientError'
+import { MuiOtpInput } from 'mui-one-time-password-input'
+import { TwoFactorAuthErrorResponse } from '../../utils/synapseTypes/ErrorResponse'
 import { useState } from 'react'
 import { SynapseClientError } from '../../utils/SynapseClientError'
 import useLogin from '../../utils/hooks/useLogin'
@@ -72,6 +83,8 @@ function Login(props: Props) {
     props.renderBackButton &&
     (step === 'USERNAME_PASSWORD' || step === 'VERIFICATION_CODE')
 
+  const { palette } = useTheme()
+
   /**
    * Handle user login on click
    */
@@ -100,85 +113,151 @@ function Login(props: Props) {
   }
 
   return (
-    <div
+    <Box
       id="loginPage"
-      className="container LoginComponent SRC-syn-border-spacing bootstrap-4-backport"
+      className="LoginComponent"
+      sx={{
+        width: '325px',
+        p: 0,
+        m: 0,
+        bgColor: 'transparent',
+      }}
     >
       {renderBackButton && (
-        <IconButton type="button" onClick={() => setStep('CHOOSE_AUTH_METHOD')}>
-          <IconSvg icon="arrowBack" />
+        <IconButton
+          type="button"
+          onClick={() =>
+            setStep(currentStep => {
+              switch (currentStep) {
+                case 'CHOOSE_AUTH_METHOD':
+                  // Should never happen
+                  return 'CHOOSE_AUTH_METHOD'
+                case 'USERNAME_PASSWORD':
+                  return 'CHOOSE_AUTH_METHOD'
+                case 'VERIFICATION_CODE':
+                  return 'USERNAME_PASSWORD'
+                case 'RECOVERY_CODE':
+                  return 'VERIFICATION_CODE'
+                case 'LOGGED_IN':
+                  // Should never happen
+                  return 'LOGGED_IN'
+              }
+            })
+          }
+          sx={{
+            p: 0,
+            mb: 1,
+            width: '24px',
+          }}
+        >
+          <IconSvg icon="arrowBack" wrap={false} />
         </IconButton>
       )}
-      <div className={step === 'CHOOSE_AUTH_METHOD' ? '' : 'hide-component'}>
-        <form>
-          <ButtonWithIcon
-            variant="white"
-            onClick={onGoogleSignIn}
-            className={`SRC-signin-button`}
-            icon={<GoogleIcon24 />}
+      {step == 'CHOOSE_AUTH_METHOD' && (
+        <Box>
+          <form>
+            <Button
+              fullWidth
+              variant="contained"
+              color="neutral"
+              onClick={onGoogleSignIn}
+              sx={{
+                height: '50px',
+                mb: '10px',
+              }}
+              startIcon={
+                <GoogleIcon24 sx={{ width: '28px', height: '28px' }} />
+              }
+            >
+              Sign in with Google
+            </Button>
+          </form>
+          <Button
+            fullWidth
+            variant="contained"
+            color="neutral"
+            startIcon={
+              <IconSvg icon="email" sx={{ width: '28px', height: '28px' }} />
+            }
+            sx={{
+              height: '50px',
+              mb: '10px',
+            }}
+            onClick={() => setStep('USERNAME_PASSWORD')}
           >
-            Sign in with Google
-          </ButtonWithIcon>
-        </form>
-        <ButtonWithIcon
-          variant="white"
-          className={`SRC-signin-button`}
-          icon={<IconSvg icon="email" />}
-          onClick={() => setStep('USERNAME_PASSWORD')}
-        >
-          Sign in with your email
-        </ButtonWithIcon>
-      </div>
-      <Form
-        className={step === 'USERNAME_PASSWORD' ? '' : 'hide-component'}
-        onSubmit={e => {
-          handleLogin(e)
-        }}
-      >
-        <label htmlFor={'username'}>Username or Email Address</label>
-        <Form.Control
-          required
-          autoComplete="username"
-          placeholder="Username or Email Address"
-          className="LoginComponent__Input"
-          id="username"
-          name="username"
-          type="text"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-        />
-        <label htmlFor={'current-password'}>Password</label>
-        <Form.Control
-          required
-          autoComplete="current-password"
-          placeholder="Password"
-          className="LoginComponent__Input"
-          id="current-password"
-          name="password"
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
-        <Link href={resetPasswordUrl}>Forgot password?</Link>
-        <Button
-          onClick={e => {
+            Sign in with your email
+          </Button>
+        </Box>
+      )}
+      {step === 'USERNAME_PASSWORD' && (
+        <FormControl
+          fullWidth
+          sx={{
+            '& .MuiTextField-root': { my: 1 },
+          }}
+          onSubmit={e => {
             handleLogin(e)
           }}
-          type="submit"
-          color="primary"
-          variant="contained"
-          className="SRC-login-button SRC-marginBottomTen"
         >
-          Sign in
-        </Button>
-      </Form>
-      {step === 'VERIFICATION_CODE' && (
-        <TOTPForm
-          onSubmit={totp => {
-            submitOneTimePassword(totp)
-          }}
-        />
+          <TextField
+            required
+            fullWidth
+            autoComplete="username"
+            label="Username or Email Address"
+            id="username"
+            name="username"
+            type="text"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            sx={{
+              '.MuiInputBase-root': {
+                background: palette.background.default,
+              },
+            }}
+          />
+          <TextField
+            required
+            fullWidth
+            autoComplete="current-password"
+            label="Password"
+            id="current-password"
+            name="password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            sx={{
+              '.MuiInputBase-root': {
+                background: palette.background.default,
+              },
+            }}
+          />
+          <Link href={resetPasswordUrl}>Forgot password?</Link>
+          <Button
+            fullWidth
+            type="submit"
+            color="primary"
+            variant="contained"
+            sx={{
+              height: '50px',
+              mt: 4,
+              mb: 2,
+            }}
+            onClick={e => {
+              handleLogin(e)
+            }}
+          >
+            Sign in
+          </Button>
+        </FormControl>
       )}
+        {step === 'VERIFICATION_CODE' && (
+            <TOTPForm
+                onSubmit={totp => {
+                    submitOneTimePassword(totp)
+                }}
+            />
+        )}
+
       {(step === 'CHOOSE_AUTH_METHOD' || step === 'USERNAME_PASSWORD') && (
         <div className={'SRC-center-text'}>
           <Link href={registerAccountUrl}>
@@ -193,7 +272,7 @@ function Login(props: Props) {
           description={errorMessage}
         />
       )}
-    </div>
+    </Box>
   )
 }
 export default Login

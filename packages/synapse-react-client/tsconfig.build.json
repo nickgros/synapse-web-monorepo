@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "rootDir": "src/lib",
     // Set the outDir to dist, where the output will be published to npm
     "outDir": "dist",

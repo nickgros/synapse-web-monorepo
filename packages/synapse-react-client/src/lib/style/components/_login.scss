@@ -2,48 +2,16 @@
 @use '../abstracts/mixins' as SrcMixins;
 
 .LoginComponent {
-  max-width: 350px;
   background: white;
+  max-width: 90%;
+  margin: 30px auto;
   font-family: Lato, sans-serif;
 
   .hide-component {
     visibility: hidden;
     max-height: 0;
   }
-  .SRC-signin-button,
-  .SRC-login-button {
-    font-size: 14px;
-    font-weight: 500;
-    width: 100%;
-    margin-bottom: 10px;
-    border-radius: 2px;
-    height: 50px;
-  }
-  .SRC-login-button {
-    margin: 44px 0 22px 0;
-  }
-  .SRC-signin-button {
-    svg {
-      font-size: 36px;
-    }
-  }
-  label {
-    color: SrcVars.$gray-formtext;
-    display: block;
-    margin-bottom: 0;
-  }
-  input.form-control {
-    margin-bottom: 1rem;
-    border: SrcVars.$gray-input-border;
-    padding: SrcVars.$input-padding;
-    height: auto;
-    border-radius: 2px;
-    box-shadow: none;
 
-    &[type='password'] {
-      margin-bottom: 5px;
-    }
-  }
   a {
     font-weight: bold;
   }
@@ -90,9 +58,6 @@ $login-wrapper-height: 560px;
     flex: 1;
   }
   .back-button {
-    padding: 0;
-    width: 24px;
-    position: absolute;
   }
   .login-panel {
     display: flex;
@@ -110,7 +75,7 @@ $login-wrapper-height: 560px;
     }
   }
   .panel-logo {
-    margin: 0 0 60px 0;
+    margin: 0 0 30px 0;
     align-self: center;
   }
   .panel-right {
@@ -125,14 +90,12 @@ $login-wrapper-height: 560px;
       margin-top: 160px;
     }
   }
-  .SRC-syn-border-spacing {
-    padding: 0;
-    margin: 0;
-    background: transparent;
-  }
 }
 
 @media (max-width: $login-wrapper-width) {
+  .LoginComponent {
+    background: transparent;
+  }
   .login-panel-wrapper-bg {
     background: #fff
       url('https://s3.amazonaws.com/static.synapse.org/images/SynapseMobileLogInFull.svg')

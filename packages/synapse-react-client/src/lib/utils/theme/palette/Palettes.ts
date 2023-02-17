@@ -75,6 +75,9 @@ export const palette: PaletteOptions = {
     200: '#f1f3f5',
     100: '#fbfbfc',
   },
+  neutral: {
+    main: 'white',
+  },
   success: { main: '#32a330' },
   info: { main: '#017fa5' },
   warning: { main: '#cc9f00' },
