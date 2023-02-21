@@ -2,7 +2,7 @@ import {
   BackendDestinationEnum,
   PRODUCTION_ENDPOINT_CONFIG,
 } from '../functions/getEndpoint'
-import { PROVIDERS } from '../../containers/auth/Login'
+import { PROVIDERS } from '../../containers/auth/StandaloneLoginForm'
 import { LoginResponse } from '../synapseTypes'
 import { SynapseClientError } from '../SynapseClientError'
 import {

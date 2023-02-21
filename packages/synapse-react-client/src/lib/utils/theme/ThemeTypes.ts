@@ -40,9 +40,11 @@ declare module '@mui/material/styles' {
 
   interface Palette {
     tertiary: Palette['primary']
+    neutral: Palette['success']
   }
   interface PaletteOptions {
     tertiary: PaletteOptions['primary']
+    neutral: PaletteOptions['success']
   }
 }
 
@@ -50,6 +52,9 @@ declare module '@mui/material' {
   interface Color {
     // MUI doesn't go up to 1000 but our palette does
     [1000]: string
+  }
+  interface ButtonPropsColorOverrides {
+    neutral: true
   }
 }
 

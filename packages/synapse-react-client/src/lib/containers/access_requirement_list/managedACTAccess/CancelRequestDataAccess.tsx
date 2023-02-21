@@ -6,6 +6,15 @@ import { useState } from 'react'
 import { updateDataAccessRequest } from '../../../utils/SynapseClient'
 import { AlertProps } from './RequestDataAccessStep2'
 import { useSynapseContext } from '../../../utils/SynapseContext'
+import {
+  Box,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Stack,
+} from '@mui/material'
+import IconSvg from '../../IconSvg'
 
 export type CancelRequestDataAccessProps = {
   formSubmitRequestObject: RequestInterface | undefined
@@ -53,21 +62,25 @@ const CancelRequestDataAccess: React.FC<
 
   return (
     <>
-      <ReactBootstrap.Modal.Header closeButton={true}>
-        <ReactBootstrap.Modal.Title className="AccessRequirementList__title">
+      <DialogTitle>
+        <Stack direction="row" alignItems={'center'} gap={'5px'}>
           Save Changes
-        </ReactBootstrap.Modal.Title>
-      </ReactBootstrap.Modal.Header>
+          <Box sx={{ flexGrow: 1 }} />
+          <IconButton onClick={onHide}>
+            <IconSvg icon={'close'} wrap={false} sx={{ color: 'grey.700' }} />
+          </IconButton>
+        </Stack>
+      </DialogTitle>
 
-      <ReactBootstrap.Modal.Body>
+      <DialogContent>
         <p>Would you like to save your recent changes?</p>
         {
           /* Alert message */
           alert && <Alert variant={alert.key}>{alert.message}</Alert>
         }
-      </ReactBootstrap.Modal.Body>
+      </DialogContent>
 
-      <ReactBootstrap.Modal.Footer>
+      <DialogActions>
         {!showCloseBtn && (
           <>
             <Button variant="link" onClick={() => onHide?.()}>
@@ -88,7 +101,7 @@ const CancelRequestDataAccess: React.FC<
             Close
           </Button>
         )}
-      </ReactBootstrap.Modal.Footer>
+      </DialogActions>
     </>
   )
 }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Button, ButtonProps } from 'react-bootstrap'
+import { Button, ButtonProps } from '@mui/material'
 
 type ButtonWithIconProps = {
   children: React.ReactNode // typically just a string, but we won't restrict it
@@ -14,13 +14,8 @@ const ButtonWithIcon: React.FunctionComponent<
   ButtonWithIconProps & ButtonProps
 > = ({ children, icon, ...rest }: { children: any; icon?: any }) => {
   return (
-    <Button className="ButtonWithIcon" {...rest}>
-      {
-        <>
-          <div className="ButtonWithIcon__Icon">{icon}</div>
-          {children}
-        </>
-      }
+    <Button className="ButtonWithIcon" {...rest} startIcon={icon}>
+      {children}
     </Button>
   )
 }
