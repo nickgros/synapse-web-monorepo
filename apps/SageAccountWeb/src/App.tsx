@@ -38,16 +38,16 @@ const isInSSOFlow = isCodeSearchParam && isProviderSearchParam
 // theme is a merge of a general theme and particular color pallettesfor the source app
 const theme = createTheme(generalTheme)
 
-const App: React.FC = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 50 * 1000, // 50s
-        retry: false, // SynapseClient knows which queries to retry
-      },
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 50 * 1000, // 50s
+      retry: false, // SynapseClient knows which queries to retry
     },
-  })
+  },
+})
 
+const App: React.FC = () => {
   return (
     <div className="App">
       <StyledEngineProvider injectFirst>
@@ -91,7 +91,11 @@ const App: React.FC = () => {
                     path="/logout"
                     render={props => {
                       signOut().then(() => {
-                        window.location.assign('/authenticated/myaccount')
+                        window.history.replaceState(
+                          null,
+                          '',
+                          '/authenticated/myaccount',
+                        )
                       })
                       return <></>
                     }}
@@ -104,58 +108,66 @@ const App: React.FC = () => {
                     path="/sageresources"
                     component={SageResourcesPage}
                   />
-                  <Route
-                    exact
-                    path="/resetPassword"
-                    render={props => {
+                  <Route exact path="/resetPassword">
+                    <ResetPassword returnToUrl="/authenticated/myaccount" />
+                  </Route>
+                  <SynapseContextConsumer>
+                    {(ctx?: SynapseContextType) => {
+                      const isAuthenticated = !!ctx?.accessToken
                       return (
-                        <ResetPassword returnToUrl="/authenticated/myaccount" />
+                        <>
+                          {/* If not signed in and in the "/authenticated" path, show the login page */}
+                          {!isAuthenticated && (
+                            <Route
+                              path="/authenticated"
+                              exact={false}
+                              render={routeProps => {
+                                return (
+                                  <LoginPage
+                                  // returnToUrl={routeProps.location.pathname}
+                                  />
+                                )
+                              }}
+                            />
+                          )}
+                          {isAuthenticated && (
+                            <>
+                              <Route path={'/authenticated/validate'} exact>
+                                <ProfileValidation />
+                              </Route>
+                              <Route
+                                path={'/authenticated/signTermsOfUse'}
+                                exact
+                              >
+                                <TermsOfUsePage />
+                              </Route>
+                              <Route path={'/authenticated/myaccount'} exact>
+                                <AccountSettings />
+                              </Route>
+                              <Route
+                                path={'/authenticated/currentaffiliation'}
+                                exact
+                              >
+                                <CurrentAffiliationPage />
+                              </Route>
+                              <Route
+                                path={'/authenticated/accountcreated'}
+                                exact
+                              >
+                                <AccountCreatedPage />
+                              </Route>
+                              <Route
+                                path={'/authenticated/certificationquiz'}
+                                exact
+                              >
+                                <CertificationQuiz />
+                              </Route>
+                            </>
+                          )}
+                        </>
                       )
                     }}
-                  />
-                  {/* check for an access token for any route in the "/authenticated/" path */}
-                  <Route
-                    path="/authenticated/"
-                    render={routeProps => {
-                      const path = routeProps.location.pathname
-                      return (
-                        <SynapseContextConsumer>
-                          {(ctx?: SynapseContextType) => {
-                            if (!ctx?.accessToken) {
-                              return <LoginPage returnToUrl={path} />
-                            }
-                            if (path === '/authenticated/validate') {
-                              return <ProfileValidation />
-                            } else if (
-                              path === '/authenticated/signTermsOfUse'
-                            ) {
-                              return <TermsOfUsePage />
-                            } else if (path === '/authenticated/myaccount') {
-                              return <AccountSettings />
-                            } else if (
-                              path === '/authenticated/currentaffiliation'
-                            ) {
-                              return <CurrentAffiliationPage />
-                            } else if (
-                              path === '/authenticated/accountcreated'
-                            ) {
-                              return <AccountCreatedPage />
-                            } else if (
-                              path === '/authenticated/certificationquiz'
-                            ) {
-                              return <CertificationQuiz />
-                            } else {
-                              return (
-                                <>
-                                  <p>Unrecognized match path {path}</p>
-                                </>
-                              )
-                            }
-                          }}
-                        </SynapseContextConsumer>
-                      )
-                    }}
-                  />
+                  </SynapseContextConsumer>
                   <Route
                     exact={true}
                     path="/login"

@@ -17,6 +17,7 @@ import theme from './style/theme'
 import { TwoFactorAuthSSOContextProvider } from './TwoFactorAuthSSOContext'
 import { TwoFactorAuthErrorResponse } from 'synapse-react-client/dist/utils/synapseTypes/ErrorResponse'
 import { redirectAfterSSO } from 'synapse-react-client/dist/utils/AppUtils'
+import { SessionContextProvider } from './SessionContext'
 
 /**
  * State and helpers for managing a user session in the portal
@@ -52,8 +53,8 @@ function useSession() {
       initAnonymousUserState()
       return
     }
-    await setToken(token)
-    await setHasCalledGetSession(true)
+    setToken(token)
+    setHasCalledGetSession(true)
     try {
       // get user profile
       const userProfile = await SynapseClient.getUserProfile(token)
@@ -188,12 +189,13 @@ function AppInitializer(props: { children?: React.ReactNode }) {
     onTwoFactorAuthRequired: error => setTwoFactorAuthError(error),
   })
 
+  const location = useLocation()
   if (!hasCalledGetSession) {
     // Don't render anything until the session has been established
     // Otherwise we may end up reloading components and making duplicate requests
     return <></>
   }
-  const location = useLocation()
+
   return (
     <AppContextProvider
       appContext={{
@@ -202,25 +204,27 @@ function AppInitializer(props: { children?: React.ReactNode }) {
         signedToken,
       }}
     >
-      <TwoFactorAuthSSOContextProvider
-        context={{ twoFactorAuthErrorResponse: twoFactorAuthError }}
-      >
-        <SynapseContextProvider
-          synapseContext={{
-            accessToken: token,
-            isInExperimentalMode: SynapseClient.isInSynapseExperimentalMode(),
-            utcTime: SynapseClient.getUseUtcTimeFromCookie(),
-            downloadCartPageUrl: '',
-          }}
-          theme={themeOptions}
+      <SessionContextProvider context={{ refreshSession: getSession }}>
+        <TwoFactorAuthSSOContextProvider
+          context={{ twoFactorAuthErrorResponse: twoFactorAuthError }}
         >
-          {!touSigned &&
-            location.pathname != '/authenticated/signTermsOfUse' && (
-              <Redirect to="/authenticated/signTermsOfUse" />
-            )}
-          {!isFramed && props.children}
-        </SynapseContextProvider>
-      </TwoFactorAuthSSOContextProvider>
+          <SynapseContextProvider
+            synapseContext={{
+              accessToken: token,
+              isInExperimentalMode: SynapseClient.isInSynapseExperimentalMode(),
+              utcTime: SynapseClient.getUseUtcTimeFromCookie(),
+              downloadCartPageUrl: '',
+            }}
+            theme={themeOptions}
+          >
+            {!touSigned &&
+              location.pathname != '/authenticated/signTermsOfUse' && (
+                <Redirect to="/authenticated/signTermsOfUse" />
+              )}
+            {!isFramed && props.children}
+          </SynapseContextProvider>
+        </TwoFactorAuthSSOContextProvider>
+      </SessionContextProvider>
     </AppContextProvider>
   )
 }

@@ -13,16 +13,17 @@ import {
   preparePostSSORedirect,
   redirectAfterSSO,
 } from 'synapse-react-client/dist/utils/AppUtils'
+import { useSessionContext } from './SessionContext'
 
 export type OwnProps = {
-  returnToUrl: string
+  returnToUrl?: string
 }
 export type LoginPageProps = OwnProps & RouteComponentProps
 
 function LoginPage(props: LoginPageProps) {
   const { returnToUrl } = props
   const { twoFactorAuthErrorResponse } = useTwoFactorAuthSSOContext()
-
+  const { refreshSession } = useSessionContext()
   return (
     <StyledOuterContainer>
       <StyledInnerContainer>
@@ -34,6 +35,8 @@ function LoginPage(props: LoginPageProps) {
             <StandaloneLoginForm
               sessionCallback={() => {
                 redirectAfterSSO(returnToUrl)
+                // If we didn't redirect, refresh the session
+                refreshSession()
               }}
               registerAccountUrl={'/register1'}
               resetPasswordUrl={'/resetPassword'}

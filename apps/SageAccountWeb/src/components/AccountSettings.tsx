@@ -32,6 +32,7 @@ import { ProfileAvatar } from './ProfileAvatar'
 import { InputLabel } from '@mui/material'
 import { TextField } from '@mui/material'
 import { useSourceAppConfigs } from './SourceApp'
+import TwoFactorAuthSettingsPanel from 'synapse-react-client/dist/containers/auth/TwoFactorAuthSettingsPanel'
 
 const CompletionStatus: React.FC<{ isComplete: boolean | undefined }> = ({
   isComplete,
@@ -78,6 +79,7 @@ export const AccountSettings = () => {
   const timezoneRef = useRef<HTMLDivElement>(null)
   const emailAddressesRef = useRef<HTMLDivElement>(null)
   const trustCredentialRef = useRef<HTMLDivElement>(null)
+  const twoFactorAuthRef = useRef<HTMLDivElement>(null)
   const personalAccessTokenRef = useRef<HTMLDivElement>(null)
   const cookies = new UniversalCookies()
   const [isUTCTime, setUTCTime] = useState<string>(
@@ -177,7 +179,7 @@ export const AccountSettings = () => {
     <div className="account-settings-page">
       <AccountSettingsTopBar />
       <div className="panel-wrapper-bg with-account-setting">
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           <Box sx={{ display: 'flex', my: '60px' }}>
             <nav className="account-setting-panel nav-panel">
               <MenuItem onClick={() => handleScroll(profileInformationRef)}>
@@ -195,6 +197,9 @@ export const AccountSettings = () => {
               <MenuItem onClick={() => handleScroll(trustCredentialRef)}>
                 Trust & Credentials
               </MenuItem>
+              <MenuItem onClick={() => handleScroll(twoFactorAuthRef)}>
+                Two-factor Authentication (2FA)
+              </MenuItem>
               <MenuItem onClick={() => handleScroll(personalAccessTokenRef)}>
                 Personal Access Tokens
               </MenuItem>
@@ -205,11 +210,13 @@ export const AccountSettings = () => {
                 ref={profileInformationRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Profile Information</h3>
-                <p>
+                <Typography variant={'headline2'}>
+                  Profile Information
+                </Typography>
+                <Typography variant={'body1'}>
                   This information is reused across all{' '}
                   <RouterLink to="/sageresources">Sage products.</RouterLink>
-                </p>
+                </Typography>
                 <ProfileAvatar
                   userProfile={userProfile}
                   onProfileUpdated={() => {
@@ -412,21 +419,21 @@ export const AccountSettings = () => {
                 ref={emailAddressesRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Email Addresses</h3>
+                <Typography variant={'headline2'}>Email Addresses</Typography>
                 <ConfigureEmail returnToPath="authenticated/myaccount" />
               </div>
               <div
                 ref={changePasswordRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Change Password</h3>
+                <Typography variant={'headline2'}>Change Password</Typography>
                 <ChangePassword />
               </div>
               <div
                 ref={timezoneRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Date/Time Format</h3>
+                <Typography variant={'headline2'}>Date/Time Format</Typography>
                 <StyledFormControl
                   fullWidth
                   variant="standard"
@@ -469,23 +476,25 @@ export const AccountSettings = () => {
                 ref={trustCredentialRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Trust & Credentials</h3>
-                <p>
+                <Typography variant={'headline2'}>
+                  Trust & Credentials
+                </Typography>
+                <Typography variant={'body1'}>
                   This section lists the various ways we support verifying your
                   trust and identity in order to permit access to our products.
                   You may be asked to complete any of the following as part of
                   requesting access within a system.
-                </p>
+                </Typography>
                 <div className="credential-partition">
                   <h4>Terms and Conditions for Use</h4>
                   <CompletionStatus isComplete={termsOfUse} />
-                  <p>
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
                     <i>Required to register</i>
-                  </p>
-                  <p>
+                  </Typography>
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
                     You must affirm your agreement to follow these terms and
                     conditions in order to create an account.{' '}
-                  </p>
+                  </Typography>
                   <div className="primary-button-container">
                     <Button
                       disabled={termsOfUse}
@@ -503,15 +512,15 @@ export const AccountSettings = () => {
                 <div className="credential-partition">
                   <h4>Certification</h4>
                   <CompletionStatus isComplete={isCertified} />
-                  <p>
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
                     <i>Required to upload data.</i>
-                  </p>
-                  <p>
+                  </Typography>
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
                     There are times where human data can only be shared with
                     certain restrictions. In order to upload data on any
                     application, you must pass a quiz on the technical and
                     ethical aspects of sharing data in our system.
-                  </p>
+                  </Typography>
                   <div className="primary-button-container">
                     <Button
                       disabled={isCertified}
@@ -582,13 +591,13 @@ export const AccountSettings = () => {
                       and data.
                     </i>
                   </p>
-                  <p>
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
                     Profile validation requires you to complete your profile,
                     link an ORCID profile, sign and date the Synapse pledge, and
                     upload both the pledge and an identity attestation document,
                     after which your application will be manually reviewed
                     (which may take several days).
-                  </p>
+                  </Typography>
                   <div className="primary-button-container">
                     <Button
                       disabled={!!verified}
@@ -608,16 +617,27 @@ export const AccountSettings = () => {
                 </div>
               </div>
               <div
+                ref={twoFactorAuthRef}
+                className="account-setting-panel main-panel"
+              >
+                <TwoFactorAuthSettingsPanel
+                  onRegenerateBackupCodes={() => {}}
+                  onBeginTwoFactorEnrollment={() => {}}
+                />
+              </div>
+              <div
                 ref={personalAccessTokenRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Personal Access Tokens</h3>
-                <p>
+                <Typography variant={'headline2'}>
+                  Personal Access Tokens
+                </Typography>
+                <Typography variant={'body1'} sx={{ my: 1 }}>
                   You can issue personal access tokens to authenticate your
                   scripts with scoped access to your account. It is important
                   that you treat personal access tokens with the same security
                   as your password.
-                </p>
+                </Typography>
                 <div className="primary-button-container">
                   <Link sx={credentialButtonSX}>
                     Manage Personal Access Tokens
