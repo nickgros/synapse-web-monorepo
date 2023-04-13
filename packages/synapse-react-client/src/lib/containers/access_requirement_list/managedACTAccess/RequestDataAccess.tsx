@@ -1,7 +1,3 @@
-/**
- * Copied from src/lib/containers/access_requirement_list/AcceptedRequirements.tsx
- */
-
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import MarkdownSynapse from '../../markdown/MarkdownSynapse'
@@ -29,6 +25,8 @@ import { cancelDataAccessRequest } from '../../../utils/SynapseClient'
 import { AlertProps } from './RequestDataAccessStep2'
 import { Alert } from 'react-bootstrap'
 import { useSynapseContext } from '../../../utils/SynapseContext'
+import { Button, Typography } from '@mui/material'
+import { InlineButtonContainer } from '../DataAccessRequestStyledComponents'
 
 export type RequestDataAccessProps = {
   user: UserProfile | undefined
@@ -274,64 +272,54 @@ const RequestDataAccess: React.FC<RequestDataAccessProps> = props => {
       <div data-testid="RequestDataAccess" className="requirement-container">
         <AccessApprovalCheckMark isCompleted={isApproved} />
         <div className="terms-of-use-content">
-          {isApproved ? (
+          {/*  If not approved, show the terms */}
+          {!isApproved && <>{markdown}</>}
+          {isApproved && (
             <div>
-              <p>{approvedText}</p>
-              <p style={{ marginBottom: '0' }}>
+              <Typography variant={'body1'}>{approvedText}</Typography>
+              <InlineButtonContainer>
                 {isManagedActAr && (
-                  <button
-                    className="update-request-button"
+                  <Button
+                    variant={'outlined'}
                     onClick={() => {
                       showRequestAccess(accessRequirement)
                     }}
-                    style={{
-                      paddingLeft: '0',
-                      marginRight: '2rem',
-                    }}
                   >
                     {getAcceptButtonText()}
-                  </button>
+                  </Button>
                 )}
-                <a
+                <Button
+                  variant={'text'}
                   onClick={() => {
                     setIsHide(!isHide)
                   }}
                 >
-                  View Terms
-                </a>
-              </p>
+                  {isHide ? 'View' : 'Hide'} Terms
+                </Button>
+              </InlineButtonContainer>
               <div className={`view-terms ${isHide ? 'hidden' : 'show'}`}>
                 {markdown}
               </div>
             </div>
-          ) : (
-            markdown
           )}
-          {showButton && ( // This will show when the access is not approved
-            <div
-              className={`button-container ${isApproved ? `hide` : `default`}`}
-            >
-              <div className="accept-button-container">
-                <button
-                  className="accept-button"
+
+          {showButton &&
+            !isApproved && ( // This will show when the access is not approved
+              <InlineButtonContainer>
+                <Button
+                  variant={'outlined'}
                   onClick={() => {
                     onAcceptClicked()
                   }}
                 >
                   {getAcceptButtonText()}
-                </button>
-              </div>
+                </Button>
 
-              <div className="not-accept-button-container">
-                <button
-                  className="not-accpet-button"
-                  onClick={() => onHide?.()}
-                >
+                <Button variant={'text'} onClick={onHide}>
                   I do not accept
-                </button>
-              </div>
-            </div>
-          )}
+                </Button>
+              </InlineButtonContainer>
+            )}
         </div>
       </div>
     </>

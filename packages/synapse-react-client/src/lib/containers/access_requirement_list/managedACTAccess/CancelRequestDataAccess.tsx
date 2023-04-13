@@ -18,7 +18,7 @@ import IconSvg from '../../IconSvg'
 
 export type CancelRequestDataAccessProps = {
   formSubmitRequestObject: RequestInterface | undefined
-  onHide: () => void
+  onHide?: () => void
 }
 
 const CancelRequestDataAccess: React.FC<

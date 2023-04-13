@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   ManagedACTAccessRequirement,
   UserProfile,
-  WikiPageKey,
 } from '../../../utils/synapseTypes'
-import { SynapseClient } from '../../../utils'
 import RequestDataAccess from './RequestDataAccess'
-import { ManagedACTAccessRequirementStatus } from '../../../utils/synapseTypes/AccessRequirement/ManagedACTAccessRequirementStatus'
-import { useSynapseContext } from '../../../utils/SynapseContext'
+import { ManagedACTAccessRequirementStatus } from '../../../utils/synapseTypes'
 import { RequestDataStepCallbackArgs } from '../AccessRequirementList'
+import { useGetAccessRequirementWikiPageKey } from '../../../utils/hooks/SynapseAPI'
 
 export type ManagedACTAccessRequirementComponentProps = {
   entityId: string
@@ -30,25 +28,10 @@ const ManagedACTAccessRequirementComponent: React.FC<
     onHide,
     requestDataStepCallback,
   } = props
-  const { accessToken } = useSynapseContext()
-  const [wikiPage, setWikiPage] = useState<WikiPageKey>()
 
-  useEffect(() => {
-    const getManagedACTAccessData = async () => {
-      try {
-        const wikipageRequirement =
-          await SynapseClient.getWikiPageKeyForAccessRequirement(
-            accessToken,
-            accessRequirement.id,
-          )
-        setWikiPage(wikipageRequirement)
-      } catch (err) {
-        console.error('Error on get ManagedACTAccessRequirement', err)
-      }
-    }
-
-    getManagedACTAccessData()
-  }, [accessToken, accessRequirement])
+  const { data: wikiPage } = useGetAccessRequirementWikiPageKey(
+    accessRequirement.id.toString(),
+  )
 
   return (
     <RequestDataAccess

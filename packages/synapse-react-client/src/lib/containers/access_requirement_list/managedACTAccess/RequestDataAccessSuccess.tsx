@@ -11,7 +11,7 @@ import {
 import IconSvg from '../../IconSvg'
 
 export type RequestDataAccessSuccessProps = {
-  onHide: () => void
+  onHide?: () => void
 }
 
 const RequestDataAccessSuccess: React.FC<

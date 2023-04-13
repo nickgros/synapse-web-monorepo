@@ -24,7 +24,7 @@ import IconSvg from '../../IconSvg'
 export type RequestDataAccessStep1Props = {
   requestDataStepCallback?: (props: RequestDataStepCallbackArgs) => void
   managedACTAccessRequirement: ManagedACTAccessRequirement
-  onHide: () => void
+  onHide?: () => void
 }
 
 const RequestDataAccessStep1: React.FC<RequestDataAccessStep1Props> = props => {

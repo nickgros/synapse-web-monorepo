@@ -51,6 +51,7 @@ export const mockManagedACTAccessRequirement: ManagedACTAccessRequirement = {
   expirationPeriod: 1000 * 60 * 60 * 24, // 1 day
   isIRBApprovalRequired: true,
   isValidatedProfileRequired: true,
+  isTwoFaRequired: true,
 }
 
 export const mockManagedACTAccessRequirementWikiPageKey: WikiPageKey = {
@@ -70,8 +71,8 @@ export const mockSelfSignAccessRequirement: SelfSignAccessRequirement = {
   ...defaultAccessRequirement,
   id: 3,
   concreteType: 'org.sagebionetworks.repo.model.SelfSignAccessRequirement',
-  isCertifiedUserRequired: false,
-  isValidatedProfileRequired: false,
+  isCertifiedUserRequired: true,
+  isValidatedProfileRequired: true,
 }
 
 export const mockSelfSignAccessRequirementWikiPageKey: WikiPageKey = {

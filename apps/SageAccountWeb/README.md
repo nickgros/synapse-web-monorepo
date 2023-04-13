@@ -1,8 +1,8 @@
 ## This project is code for OneSage user account portal.
 
-_Production_ branch is automatically deployed to https://accounts.sagebionetworks.org
+`main` branch is automatically deployed to https://staging.accounts.sagebionetworks.org
 
-_Staging_ branch is automatically deployed to https://staging.accounts.sagebionetworks.org
+`SageAccountWeb-production` branch is automatically deployed to https://accounts.sagebionetworks.org
 
 ## How do I add my app to OneSage?
 
@@ -76,8 +76,7 @@ You will also see any lint errors in the console.
 
 ### `pnpm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Runs all of the tests in the project using Jest.
 
 ### `pnpm build`
 

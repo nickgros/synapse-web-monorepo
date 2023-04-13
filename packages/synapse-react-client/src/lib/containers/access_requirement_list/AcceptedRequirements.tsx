@@ -18,10 +18,15 @@ import AccessApprovalCheckMark from './AccessApprovalCheckMark'
 import { SUPPORTED_ACCESS_REQUIREMENTS } from './AccessRequirementList'
 import { useSynapseContext } from '../../utils/SynapseContext'
 import { PRODUCTION_ENDPOINT_CONFIG } from '../../utils/functions/getEndpoint'
+import { Typography, Button } from '@mui/material'
+import {
+  InlineButtonContainer,
+  RequirementContainer,
+} from './DataAccessRequestStyledComponents'
+import { useGetAccessRequirementWikiPageKey } from '../../utils/hooks/SynapseAPI'
 
 export type AcceptedRequirementsProps = {
   user: UserProfile | undefined
-  wikiPage: WikiPageKey | undefined
   entityId: string
   accessRequirement:
     | AccessRequirement
@@ -29,20 +34,23 @@ export type AcceptedRequirementsProps = {
     | SelfSignAccessRequirement
     | ManagedACTAccessRequirement
   accessRequirementStatus: AccessRequirementStatus | undefined
-  showButton?: boolean
   onHide?: () => void
 }
 
+// TODO: Seems like this should be AR type-agnostic and have "primaryAction", "secondaryBUtton", something like that
+
 export default function AcceptedRequirements({
   user,
-  wikiPage,
   accessRequirement,
   accessRequirementStatus,
-  showButton = true,
   entityId,
   onHide,
 }: AcceptedRequirementsProps) {
   const { accessToken } = useSynapseContext()
+  const { data: wikiPage } = useGetAccessRequirementWikiPageKey(
+    accessRequirement.id.toString(),
+  )
+
   const [isHide, setIsHide] = useState<boolean>(true)
   const propsIsApproved = accessRequirementStatus?.isApproved
   const [isApproved, setIsApproved] = useState<boolean | undefined>(
@@ -86,7 +94,9 @@ export default function AcceptedRequirements({
     ) {
       gotoSynapseAccessRequirementPage()
       // PORTALS-1483: and close the dialog.
-      onHide?.()
+      if (onHide) {
+        onHide()
+      }
     } else {
       if (!isApproved) {
         const accessApprovalRequest: AccessApproval = {
@@ -147,61 +157,52 @@ export default function AcceptedRequirements({
     : 'You have accepted the terms of use.'
   return (
     <>
-      <div data-testid="AcceptedRequirements" className="requirement-container">
+      <RequirementContainer data-testid="AcceptedRequirements">
         <AccessApprovalCheckMark isCompleted={isApproved} />
         <div className="terms-of-use-content">
           {isApproved ? (
-            <div>
-              <p>
-                {approvedText}
+            <>
+              <Typography variant={'body1'}>{approvedText}</Typography>
+              <InlineButtonContainer>
                 {isManagedActAr && (
-                  <a
-                    className="update-request-button"
+                  <Button
+                    variant={'outlined'}
                     onClick={() => {
                       gotoSynapseAccessRequirementPage()
                     }}
                   >
                     Update Request
-                  </a>
+                  </Button>
                 )}
-                <a
-                  className="view-terms-button"
+                <Button
+                  variant={'text'}
                   onClick={() => {
                     setIsHide(!isHide)
                   }}
                 >
-                  View Terms
-                </a>
-              </p>
+                  {isHide ? 'View' : 'Hide'} Terms
+                </Button>
+              </InlineButtonContainer>
               <div className={`view-terms ${isHide ? 'hidden' : 'show'}`}>
                 {markdown}
               </div>
-            </div>
+            </>
           ) : (
             markdown
           )}
-          {accessToken && showButton && (
-            <div
-              className={`button-container ${isApproved ? `hide` : `default`}`}
-            >
-              <div className="accept-button-container">
-                <button className="accept-button" onClick={onAcceptClicked}>
-                  {acceptButtonText}
-                </button>
-              </div>
+          {accessToken && !isApproved && (
+            <InlineButtonContainer>
+              <Button variant={'outlined'} onClick={onAcceptClicked}>
+                {acceptButtonText}
+              </Button>
 
-              <div className="not-accept-button-container">
-                <button
-                  className="not-accpet-button"
-                  onClick={() => onHide?.()}
-                >
-                  I do not accept
-                </button>
-              </div>
-            </div>
+              <Button variant={'text'} onClick={onHide}>
+                I do not accept
+              </Button>
+            </InlineButtonContainer>
           )}
         </div>
-      </div>
+      </RequirementContainer>
     </>
   )
 }

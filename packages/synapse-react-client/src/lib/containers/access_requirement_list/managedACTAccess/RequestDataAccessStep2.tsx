@@ -50,7 +50,7 @@ export type RequestDataAccessStep2Props = {
   requestDataStepCallback: (props: RequestDataStepCallbackArgs) => void
   user: UserProfile
   researchProjectId: string
-  onHide: () => void
+  onHide?: () => void
 }
 
 export type DataAccessDoc = {
