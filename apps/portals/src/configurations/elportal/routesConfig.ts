@@ -296,7 +296,7 @@ const routes: GenericRoute[] = [
                       name: 'CardContainerLogic',
                       title: 'Projects',
                       columnName: 'Program',
-                      showTitleSeperator: false,
+                      showTitleSeparator: false,
                       tableSqlKeys: ['Program'],
                       props: {
                         ...projectCardConfiguration,
@@ -307,7 +307,7 @@ const routes: GenericRoute[] = [
                       name: 'CardContainerLogic',
                       title: 'Studies',
                       columnName: 'Program',
-                      showTitleSeperator: false,
+                      showTitleSeparator: false,
                       tableSqlKeys: ['Program'],
                       props: {
                         ...studyCardConfiguration,

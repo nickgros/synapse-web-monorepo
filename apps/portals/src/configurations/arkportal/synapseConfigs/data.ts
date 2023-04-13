@@ -1,9 +1,7 @@
 import { SynapseConfig } from 'types/portal-config'
 import columnAliases from '../columnAliases'
 import { LabelLinkConfig } from 'synapse-react-client/dist/containers/CardContainerLogic'
-import { StandaloneQueryWrapperProps } from 'synapse-react-client/dist/containers/table/StandaloneQueryWrapper'
 import { dataSql } from '../resources'
-import { ColumnSingleValueFilterOperator } from 'synapse-react-client/dist/utils/synapseTypes/Table/QueryFilter'
 
 const rgbIndex = 0
 export const dataColumnLinks: LabelLinkConfig = [
@@ -44,15 +42,6 @@ const data: SynapseConfig = {
     },
     defaultShowFacetVisualization: false,
   },
-}
-
-export const dataDetailPageProps: StandaloneQueryWrapperProps = {
-  sql: dataSql,
-  rgbIndex,
-  title: 'Files',
-  columnLinks: dataColumnLinks,
-  hideDownload: true,
-  sqlOperator: ColumnSingleValueFilterOperator.EQUAL,
 }
 
 export default data

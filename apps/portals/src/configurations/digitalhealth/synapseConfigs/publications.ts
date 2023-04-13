@@ -1,10 +1,7 @@
 import { SynapseConstants } from 'synapse-react-client'
-import { SynapseConfig } from 'types/portal-config'
+import { SynapseConfig } from '../../../types/portal-config'
 import { GenericCardSchema } from 'synapse-react-client/dist/containers/GenericCard'
-import {
-  CardConfiguration,
-  CardContainerLogicProps,
-} from 'synapse-react-client/dist/containers/CardContainerLogic'
+import { CardConfiguration } from 'synapse-react-client/dist/containers/CardContainerLogic'
 import { publicationSql } from '../resources'
 import { ColumnSingleValueFilterOperator } from 'synapse-react-client/dist/utils/synapseTypes/Table/QueryFilter'
 
@@ -76,8 +73,12 @@ export const publications: SynapseConfig = {
   },
 }
 
-export const publicationDetailPageProps: CardContainerLogicProps = {
-  sql: publicationSql,
-  ...publicationCardConfiguration,
-  sqlOperator: ColumnSingleValueFilterOperator.LIKE,
+export const publicationDetailPageProps: SynapseConfig = {
+  name: 'CardContainerLogic',
+  props: {
+    sql: publicationSql,
+    ...publicationCardConfiguration,
+  },
+  addAdditionalFiltersUsingURLSearchParams:
+    ColumnSingleValueFilterOperator.LIKE,
 }

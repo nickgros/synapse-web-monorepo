@@ -1,11 +1,7 @@
 import * as React from 'react'
 import { SynapseConstants } from '../../utils/'
 import { isTable } from '../../utils/functions/EntityTypeUtils'
-import {
-  generateQueryFilterFromSearchParams,
-  parseEntityIdFromSqlStatement,
-  SQLOperator,
-} from '../../utils/functions/sqlFunctions'
+import { parseEntityIdFromSqlStatement } from '../../utils/functions/sqlFunctions'
 import { useGetEntity } from '../../utils/hooks/SynapseAPI/entity/useEntity'
 import { DEFAULT_PAGE_SIZE } from '../../utils/SynapseConstants'
 import { Query, QueryBundleRequest } from '../../utils/synapseTypes'
@@ -37,12 +33,14 @@ import FacetFilterControls, {
 } from '../widgets/query-filter/FacetFilterControls'
 import FilterAndView from './FilterAndView'
 import { NoContentPlaceholderType } from '../table/NoContentPlaceholderType'
+import { QueryFilter } from '../../utils/synapseTypes/Table/QueryFilter'
 
 const QUERY_FILTERS_EXPANDED_CSS = 'isShowingFacetFilters'
 const QUERY_FILTERS_COLLAPSED_CSS = 'isHidingFacetFilters'
 
 type OwnProps = {
   sql: string
+  additionalFilters?: QueryFilter[]
   limit?: number
   shouldDeepLink?: boolean
   /** If onQueryChange is set, the callback will be invoked when the Query changes */
@@ -77,28 +75,15 @@ type OwnProps = {
     | 'noContentPlaceholderType'
   >
 
-type SearchParams = {
-  searchParams?: {
-    facetValue: string
-  }
-}
-type Operator = {
-  sqlOperator?: SQLOperator
-}
-
-export type QueryWrapperPlotNavProps = SearchParams &
-  FacetNavProps &
-  Operator &
-  OwnProps
+export type QueryWrapperPlotNavProps = FacetNavProps & OwnProps
 
 const QueryWrapperPlotNav: React.FunctionComponent<QueryWrapperPlotNavProps> = (
   props: QueryWrapperPlotNavProps,
 ) => {
   const [showExportMetadata, setShowExportMetadata] = React.useState(false)
   const {
-    searchParams,
     sql,
-    sqlOperator,
+    additionalFilters,
     tableConfiguration,
     name,
     cardConfiguration,
@@ -113,11 +98,6 @@ const QueryWrapperPlotNav: React.FunctionComponent<QueryWrapperPlotNavProps> = (
     showLastUpdatedOn,
     showExportToCavatica = false,
   } = props
-
-  const additionalFilters = generateQueryFilterFromSearchParams(
-    searchParams,
-    sqlOperator,
-  )
 
   // use initQuery if set, otherwise use sql
   const query: Query = initQueryJson

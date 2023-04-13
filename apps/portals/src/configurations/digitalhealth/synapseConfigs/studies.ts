@@ -117,25 +117,22 @@ export const details: DetailsPageProps = {
       title: 'Data Description',
     },
     {
-      name: 'StandaloneQueryWrapper',
+      ...dataDetailPageProps,
       title: 'Data Files',
       columnName: 'id',
       tableSqlKeys: ['projectId'],
-      props: dataDetailPageProps,
     },
     {
-      name: 'CardContainerLogic',
+      ...toolsDetailPageProps,
       title: 'Suggested Tools',
       columnName: 'id',
       tableSqlKeys: ['suggestedStudies'],
-      props: toolsDetailPageProps,
     },
     {
-      name: 'CardContainerLogic',
       title: 'Publications',
       columnName: 'id',
       tableSqlKeys: ['synID'],
-      props: publicationDetailPageProps,
+      ...publicationDetailPageProps,
     },
   ],
 }

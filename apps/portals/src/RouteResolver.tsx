@@ -48,7 +48,7 @@ function ComponentRenderer(props: { config: SynapseConfig }) {
     }
   }, 500)
   return (
-    <React.Fragment key={JSON.stringify(props)}>
+    <React.Fragment>
       {isOutsideContainer ? (
         <div className={containerClassName}>
           {title && (
@@ -66,7 +66,6 @@ function ComponentRenderer(props: { config: SynapseConfig }) {
         </div>
       ) : (
         <Layout
-          key={JSON.stringify(props)}
           containerClassName={containerClassName}
           outsideContainerClassName={outsideContainerClassName}
         >

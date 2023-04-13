@@ -1,5 +1,4 @@
-import { SynapseConfig } from 'types/portal-config'
-import { DetailsPageProps } from 'types/portal-util-types'
+import { DetailsPageProps } from '../../../types/portal-util-types'
 import { SynapseConstants } from 'synapse-react-client'
 import { CardConfiguration } from 'synapse-react-client/dist/containers/CardContainerLogic'
 import studyHeaderSvg from '../style/study-header.svg'
@@ -8,6 +7,7 @@ import {
   ColumnMultiValueFunction,
   ColumnSingleValueFilterOperator,
 } from 'synapse-react-client/dist/utils/synapseTypes/Table/QueryFilter'
+import { SynapseConfig } from '../../../types/portal-config'
 
 const rgbIndex = 0
 export const studyCardConfiguration: CardConfiguration = {

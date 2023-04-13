@@ -407,7 +407,7 @@ export const DetailsPageSynapseConfigArray: React.FC<{
     <>
       {synapseConfigArray.map((el: RowSynapseConfig, index) => {
         const id = getComponentId(el)
-        const { resolveSynId, showTitleSeperator = true } = el
+        const { resolveSynId, showTitleSeparator = true } = el
         const key = JSON.stringify(el)
         const hasTitleFromSynId = resolveSynId && resolveSynId.title
         // don't show this title if component is rendering entity names adjacet to the title
@@ -416,7 +416,7 @@ export const DetailsPageSynapseConfigArray: React.FC<{
           title = (
             <>
               {el.title && <HeadlineWithLink title={el.title} id={id} />}
-              {showTitleSeperator && el.title && <hr />}
+              {showTitleSeparator && el.title && <hr />}
               {el.subtitle && (
                 <div className="bootstrap-4-backport">
                   <Typography variant="subsectionHeader" role="heading">

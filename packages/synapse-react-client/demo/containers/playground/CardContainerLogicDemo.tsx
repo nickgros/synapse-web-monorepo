@@ -73,7 +73,7 @@ export default class CardContainerLogicDemo extends React.Component<{}, State> {
           <CardContainerLogic
             type={SynapseConstants.GENERIC_CARD}
             sql={'SELECT * FROM syn17024173'}
-            searchParams={{ Program: 'AMP-AD' }}
+            useSearchParams={{ Program: 'AMP-AD' }}
             genericCardSchema={{
               type: 'Program',
               title: 'Full Name',

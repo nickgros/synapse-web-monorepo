@@ -70,7 +70,7 @@ export const projectsDetailsPageConfiguration: DetailsPageProps = {
       name: 'CardContainerLogic',
       columnName: 'Grant Number',
       title: 'Publications',
-      showTitleSeperator: false,
+      showTitleSeparator: false,
       tableSqlKeys: ['grant'],
       props: {
         sql: publicationsSql,
@@ -80,7 +80,7 @@ export const projectsDetailsPageConfiguration: DetailsPageProps = {
     {
       name: 'ToggleSynapseObjects',
       title: 'Experimental Models',
-      showTitleSeperator: false,
+      showTitleSeparator: false,
       standalone: true,
       toggleConfigs: {
         icon1: 'table',
@@ -89,9 +89,10 @@ export const projectsDetailsPageConfiguration: DetailsPageProps = {
           props: {
             sql: experimentalModelsSql,
             rgbIndex,
-            sqlOperator: ColumnSingleValueFilterOperator.EQUAL,
             columnLinks: experimentalDetailsTableConfigurationColumnLinks,
           },
+          addAdditionalFiltersUsingURLSearchParams:
+            ColumnSingleValueFilterOperator.EQUAL,
           columnName: 'Grant Number',
           tableSqlKeys: ['grant'],
         },
@@ -112,7 +113,7 @@ export const projectsDetailsPageConfiguration: DetailsPageProps = {
       name: 'CardContainerLogic',
       columnName: 'Grant Number',
       title: 'Computational Tools',
-      showTitleSeperator: false,
+      showTitleSeparator: false,
       tableSqlKeys: ['grant'],
       props: {
         sql: computationalSql,
@@ -123,7 +124,7 @@ export const projectsDetailsPageConfiguration: DetailsPageProps = {
       name: 'CardContainerLogic',
       columnName: 'Grant Number',
       title: 'Target Enabling Resources',
-      showTitleSeperator: false,
+      showTitleSeparator: false,
       tableSqlKeys: ['grant'],
       props: {
         sql: targetEnablingResourcesDetailsPageSql,

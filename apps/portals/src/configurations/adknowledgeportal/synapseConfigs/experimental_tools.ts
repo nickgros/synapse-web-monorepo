@@ -1,6 +1,6 @@
 import { GenericCardSchema } from 'synapse-react-client/dist/containers/GenericCard'
 import { SynapseConstants } from 'synapse-react-client'
-import { SynapseConfig } from 'types/portal-config'
+import { SynapseConfig } from '../../../types/portal-config'
 import {
   CardConfiguration,
   LabelLinkConfig,

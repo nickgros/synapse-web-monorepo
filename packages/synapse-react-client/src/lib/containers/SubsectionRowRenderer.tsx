@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
-import {
-  generateQueryFilterFromSearchParams,
-  parseEntityIdFromSqlStatement,
-  SQLOperator,
-} from '../utils/functions/sqlFunctions'
+import { parseEntityIdFromSqlStatement } from '../utils/functions/sqlFunctions'
 import { SynapseClient, SynapseConstants } from '../utils'
 import {
   ColumnType,
@@ -17,6 +13,7 @@ import { SkeletonTable } from '../assets/skeletons/SkeletonTable'
 import { ColumnSpecifiedLink } from './CardContainerLogic'
 import { Typography } from '@mui/material'
 import { useDeepCompareEffectNoCheck } from 'use-deep-compare-effect'
+import { QueryFilter } from '../utils/synapseTypes/Table/QueryFilter'
 
 export type FriendlyValuesMap = {
   [index: string]: string
@@ -24,9 +21,8 @@ export type FriendlyValuesMap = {
 
 export type SubsectionRowRendererProps = {
   sql: string
+  additionalFilters?: QueryFilter[]
   isMarkdown?: boolean
-  sqlOperator?: SQLOperator
-  searchParams?: Record<string, string>
   columnLink?: ColumnSpecifiedLink
   friendlyValuesMap?: FriendlyValuesMap
   columnNameIsSectionTitle?: boolean
@@ -45,8 +41,7 @@ const SubsectionRowRenderer: React.FunctionComponent<
   SubsectionRowRendererProps
 > = ({
   sql,
-  searchParams,
-  sqlOperator,
+  additionalFilters,
   isMarkdown = false,
   columnLink,
   friendlyValuesMap,
@@ -60,10 +55,6 @@ const SubsectionRowRenderer: React.FunctionComponent<
   useDeepCompareEffectNoCheck(() => {
     const fetchData = async function () {
       setIsLoading(true)
-      const additionalFilters = generateQueryFilterFromSearchParams(
-        searchParams,
-        sqlOperator,
-      )
       const entityId = parseEntityIdFromSqlStatement(sql)
       const partMask = SynapseConstants.BUNDLE_MASK_QUERY_RESULTS
       const request: QueryBundleRequest = {
@@ -96,7 +87,7 @@ const SubsectionRowRenderer: React.FunctionComponent<
     return () => {
       mounted = false
     }
-  }, [sql, accessToken, searchParams, sqlOperator])
+  }, [sql, accessToken, additionalFilters])
 
   /**
    * If a "friendly values map" was provided, then use the friendly value if any of the raw values match.

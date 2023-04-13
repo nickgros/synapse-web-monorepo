@@ -1,9 +1,9 @@
 import { SynapseConstants } from 'synapse-react-client'
-import { SynapseConfig } from 'types/portal-config'
+import { SynapseConfig } from '../../../types/portal-config'
 import { GenericCardSchema } from 'synapse-react-client/dist/containers/GenericCard'
 import { CardConfiguration } from 'synapse-react-client/dist/containers/CardContainerLogic'
 import columnAliases from '../columnAliases'
-import { DetailsPageProps } from 'types/portal-util-types'
+import { DetailsPageProps } from '../../../types/portal-util-types'
 import { datasetsSql, projectsSql } from '../resources'
 import { datasetCardConfiguration } from './datasets'
 import { ColumnSingleValueFilterOperator } from 'synapse-react-client/dist/utils/synapseTypes/Table/QueryFilter'
@@ -23,7 +23,7 @@ export const projectsCardConfiguration: CardConfiguration = {
   genericCardSchema: projectSchema,
   titleLinkConfig: {
     isMarkdown: false,
-    baseURL: 'Explore/Projects/DetailsPage',
+    baseURL: 'Explore/Projects/D`etailsPage',
     URLColumnName: 'Project',
     matchColumnName: 'Project',
   },

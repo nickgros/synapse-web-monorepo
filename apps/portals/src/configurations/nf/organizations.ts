@@ -43,8 +43,9 @@ export const organizationDetailsPageConfig: DetailsPageProps = {
             sql: publicationsSql,
             limit: 3,
             ...publicationsCardConfiguration,
-            sqlOperator: ColumnSingleValueFilterOperator.LIKE,
           },
+          addAdditionalFiltersUsingURLSearchParams:
+            ColumnSingleValueFilterOperator.LIKE,
           title: 'Publications',
           columnName: 'fundingAgency',
           tableSqlKeys: ['fundingAgency'],
@@ -74,7 +75,6 @@ export const organizationDetailsPageConfig: DetailsPageProps = {
             shouldDeepLink: false,
             sql: filesSql,
             visibleColumnCount: 7,
-            sqlOperator: ColumnSingleValueFilterOperator.LIKE,
             tableConfiguration: {
               showAccessColumn: true,
               showDownloadColumn: true,
@@ -85,6 +85,8 @@ export const organizationDetailsPageConfig: DetailsPageProps = {
           },
           tableSqlKeys: ['fundingAgency'],
           columnName: 'fundingAgency',
+          addAdditionalFiltersUsingURLSearchParams:
+            ColumnSingleValueFilterOperator.LIKE,
         },
         {
           name: 'CardContainerLogic',

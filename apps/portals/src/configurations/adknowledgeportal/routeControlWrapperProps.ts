@@ -1,5 +1,5 @@
 import { RouteControlWrapperProps } from 'portal-components/RouteControlWrapper'
-import { SynapseConfig } from 'types/portal-config'
+import { SynapseConfig } from '../../types/portal-config'
 
 const routeControlWrapper: RouteControlWrapperProps = {
   synapseConfig: {} as SynapseConfig,

@@ -1,7 +1,6 @@
-import { SynapseConfig } from 'types/portal-config'
+import { SynapseConfig } from '../../../types/portal-config'
 import columnAliases from '../columnAliases'
 import { LabelLinkConfig } from 'synapse-react-client/dist/containers/CardContainerLogic'
-import { StandaloneQueryWrapperProps } from 'synapse-react-client/dist/containers/table/StandaloneQueryWrapper'
 import { dataSql } from '../resources'
 import { ColumnSingleValueFilterOperator } from 'synapse-react-client/dist/utils/synapseTypes/Table/QueryFilter'
 
@@ -61,13 +60,17 @@ const data: SynapseConfig = {
   },
 }
 
-export const dataDetailPageProps: StandaloneQueryWrapperProps = {
-  sql: dataSql,
-  rgbIndex,
-  title: 'Data Files',
-  columnLinks: dataColumnLinks,
-  hideDownload: true,
-  sqlOperator: ColumnSingleValueFilterOperator.EQUAL,
+export const dataDetailPageProps: SynapseConfig = {
+  name: 'StandaloneQueryWrapper',
+  props: {
+    sql: dataSql,
+    rgbIndex,
+    title: 'Data Files',
+    columnLinks: dataColumnLinks,
+    hideDownload: true,
+  },
+  addAdditionalFiltersUsingURLSearchParams:
+    ColumnSingleValueFilterOperator.EQUAL,
 }
 
 export default data

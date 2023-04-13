@@ -223,13 +223,14 @@ const routes: GenericRoute[] = [
                 name: 'CardContainerLogic',
                 isOutsideContainer: true,
                 props: {
-                  sqlOperator: ColumnSingleValueFilterOperator.EQUAL,
                   isHeader: true,
 
                   ...initiativeCardConfiguration,
                   columnAliases,
                   sql: initiativesSql,
                 },
+                addAdditionalFiltersUsingURLSearchParams:
+                  ColumnSingleValueFilterOperator.EQUAL,
               },
               {
                 name: 'DetailsPage',

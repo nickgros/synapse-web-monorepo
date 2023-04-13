@@ -58,7 +58,7 @@ export const initiativeDetailsPageConfiguration: DetailsPageProps = {
       name: 'CardContainerLogic',
       columnName: 'initiative',
       title: 'Studies',
-      showTitleSeperator: false,
+      showTitleSeparator: false,
       tableSqlKeys: ['initiative'],
       props: {
         sql: studiesSql,

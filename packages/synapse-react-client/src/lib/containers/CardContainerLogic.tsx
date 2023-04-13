@@ -1,10 +1,6 @@
 import React from 'react'
 import { SynapseConstants } from '../utils'
-import {
-  generateQueryFilterFromSearchParams,
-  parseEntityIdFromSqlStatement,
-  SQLOperator,
-} from '../utils/functions/sqlFunctions'
+import { parseEntityIdFromSqlStatement } from '../utils/functions/sqlFunctions'
 import { QueryBundleRequest, SortDirection } from '../utils/synapseTypes/'
 import CardContainer from './CardContainer'
 import { ErrorBanner } from './error/ErrorBanner'
@@ -20,6 +16,7 @@ import QuerySortSelector from './QuerySortSelector'
 import { NoContentPlaceholderType } from './table/NoContentPlaceholderType'
 import { IconOptions } from './row_renderers/utils/Icon'
 import { DEFAULT_PAGE_SIZE } from '../utils/SynapseConstants'
+import { QueryFilter } from '../utils/synapseTypes/Table/QueryFilter'
 
 /**
  *  Used when a column value should link to an external URL defined by a value in another column.
@@ -122,11 +119,10 @@ export type CardConfiguration = {
 export type CardContainerLogicProps = {
   limit?: number
   title?: string
-  sqlOperator?: SQLOperator
-  searchParams?: Record<string, string>
   isHeader?: boolean
   isAlignToLeftNav?: boolean
   sql: string
+  additionalFilters?: QueryFilter[]
   sortConfig?: SortConfiguration
 } & CardConfiguration &
   Pick<
@@ -142,10 +138,7 @@ export type CardContainerLogicProps = {
  */
 export const CardContainerLogic = (props: CardContainerLogicProps) => {
   const entityId = parseEntityIdFromSqlStatement(props.sql)
-  const queryFilters = generateQueryFilterFromSearchParams(
-    props.searchParams,
-    props.sqlOperator,
-  )
+
   const { sortConfig, columnAliases } = props
   const defaultSortItems = sortConfig
     ? [
@@ -162,7 +155,7 @@ export const CardContainerLogic = (props: CardContainerLogicProps) => {
       sql: props.sql,
       limit: props.limit ?? DEFAULT_PAGE_SIZE,
       sort: defaultSortItems,
-      additionalFilters: queryFilters,
+      additionalFilters: props.additionalFilters,
     },
     partMask:
       SynapseConstants.BUNDLE_MASK_QUERY_RESULTS |

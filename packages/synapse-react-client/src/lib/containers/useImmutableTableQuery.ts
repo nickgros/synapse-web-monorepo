@@ -160,6 +160,13 @@ export default function useImmutableTableQuery(
     [componentIndex, getLastQueryRequest, onQueryChange, shouldDeepLink],
   )
 
+  /**
+   * If the initQueryRequest changes, then update the query to match
+   */
+  useEffect(() => {
+    setQuery(initQueryRequest)
+  }, [initQueryRequest])
+
   const { entityId, versionNumber } = useMemo(
     () => parseEntityIdAndVersionFromSqlStatement(lastQueryRequest.query.sql)!,
     [lastQueryRequest.query.sql],

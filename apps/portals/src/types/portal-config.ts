@@ -33,6 +33,8 @@ import { RedirectProps } from 'react-router-dom'
 import { MarkdownCollapseProps } from 'synapse-react-client/dist/containers/MarkdownCollapse'
 import { DownloadListActionsRequiredProps } from 'synapse-react-client/dist/containers/download_list_v2/DownloadListActionsRequired'
 import { ToggleSynapseObjectsProps } from 'portal-components/ToggleSynapseObjects'
+import { SQLOperator } from 'synapse-react-client/dist/utils/functions/sqlFunctions'
+import { CSSProperties } from 'react'
 
 // For styling the header on the home page -- the main title and the summary text
 export type HomePageHeaderConfig = {
@@ -43,11 +45,16 @@ export type HomePageHeaderConfig = {
   HeaderSvg?: any
 }
 
+type ApplyFiltersFromURLSearchParams = {
+  /* If defined, will use URLSearchParams to inject additionalFilters into the props */
+  addAdditionalFiltersUsingURLSearchParams?: SQLOperator
+}
+
 // Generic SynapseConfigArray Representation -- maps each component to its props
 type CardContainerLogic = {
-  props: CardContainerLogicProps
   name: 'CardContainerLogic'
-}
+  props: CardContainerLogicProps
+} & ApplyFiltersFromURLSearchParams
 
 type QueryWrapper = {
   name: 'QueryWrapper'
@@ -57,7 +64,7 @@ type QueryWrapper = {
 type QueryWrapperPlotNav = {
   name: 'QueryWrapperPlotNav'
   props: QueryWrapperPlotNavProps
-}
+} & ApplyFiltersFromURLSearchParams
 
 type UserCard = {
   name: 'UserCard'
@@ -182,11 +189,13 @@ type SynapsePlot = {
 type UserCardListRotate = {
   name: 'UserCardListRotate'
   props: UserCardListRotateProps
-}
+} & ApplyFiltersFromURLSearchParams
+
 type SubsectionRowRenderer = {
   name: 'SubsectionRowRenderer'
   props: SubsectionRowRendererProps
-}
+} & ApplyFiltersFromURLSearchParams
+
 type Image = {
   name: 'Image'
   props: ImageProps
@@ -210,11 +219,11 @@ type Metadata = {
   centerTitle?: boolean
   subtitle?: string
   link?: string
-  style?: React.CSSProperties
+  style?: CSSProperties
   isOutsideContainer?: boolean
-  // applied to the inner most container of the object
+  // applied to the innermost container of the object
   className?: string
-  // applied to outer most container of the object
+  // applied to outermost container of the object
   containerClassName?: string
   outsideContainerClassName?: string
 }
@@ -232,7 +241,7 @@ type SynapseFormSubmissionsGrid = {
 type StandaloneQueryWrapper = {
   name: 'StandaloneQueryWrapper'
   props: StandaloneQueryWrapperProps
-}
+} & ApplyFiltersFromURLSearchParams
 
 type ParticipantsBarPlot = {
   name: 'ParticipantsBarPlot'

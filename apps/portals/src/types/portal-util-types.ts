@@ -28,7 +28,7 @@ type RowToPropTransform = {
   tableSqlKeys?: string[]
   columnName?: string
   injectMarkdown?: boolean
-  showTitleSeperator?: boolean
+  showTitleSeparator?: boolean
   overrideSqlSourceTable?: boolean // use the search param value for the table sql:  SELECT * FROM <search-param-value>.<rowVersionNumber>
   toggleConfigs?: ToggleConfigs // PORTALS-2229: set if we should show a toggle
 }

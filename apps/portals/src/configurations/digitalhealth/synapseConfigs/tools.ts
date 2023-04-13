@@ -1,10 +1,7 @@
 import { SynapseConstants } from 'synapse-react-client'
 import { SynapseConfig } from 'types/portal-config'
 import { GenericCardSchema } from 'synapse-react-client/dist/containers/GenericCard'
-import {
-  CardConfiguration,
-  CardContainerLogicProps,
-} from 'synapse-react-client/dist/containers/CardContainerLogic'
+import { CardConfiguration } from 'synapse-react-client/dist/containers/CardContainerLogic'
 import columnAliases from '../columnAliases'
 import { toolsSql } from '../resources'
 import { ColumnSingleValueFilterOperator } from 'synapse-react-client/dist/utils/synapseTypes/Table/QueryFilter'
@@ -61,11 +58,15 @@ export const tools: SynapseConfig = {
   },
 }
 
-export const toolsDetailPageProps: CardContainerLogicProps = {
-  sql: toolsSql,
-  ...toolsCardConfiguration,
-  sqlOperator: ColumnSingleValueFilterOperator.LIKE,
-  columnAliases,
+export const toolsDetailPageProps: SynapseConfig = {
+  name: 'CardContainerLogic',
+  props: {
+    sql: toolsSql,
+    ...toolsCardConfiguration,
+    columnAliases,
+  },
+  addAdditionalFiltersUsingURLSearchParams:
+    ColumnSingleValueFilterOperator.LIKE,
 }
 
 export const toolsDetailsLandingPage: SynapseConfig[] = [

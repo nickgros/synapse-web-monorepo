@@ -1,9 +1,5 @@
-import React from 'react'
-import {
-  generateQueryFilterFromSearchParams,
-  parseEntityIdFromSqlStatement,
-  SQLOperator,
-} from '../../utils/functions/sqlFunctions'
+import React, { useMemo } from 'react'
+import { parseEntityIdFromSqlStatement } from '../../utils/functions/sqlFunctions'
 import SynapseTable, { SynapseTableProps } from './SynapseTable'
 import { QueryBundleRequest } from '../../utils/synapseTypes'
 import { SynapseConstants } from '../../utils'
@@ -25,18 +21,11 @@ import { isTable } from '../../utils/functions/EntityTypeUtils'
 import LastUpdatedOn from '../query_wrapper_plot_nav/LastUpdatedOn'
 import { NoContentPlaceholderType } from './NoContentPlaceholderType'
 import { DEFAULT_PAGE_SIZE } from '../../utils/SynapseConstants'
-
-type SearchParams = {
-  searchParams?: {
-    facetValue: string
-  }
-}
-export type Operator = {
-  sqlOperator?: SQLOperator
-}
+import { QueryFilter } from '../../utils/synapseTypes/Table/QueryFilter'
 
 type OwnProps = {
   sql: string
+  additionalFilters?: QueryFilter[]
   showTopLevelControls?: boolean
   searchConfiguration?: Omit<
     SearchV2Props,
@@ -58,8 +47,6 @@ export type StandaloneQueryWrapperProps = Partial<
     'synapseContext' | 'queryContext' | 'queryVisualizationContext'
   >
 > &
-  SearchParams &
-  Operator &
   OwnProps
 
 const generateInitQueryRequest = (sql: string): QueryBundleRequest => {
@@ -89,10 +76,9 @@ const StandaloneQueryWrapper: React.FunctionComponent<
 > = (props: StandaloneQueryWrapperProps) => {
   const {
     title,
-    searchParams,
-    sqlOperator,
     showAccessColumn,
     sql,
+    additionalFilters,
     hideDownload,
     hideQueryCount,
     name,
@@ -107,12 +93,14 @@ const StandaloneQueryWrapper: React.FunctionComponent<
     ...rest
   } = props
 
-  const derivedQueryRequestFromSearchParams = generateInitQueryRequest(sql)
-
-  if (searchParams) {
-    derivedQueryRequestFromSearchParams.query.additionalFilters =
-      generateQueryFilterFromSearchParams(searchParams, sqlOperator)
-  }
+  const derivedQueryRequestFromSearchParams: QueryBundleRequest =
+    useMemo(() => {
+      const query = generateInitQueryRequest(sql)
+      if (additionalFilters) {
+        query.query.additionalFilters = additionalFilters
+      }
+      return query
+    }, [sql, additionalFilters])
 
   const synapseContext = useSynapseContext()
   const entityId = parseEntityIdFromSqlStatement(sql)

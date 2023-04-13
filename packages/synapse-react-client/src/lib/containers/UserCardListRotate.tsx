@@ -1,9 +1,5 @@
 import React, { useState } from 'react'
-import {
-  generateQueryFilterFromSearchParams,
-  parseEntityIdFromSqlStatement,
-  SQLOperator,
-} from '../utils/functions/sqlFunctions'
+import { parseEntityIdFromSqlStatement } from '../utils/functions/sqlFunctions'
 import { SynapseClient, SynapseConstants } from '../utils'
 import {
   FacetColumnRequest,
@@ -18,20 +14,20 @@ import { Button } from 'react-bootstrap'
 import { useSynapseContext } from '../utils/SynapseContext'
 import { LoadingUserCardMedium } from './UserCardMedium'
 import { useDeepCompareEffectNoCheck } from 'use-deep-compare-effect'
+import { QueryFilter } from '../utils/synapseTypes/Table/QueryFilter'
 
 const STORED_UID_KEY = 'sage_rotate_uids'
 const DEFAULT_DISPLAY_COUNT = 3
 
 export type UserCardListRotateProps = {
   sql: string
+  additionalFilters?: QueryFilter[]
   count: number
   useQueryResultUserData?: boolean
   size?: UserCardSize
   summaryLink?: string
   summaryLinkText?: string
   selectedFacets?: FacetColumnRequest[]
-  sqlOperator?: SQLOperator
-  searchParams?: Record<string, string>
 }
 
 export const getDisplayIds = (
@@ -71,14 +67,13 @@ export const getDisplayIds = (
 
 const UserCardListRotate: React.FunctionComponent<UserCardListRotateProps> = ({
   sql,
+  additionalFilters,
   count,
   useQueryResultUserData = false,
   size = LARGE_USER_CARD,
   summaryLink,
   summaryLinkText,
   selectedFacets,
-  searchParams,
-  sqlOperator,
 }) => {
   const { accessToken } = useSynapseContext()
   const [userIds, setUserIds] = useState<string[]>([])
@@ -91,10 +86,6 @@ const UserCardListRotate: React.FunctionComponent<UserCardListRotateProps> = ({
   useDeepCompareEffectNoCheck(() => {
     const fetchData = async function () {
       setIsLoading(true)
-      const additionalFilters = generateQueryFilterFromSearchParams(
-        searchParams,
-        sqlOperator,
-      )
       const entityId = parseEntityIdFromSqlStatement(sql)
       const partMask = SynapseConstants.BUNDLE_MASK_QUERY_RESULTS
       const request: QueryBundleRequest = {
@@ -138,7 +129,7 @@ const UserCardListRotate: React.FunctionComponent<UserCardListRotateProps> = ({
     return () => {
       mounted = false
     }
-  }, [sql, selectedFacets, count, accessToken, searchParams, sqlOperator])
+  }, [sql, selectedFacets, count, accessToken, additionalFilters])
 
   return (
     <div className="UserCardListRotate bootstrap-4-backport">
