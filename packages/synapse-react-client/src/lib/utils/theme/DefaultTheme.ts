@@ -1,10 +1,12 @@
 import { ThemeOptions } from '@mui/material/styles'
 import { typographyOptions } from './typography/Typography'
 import palette from './palette/Palettes'
-import { Fade } from '@mui/material'
+import { alpha, Fade } from '@mui/material'
 import linkTheme from './typography/Link'
 
-const defaultMuiTheme: ThemeOptions = {
+const DIALOG_INNER_PADDING = '2px'
+
+const defaultMuiThemeOptions: ThemeOptions = {
   typography: typographyOptions,
   palette: palette,
   components: {
@@ -31,8 +33,8 @@ const defaultMuiTheme: ThemeOptions = {
         root: {
           fontWeight: 900,
           padding: '6px 12px',
-          borderRadius: '0px',
-          textTransform: 'none',
+          borderRadius: '3px',
+          textTransform: 'capitalize',
           '&:hover': {
             transition: '0.2s',
           },
@@ -55,36 +57,77 @@ const defaultMuiTheme: ThemeOptions = {
     MuiDialog: {
       defaultProps: {
         PaperProps: {
-          sx: {
+          sx: theme => ({
             borderRadius: '0px',
-            padding: '35px',
+            padding: theme.spacing(5.5),
             alignSelf: 'flex-start',
-          },
+          }),
         },
       },
     },
     MuiDialogTitle: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderBottom: `1px solid ${theme.palette.grey[300]}`,
-          padding: '0px 0px 20px',
-          marginBottom: '20px',
+          fontSize: '24px',
+          fontWeight: 700,
+          paddingLeft: '0px',
+          paddingRight: '0px',
+          paddingBottom: theme.spacing(3),
         }),
       },
     },
     MuiDialogContent: {
+      defaultProps: {
+        dividers: true,
+      },
       styleOverrides: {
-        root: {
-          padding: '0px',
-        },
+        root: ({ ownerState, theme }) => ({
+          color: theme.palette.text.secondary,
+          paddingTop: ownerState.dividers ? theme.spacing(3) : 0,
+          paddingBottom: ownerState.dividers ? theme.spacing(3) : 0,
+          // Hack - set add a small padding and offset with a negative margin so box-shadow effects on full width elements (like input fields) are shown
+          paddingLeft: DIALOG_INNER_PADDING,
+          paddingRight: DIALOG_INNER_PADDING,
+          marginLeft: `-${DIALOG_INNER_PADDING}`,
+          marginRight: `-${DIALOG_INNER_PADDING}`,
+          // Add a filter on the `dividers` borders so that the borders are transparent on the edges based on the DIALOG_INNER_PADDING length
+          borderImage: ownerState.dividers
+            ? `linear-gradient(to right, transparent 0px, transparent ${DIALOG_INNER_PADDING}, ${theme.palette.grey[400]} ${DIALOG_INNER_PADDING}, ${theme.palette.grey[400]} calc(100% - ${DIALOG_INNER_PADDING}), transparent calc(100% - ${DIALOG_INNER_PADDING})) 1`
+            : undefined,
+        }),
       },
     },
     MuiDialogActions: {
       styleOverrides: {
         root: ({ theme }) => ({
-          padding: '20px 0px 0px',
-          marginTop: '20px',
-          borderTop: `1px solid ${theme.palette.grey[300]}`,
+          paddingLeft: '0px',
+          paddingRight: '0px',
+          paddingTop: theme.spacing(3),
+          '& .MuiButton-root': {
+            height: '36px',
+            padding: '0px 16px',
+          },
+        }),
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: '3px',
+          fontSize: '14px',
+          position: 'relative',
+          backgroundColor: theme.palette.grey[200],
+          border: 'none',
+          '&.Mui-focused': {
+            boxShadow: `${alpha(
+              theme.palette.primary.main,
+              0.25,
+            )} 0 0 0 0.1rem`,
+            borderColor: theme.palette.primary.main,
+          },
+        }),
+        input: ({ theme }) => ({
+          padding: '14px 12px',
         }),
       },
     },
@@ -138,6 +181,8 @@ const defaultMuiTheme: ThemeOptions = {
       },
     },
   },
+  styledBackground:
+    "url('https://s3.amazonaws.com/static.synapse.org/images/SynapseLoginPageBackground.svg')",
 }
 
-export default defaultMuiTheme
+export default defaultMuiThemeOptions

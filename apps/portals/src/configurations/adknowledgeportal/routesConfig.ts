@@ -32,6 +32,7 @@ import {
   experimentalModelsSql,
   modelADStrainsSelectedFacet,
 } from './resources'
+import { ColumnSingleValueFilterOperator } from 'synapse-react-client/dist/utils/synapseTypes/Table/QueryFilter'
 
 const routes: GenericRoute[] = [
   {
@@ -179,7 +180,7 @@ const routes: GenericRoute[] = [
           size: SynapseConstants.MEDIUM_USER_CARD,
           useQueryResultUserData: true,
           summaryLink: 'Explore/People',
-          summaryLinkText: 'EXPLORE ALL PEOPLE',
+          summaryLinkText: 'Explore All People',
         },
       },
       {
@@ -277,7 +278,7 @@ const routes: GenericRoute[] = [
                 props: {
                   sql: programsSql,
                   isHeader: true,
-                  sqlOperator: '=',
+                  sqlOperator: ColumnSingleValueFilterOperator.EQUAL,
                   ...programCardConfiguration,
                   genericCardSchema: {
                     ...programCardConfiguration.genericCardSchema!,
@@ -509,7 +510,7 @@ const routes: GenericRoute[] = [
         props: {
           ownerId: 'syn22300949',
           wikiId: '604940',
-          loadingSkeletonRowCount: 10
+          loadingSkeletonRowCount: 10,
         },
       },
     ],
@@ -524,7 +525,7 @@ const routes: GenericRoute[] = [
         props: {
           ownerId: 'syn12666371',
           wikiId: '581937',
-          loadingSkeletonRowCount: 20
+          loadingSkeletonRowCount: 20,
         },
       },
     ],
@@ -546,16 +547,7 @@ const routes: GenericRoute[] = [
             props: {
               ownerId: 'syn12666371',
               wikiId: '600033',
-              loadingSkeletonRowCount: 20
-            },
-          },
-          {
-            name: 'SynapseFormSubmissionsGrid',
-            props: {
-              pathpart: '/Contribute/FormSubmission',
-              formGroupId: '11',
-              itemNoun: 'contribution-request',
-              formClass: 'contribution-request',
+              loadingSkeletonRowCount: 20,
             },
           },
         ],
@@ -599,7 +591,7 @@ const routes: GenericRoute[] = [
         props: {
           wikiId: '581939',
           ownerId: 'syn12666371',
-          loadingSkeletonRowCount: 20
+          loadingSkeletonRowCount: 20,
         },
       },
     ],

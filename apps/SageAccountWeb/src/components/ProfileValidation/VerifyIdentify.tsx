@@ -4,9 +4,8 @@ import { VerificationSubmission } from 'synapse-react-client/dist/utils/synapseT
 import CheckIcon from '@mui/icons-material/Check'
 //agendelTODO: mobe to sage account page
 //import { UnbindORCiDDialog } from 'components/ProfileValidation/UnbindORCiD'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import { ContinueButton } from './ContinueButton'
-import theme from 'style/theme'
 
 import { ReturnToAppButton } from './ReturnToAppButton'
 
@@ -16,6 +15,7 @@ export type VerifyIdentifyProps = {
 }
 
 export const VerifyIdentify = (props: VerifyIdentifyProps) => {
+  const theme = useTheme()
   const { verificationSubmission } = props
   const [attachments] = useState(verificationSubmission.attachments)
 
@@ -30,7 +30,7 @@ export const VerifyIdentify = (props: VerifyIdentifyProps) => {
           <>
             <Typography
               style={{ display: 'flex', marginTop: theme.spacing(5) }}
-              variant="body2"
+              variant="body1"
             >
               <CheckIcon style={{ color: '#32A330', marginRight: '8px' }} />
               Profile linked successfully {/*verificationSubmission.orcid*/}

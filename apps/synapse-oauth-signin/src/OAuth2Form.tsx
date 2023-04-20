@@ -1,7 +1,4 @@
-import { useOAuthAppContext } from 'AppInitializer'
-import { OAuthClientError } from 'OAuthClientError'
-import * as React from 'react'
-import { useEffect, useState, useRef, useCallback } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   SynapseClient,
   SynapseConstants,
@@ -18,30 +15,39 @@ import { OAuthClientPublic } from 'synapse-react-client/dist/utils/synapseTypes/
 import { OIDCAuthorizationRequest } from 'synapse-react-client/dist/utils/synapseTypes/OIDCAuthorizationRequest'
 import { OIDCAuthorizationRequestDescription } from 'synapse-react-client/dist/utils/synapseTypes/OIDCAuthorizationRequestDescription'
 import { getStateParam, getURLParam, handleErrorRedirect } from './URLUtils'
-import { Paper, Button, Link } from '@mui/material'
-import { StyledInnerContainer } from 'StyledInnerContainer'
+import { Button, Link, Paper } from '@mui/material'
 import FullWidthAlert from 'synapse-react-client/dist/containers/FullWidthAlert'
+import { OAuthClientError } from './OAuthClientError'
+import { StyledInnerContainer } from './StyledInnerContainer'
+import {
+  preparePostSSORedirect,
+  redirectAfterSSO,
+} from 'synapse-react-client/dist/utils/AppUtils'
+import { useApplicationSessionContext } from 'synapse-react-client/dist/utils/apputils/session/ApplicationSessionContext'
+import { useHistory } from 'react-router-dom'
+import { useSynapseContext } from 'synapse-react-client/dist/utils/SynapseContext'
 
-export const OAuth2Form = () => {
+export function OAuth2Form() {
   const isMounted = useRef(true)
 
-  const { accessToken, setAccessToken } = useOAuthAppContext()
+  const { accessToken } = useSynapseContext()
+  const { refreshSession, twoFactorAuthSSOErrorResponse, clearSession } =
+    useApplicationSessionContext()
+  const history = useHistory()
+
   const [error, setError] = useState<any>()
 
   const onError = useCallback(
     (error: Error | OAuthClientError | SynapseClientError) => {
-      debugger
       if (error instanceof SynapseClientError && error.status === 401) {
         // invalid token, so clear it
-        SynapseClient.signOut().then(() => {
-          setAccessToken(undefined)
-        })
+        clearSession()
       } else {
         handleErrorRedirect(error)
         setError(error)
       }
     },
-    [setAccessToken],
+    [clearSession],
   )
 
   // In addition to fetching the current user profile, the success of this request will determine if the current access token is valid.
@@ -61,29 +67,6 @@ export const OAuth2Form = () => {
   const [isPreviousAuthCheckComplete, setIsPreviousAuthCheckComplete] =
     useState<boolean>(false)
   const [isConsenting, setIsConsenting] = useState<boolean>(false)
-
-  useEffect(() => {
-    isMounted.current = true
-    return () => {
-      isMounted.current = false
-    }
-  })
-
-  const getSession = useCallback(async () => {
-    try {
-      const newAccessToken = await SynapseClient.getAccessTokenFromCookie()
-      if (isMounted.current) {
-        setAccessToken(newAccessToken)
-      }
-    } catch (e) {
-      console.error('Error on getSession: ', e)
-      // intentionally calling sign out because the token could be stale so we want
-      // the stored session to be cleared out.
-      await SynapseClient.signOut().then(() => {
-        setAccessToken(undefined)
-      })
-    }
-  }, [setAccessToken])
 
   const sendGTagEvent = (event: string) => {
     // send event to Google Analytics
@@ -107,7 +90,7 @@ export const OAuth2Form = () => {
     let isSubscribed = true
     if (isConsenting) {
       sendGTagEvent('UserConsented')
-      let request: OIDCAuthorizationRequest =
+      const request: OIDCAuthorizationRequest =
         getOIDCAuthorizationRequestFromSearchParams()
       SynapseClient.consentToOAuth2Request(request, accessToken)
         .then((accessCode: AccessCodeResponse) => {
@@ -181,7 +164,7 @@ export const OAuth2Form = () => {
             )
           }
         })
-        .catch(_err => {
+        .catch((_err: Error | OAuthClientError | SynapseClientError) => {
           onError(_err)
         })
         .finally(() => {
@@ -198,7 +181,7 @@ export const OAuth2Form = () => {
       const code = getURLParam('code')
       if (code) return // we're in the middle of a SSO, do not attempt to get OAuth2RequestDescription yet
 
-      let request: OIDCAuthorizationRequest =
+      const request: OIDCAuthorizationRequest =
         getOIDCAuthorizationRequestFromSearchParams()
       SynapseClient.getOAuth2RequestDescription(request)
         .then((oidcRequestDescription: OIDCAuthorizationRequestDescription) => {
@@ -286,12 +269,32 @@ export const OAuth2Form = () => {
     }
   }, [redirectURL])
 
+  const isLoadingProfile =
+    !twoFactorAuthSSOErrorResponse &&
+    !error &&
+    profile &&
+    !isPreviousAuthCheckComplete
+  const isLoadingClientInfo =
+    !error && !oauthClientInfo && !oidcRequestDescription
+  const isRedirecting = redirectURL && oauthClientInfo
+  const promptForTwoFactorAuth = !!twoFactorAuthSSOErrorResponse
+
+  const isLoading =
+    !promptForTwoFactorAuth &&
+    (isLoadingProfile || isLoadingClientInfo || isRedirecting)
+
   const loadingSpinner = (
-    <div style={{ textAlign: 'center' }}>
+    <Paper
+      sx={{
+        mx: 'auto',
+        width: '500px',
+        height: '250px',
+        textAlign: 'center',
+        p: 4,
+      }}
+    >
       <div style={{ marginTop: '50px' }}>
-        {redirectURL && oauthClientInfo && (
-          <p>Waiting for {oauthClientInfo.client_name}...</p>
-        )}
+        {isRedirecting && <p>Waiting for {oauthClientInfo?.client_name}...</p>}
         <span
           style={{
             marginLeft: '10px',
@@ -302,29 +305,22 @@ export const OAuth2Form = () => {
           className={'spinner'}
         />
       </div>
-    </div>
+    </Paper>
   )
 
-  const isLoading =
-    (!error && !oauthClientInfo && !oidcRequestDescription) ||
-    (redirectURL && oauthClientInfo) ||
-    (!error && profile && !isPreviousAuthCheckComplete)
-
   return (
-    <div>
+    <StyledOuterContainer>
       {!error && oauthClientInfo && !oauthClientInfo.verified && (
-        <StyledOuterContainer>
-          <FullWidthAlert
-            variant="warning"
-            title="This app is not verified"
-            description="This app has not been verified by Sage Bionetworks yet."
-            primaryButtonConfig={{
-              text: 'Back to Safety',
-              onClick: onGoBack,
-            }}
-            isGlobal={false}
-          />
-        </StyledOuterContainer>
+        <FullWidthAlert
+          variant="warning"
+          title="This app is not verified"
+          description="This app has not been verified by Sage Bionetworks yet."
+          primaryButtonConfig={{
+            text: 'Back to Safety',
+            onClick: onGoBack,
+          }}
+          isGlobal={false}
+        />
       )}
       {!redirectURL &&
         !error &&
@@ -334,101 +330,96 @@ export const OAuth2Form = () => {
         oauthClientInfo &&
         oauthClientInfo.verified &&
         oidcRequestDescription && (
-          <StyledOuterContainer>
-            <StyledInnerContainer>
-              <UserCard
-                userProfile={profile}
-                size={SynapseConstants.SMALL_USER_CARD}
-              />
-              <Typography
-                variant="headline3"
-                sx={{ paddingTop: '25px', paddingBottom: '25px' }}
-              >
-                <strong>{oauthClientInfo.client_name}</strong> requests
-                permission:
-              </Typography>
-              {oidcRequestDescription && (
-                <ul>
-                  {oidcRequestDescription.scope.map((scope, index) => {
-                    return (
-                      <li key={index}>
-                        <Typography variant="body1">{scope}</Typography>
-                      </li>
-                    )
-                  })}
-                </ul>
-              )}
-              <div className="margin-top-20">
-                <Typography variant="body1">
-                  By clicking <strong>Allow</strong>, you allow this app to use
-                  your information in accordance with their{' '}
-                  <Link
-                    href={oauthClientInfo.tos_uri}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    terms of service
-                  </Link>{' '}
-                  and{' '}
-                  <Link
-                    href={oauthClientInfo.policy_uri}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    privacy policy
-                  </Link>
-                  .
-                </Typography>
-              </div>
-              <div className="text-align-right margin-top-40">
-                <Button
-                  variant="outlined"
-                  onClick={onDeny}
-                  sx={{ marginRight: '10px' }}
+          <StyledInnerContainer>
+            <UserCard
+              userProfile={profile}
+              size={SynapseConstants.SMALL_USER_CARD}
+            />
+            <Typography
+              variant="headline3"
+              sx={{ paddingTop: '25px', paddingBottom: '25px' }}
+            >
+              <strong>{oauthClientInfo.client_name}</strong> requests
+              permission:
+            </Typography>
+            {oidcRequestDescription && (
+              <ul>
+                {oidcRequestDescription.scope.map((scope, index) => {
+                  return (
+                    <li key={index}>
+                      <Typography variant="body1">{scope}</Typography>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+            <div className="margin-top-20">
+              <Typography variant="body1">
+                By clicking <strong>Allow</strong>, you allow this app to use
+                your information in accordance with their{' '}
+                <Link
+                  href={oauthClientInfo.tos_uri}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  Deny
-                </Button>
-                <Button variant="contained" color="primary" onClick={onConsent}>
-                  Allow
-                </Button>
-              </div>
-            </StyledInnerContainer>
-          </StyledOuterContainer>
+                  terms of service
+                </Link>{' '}
+                and{' '}
+                <Link
+                  href={oauthClientInfo.policy_uri}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  privacy policy
+                </Link>
+                .
+              </Typography>
+            </div>
+            <div className="text-align-right margin-top-40">
+              <Button
+                variant="outlined"
+                onClick={onDeny}
+                sx={{ marginRight: '10px' }}
+              >
+                Deny
+              </Button>
+              <Button variant="contained" color="primary" onClick={onConsent}>
+                Allow
+              </Button>
+            </div>
+          </StyledInnerContainer>
         )}
       {isLoading && loadingSpinner}
-      {!redirectURL &&
-        !error &&
-        !accessToken &&
-        oauthClientInfo &&
-        oauthClientInfo.verified &&
-        oidcRequestDescription && (
-          <StyledOuterContainer>
-            <Paper sx={{ width: '400px', padding: '30px', margin: '0 auto' }}>
-              <StandaloneLoginForm
-                sessionCallback={() => {
-                  getSession()
-                }}
-                onBeginOAuthSignIn={() => {
-                  // save current route (so that we can go back here after SSO)
-                  localStorage.setItem(
-                    'after-sso-login-url',
-                    window.location.href,
-                  )
-                }}
-              />
-            </Paper>
-          </StyledOuterContainer>
-        )}
-      {error && (
-        <StyledOuterContainer>
-          <FullWidthAlert
-            variant="danger"
-            title={error.name || 'Error'}
-            description={`${error.reason} : ${error.message}`}
-            isGlobal={false}
+      {(!!twoFactorAuthSSOErrorResponse ||
+        (!redirectURL &&
+          !error &&
+          !accessToken &&
+          oauthClientInfo &&
+          oauthClientInfo.verified &&
+          oidcRequestDescription)) && (
+        <Paper sx={{ width: '400px', py: 8, px: 4, margin: '0 auto' }}>
+          <StandaloneLoginForm
+            onBeginOAuthSignIn={() => {
+              // save current route (so that we can go back here after SSO)
+              preparePostSSORedirect()
+            }}
+            sessionCallback={() => {
+              refreshSession().then(() => {
+                redirectAfterSSO(history)
+              })
+            }}
+            twoFactorAuthenticationRequired={twoFactorAuthSSOErrorResponse}
           />
-        </StyledOuterContainer>
+        </Paper>
       )}
-    </div>
+      {error && (
+        <FullWidthAlert
+          variant="danger"
+          title={error.name || 'Error'}
+          description={`${error.reason} : ${error.message}`}
+          isGlobal={false}
+        />
+      )}
+    </StyledOuterContainer>
   )
 }

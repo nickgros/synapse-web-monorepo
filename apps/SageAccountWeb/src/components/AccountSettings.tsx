@@ -5,8 +5,9 @@ import {
   Container,
   Box,
   Grid,
-  Select,
   MenuItem,
+  ListItemButton,
+  Paper,
 } from '@mui/material'
 import {
   UserBundle,
@@ -30,13 +31,35 @@ import { useLocation } from 'react-router-dom'
 import { ConfigureEmail } from './ConfigureEmail'
 import { UnbindORCiDDialog } from './ProfileValidation/UnbindORCiD'
 import UniversalCookies from 'universal-cookie'
-import { DATETIME_UTC_COOKIE_KEY } from 'synapse-react-client/dist/utils/SynapseConstants'
+import {
+  DATETIME_UTC_COOKIE_KEY,
+  URL_TERMS_CONDITIONS_AGREEMENT,
+} from 'synapse-react-client/dist/utils/SynapseConstants'
 import { getUseUtcTimeFromCookie } from 'synapse-react-client/dist/utils/SynapseClient'
 import { StyledFormControl } from './StyledComponents'
 import { ProfileAvatar } from './ProfileAvatar'
 import { InputLabel } from '@mui/material'
 import { TextField } from '@mui/material'
 import { useSourceAppConfigs } from './SourceApp'
+import TwoFactorAuthSettingsPanel from 'synapse-react-client/dist/containers/auth/TwoFactorAuthSettingsPanel'
+import SRCTextField from 'synapse-react-client/dist/containers/TextField'
+const CompletionStatus: React.FC<{ isComplete: boolean | undefined }> = ({
+  isComplete,
+}) => {
+  return (
+    <div className="item-completion">
+      {isComplete ? (
+        <span className="completeIcon">
+          <IconSvg icon="check" /> Completed
+        </span>
+      ) : (
+        <span className="incompleteIcon">
+          <IconSvg icon="close" /> Incomplete
+        </span>
+      )}
+    </div>
+  )
+}
 
 export const AccountSettings = () => {
   const { accessToken } = useSynapseContext()
@@ -65,6 +88,7 @@ export const AccountSettings = () => {
   const timezoneRef = useRef<HTMLDivElement>(null)
   const emailAddressesRef = useRef<HTMLDivElement>(null)
   const trustCredentialRef = useRef<HTMLDivElement>(null)
+  const twoFactorAuthRef = useRef<HTMLDivElement>(null)
   const personalAccessTokenRef = useRef<HTMLDivElement>(null)
   const cookies = new UniversalCookies()
   const [isUTCTime, setUTCTime] = useState<string>(
@@ -161,42 +185,51 @@ export const AccountSettings = () => {
   }
 
   return (
-    <>
+    <div className="account-settings-page">
       <AccountSettingsTopBar />
       <div className="panel-wrapper-bg with-account-setting">
         <Container maxWidth="md">
-          <Box sx={{ display: 'flex' }}>
-            <nav className="account-setting-panel nav-panel">
-              <MenuItem onClick={() => handleScroll(profileInformationRef)}>
+          <Box sx={{ display: 'flex', my: '60px' }}>
+            <Paper component="nav" className="account-setting-panel nav-panel">
+              <ListItemButton
+                onClick={() => handleScroll(profileInformationRef)}
+              >
                 Profile Information
-              </MenuItem>
-              <MenuItem onClick={() => handleScroll(emailAddressesRef)}>
+              </ListItemButton>
+              <ListItemButton onClick={() => handleScroll(emailAddressesRef)}>
                 Email Addresses
-              </MenuItem>
-              <MenuItem onClick={() => handleScroll(changePasswordRef)}>
+              </ListItemButton>
+              <ListItemButton onClick={() => handleScroll(changePasswordRef)}>
                 Change Password
-              </MenuItem>
-              <MenuItem onClick={() => handleScroll(timezoneRef)}>
+              </ListItemButton>
+              <ListItemButton onClick={() => handleScroll(timezoneRef)}>
                 Date/Time Format
-              </MenuItem>
-              <MenuItem onClick={() => handleScroll(trustCredentialRef)}>
+              </ListItemButton>
+              <ListItemButton onClick={() => handleScroll(trustCredentialRef)}>
                 Trust & Credentials
-              </MenuItem>
-              <MenuItem onClick={() => handleScroll(personalAccessTokenRef)}>
+              </ListItemButton>
+              <ListItemButton onClick={() => handleScroll(twoFactorAuthRef)}>
+                Two-factor Authentication (2FA)
+              </ListItemButton>
+              <ListItemButton
+                onClick={() => handleScroll(personalAccessTokenRef)}
+              >
                 Personal Access Tokens
-              </MenuItem>
-            </nav>
+              </ListItemButton>
+            </Paper>
 
             <div>
-              <div
+              <Paper
                 ref={profileInformationRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Profile Information</h3>
-                <p>
+                <Typography variant={'headline2'}>
+                  Profile Information
+                </Typography>
+                <Typography variant={'body1'}>
                   This information is reused across all{' '}
                   <RouterLink to="/sageresources">Sage products.</RouterLink>
-                </p>
+                </Typography>
                 <ProfileAvatar
                   userProfile={userProfile}
                   onProfileUpdated={() => {
@@ -366,265 +399,273 @@ export const AccountSettings = () => {
                       })}
                     </Grid>
                   </StyledFormControl>
-                  <StyledFormControl
+                  <SRCTextField
                     fullWidth
-                    variant="standard"
                     margin="normal"
-                    sx={{}}
-                  >
-                    <InputLabel shrink htmlFor="bio">
-                      Bio
-                    </InputLabel>
-                    <TextField
-                      id="bio"
-                      name="bio"
-                      fullWidth
-                      multiline
-                      onChange={e => setBio(e.target.value)}
-                      value={bio}
-                    />
-                  </StyledFormControl>
-                  <Button
-                    onClick={updateUserProfile}
-                    disabled={!changeInForm}
-                    variant="contained"
-                  >
-                    Save Changes
-                  </Button>
+                    label="Bio"
+                    id="bio"
+                    name="bio"
+                    multiline
+                    rows={5}
+                    onChange={e => setBio(e.target.value)}
+                    value={bio}
+                  />
+                  <div className="primary-button-container">
+                    <Button
+                      onClick={() => {
+                        updateUserProfile()
+                      }}
+                      disabled={!changeInForm}
+                      variant="contained"
+                    >
+                      Save Changes
+                    </Button>
+                  </div>
                 </Form>
-              </div>
-              <div
+              </Paper>
+              <Paper
                 ref={emailAddressesRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Email Addresses</h3>
+                <Typography variant={'headline2'}>Email Addresses</Typography>
                 <ConfigureEmail returnToPath="authenticated/myaccount" />
-              </div>
-              <div
+              </Paper>
+              <Paper
                 ref={changePasswordRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Change Password</h3>
+                <Typography variant={'headline2'}>Change Password</Typography>
                 <ChangePassword />
-              </div>
-              <div
+              </Paper>
+              <Paper
                 ref={timezoneRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Date/Time Format</h3>
-                <StyledFormControl fullWidth>
-                  <Select
-                    labelId="timezone-select-label"
+                <Typography variant={'headline2'}>Date/Time Format</Typography>
+                <StyledFormControl
+                  fullWidth
+                  variant="standard"
+                  margin="normal"
+                  sx={{ marginBottom: '10px' }}
+                >
+                  <InputLabel shrink htmlFor="timezone-select">
+                    Choose a format
+                  </InputLabel>
+                  <TextField
                     id="timezone-select"
                     value={isUTCTimeStaged}
+                    fullWidth
+                    select
                     onChange={event => {
                       setUTCTimeStaged(event.target.value)
                     }}
                   >
-                    <MenuItem value="false">Local</MenuItem>
-                    <MenuItem value="true">UTC</MenuItem>
-                  </Select>
+                    <MenuItem value="false" sx={{ fontSize: '14px' }}>
+                      Local
+                    </MenuItem>
+                    <MenuItem value="true" sx={{ fontSize: '14px' }}>
+                      UTC
+                    </MenuItem>
+                  </TextField>
                 </StyledFormControl>
-                <Button
-                  disabled={isUTCTimeStaged === isUTCTime}
-                  variant="contained"
-                  sx={{
-                    ...credentialButtonSX,
-                    marginTop: '15px',
-                  }}
-                  onClick={() => setUTCTime(isUTCTimeStaged)}
-                >
-                  Update Preference
-                </Button>
-              </div>
+                <div className="primary-button-container">
+                  <Button
+                    disabled={isUTCTimeStaged === isUTCTime}
+                    variant="contained"
+                    sx={{ credentialButtonSX }}
+                    onClick={() => setUTCTime(isUTCTimeStaged)}
+                  >
+                    Update Preference
+                  </Button>
+                </div>
+              </Paper>
 
-              <div
+              <Paper
                 ref={trustCredentialRef}
                 className="account-setting-panel main-panel"
               >
-                <h3>Trust & Credentials</h3>
-                <p>
+                <Typography variant={'headline2'}>
+                  Trust & Credentials
+                </Typography>
+                <Typography variant={'body1'}>
                   This section lists the various ways we support verifying your
                   trust and identity in order to permit access to our products.
                   You may be asked to complete any of the following as part of
                   requesting access within a system.
-                </p>
+                </Typography>
                 <div className="credential-partition">
                   <h4>Terms and Conditions for Use</h4>
-                  <i>Required to register</i>
-                  <p>
+                  <CompletionStatus isComplete={termsOfUse} />
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
+                    <i>Required to register</i>
+                  </Typography>
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
                     You must affirm your agreement to follow these terms and
                     conditions in order to create an account.{' '}
-                  </p>
-                  <div className="item-completion">
-                    {termsOfUse ? (
-                      <span className="completeIcon">
-                        <IconSvg icon="check" /> Completed
-                      </span>
-                    ) : (
-                      <span className="incompleteIcon">
-                        <IconSvg icon="close" /> Incomplete
-                      </span>
-                    )}
+                  </Typography>
+                  <div className="primary-button-container">
+                    <Button
+                      disabled={termsOfUse}
+                      variant="outlined"
+                      sx={credentialButtonSX}
+                      onClick={() => handleChangesFn('signTermsOfUse')}
+                    >
+                      Agree to Terms and Conditions
+                    </Button>
+                    <Link href={URL_TERMS_CONDITIONS_AGREEMENT} target="_blank">
+                      More information
+                    </Link>
                   </div>
-                  <Button
-                    disabled={termsOfUse}
-                    variant="outlined"
-                    sx={credentialButtonSX}
-                    onClick={() => handleChangesFn('signTermsOfUse')}
-                  >
-                    Agree to Terms and Conditions
-                  </Button>
-                  <Link
-                    href="https://s3.amazonaws.com/static.synapse.org/governance/SageBionetworksSynapseTermsandConditionsofUse.pdf?v=5"
-                    target="_blank"
-                  >
-                    More information
-                  </Link>
                 </div>
                 <div className="credential-partition">
                   <h4>Certification</h4>
-                  <i>Required to upload data.</i>
-                  <p>
+                  <CompletionStatus isComplete={isCertified} />
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
+                    <i>Required to upload data.</i>
+                  </Typography>
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
                     There are times where human data can only be shared with
                     certain restrictions. In order to upload data on any
                     application, you must pass a quiz on the technical and
                     ethical aspects of sharing data in our system.
-                  </p>
-                  <div className="item-completion">
-                    {isCertified ? (
-                      <span className="completeIcon">
-                        <IconSvg icon="check" /> Completed
-                      </span>
-                    ) : (
-                      <span className="incompleteIcon">
-                        <IconSvg icon="close" /> Incomplete
-                      </span>
-                    )}
+                  </Typography>
+                  <div className="primary-button-container">
+                    <Button
+                      disabled={isCertified}
+                      variant="outlined"
+                      sx={credentialButtonSX}
+                      onClick={() => handleChangesFn('certificationquiz')}
+                    >
+                      Take the certification quiz
+                    </Button>
+                    <Link
+                      href="https://help.synapse.org/docs/User-Types.2007072795.html#UserAccountTiers-CertifiedUsers"
+                      target="_blank"
+                    >
+                      More information
+                    </Link>
                   </div>
-
-                  <Button
-                    disabled={isCertified}
-                    variant="outlined"
-                    sx={credentialButtonSX}
-                    onClick={() => handleChangesFn('certificationquiz')}
-                  >
-                    Take the certification quiz
-                  </Button>
-                  <Link
-                    href="https://help.synapse.org/docs/User-Types.2007072795.html#UserAccountTiers-CertifiedUsers"
-                    target="_blank"
-                  >
-                    More information
-                  </Link>
                 </div>
                 <div className="credential-partition">
                   <h4>ORCID Profile</h4>
-                  <i>
-                    Linking your ORCID profile is useful for other researchers,
-                    and is required for profile validation.
-                  </i>
                   <div className="item-completion">
                     {orcid ? (
                       <a href={orcid}>{orcid}</a>
                     ) : (
-                      <span className="incompleteIcon">
-                        <IconSvg icon="close" /> Incomplete
-                      </span>
+                      <CompletionStatus isComplete={false} />
                     )}
                   </div>
-                  {orcid ? (
-                    <Button
-                      variant="outlined"
-                      sx={credentialButtonSX}
-                      onClick={() => setShowUnbindORCiDDialog(true)}
+                  <p>
+                    <i>
+                      Linking your ORCID profile is useful for other
+                      researchers, and is required for profile validation.
+                    </i>
+                  </p>
+                  <div className="primary-button-container">
+                    {orcid ? (
+                      <Button
+                        variant="outlined"
+                        sx={credentialButtonSX}
+                        onClick={() => setShowUnbindORCiDDialog(true)}
+                      >
+                        Unlink your ORCID profile
+                      </Button>
+                    ) : (
+                      <ORCiDButton
+                        sx={credentialButtonSX}
+                        redirectAfter={`${SynapseClient.getRootURL()}authenticated/myaccount`}
+                      />
+                    )}
+                    <Link
+                      href="https://help.synapse.org/docs/Synapse-User-Account-Types.2007072795.html#SynapseUserAccountTypes-ValidatedUsers"
+                      target="_blank"
                     >
-                      Unlink your ORCID profile
-                    </Button>
-                  ) : (
-                    <ORCiDButton
-                      sx={credentialButtonSX}
-                      redirectAfter={`${SynapseClient.getRootURL()}authenticated/myaccount`}
-                    />
-                  )}
+                      More information
+                    </Link>
+                  </div>
                   <UnbindORCiDDialog
                     show={showUnbindORCiDDialog}
                     setShow={setShowUnbindORCiDDialog}
                     orcid={orcid}
                     redirectAfter={`${SynapseClient.getRootURL()}authenticated/myaccount`}
                   />
-                  <Link
-                    href="https://help.synapse.org/docs/Synapse-User-Account-Types.2007072795.html#SynapseUserAccountTypes-ValidatedUsers"
-                    target="_blank"
-                  >
-                    More information
-                  </Link>
                 </div>
                 <div className="credential-partition">
                   <h4>Profile Validation</h4>
-                  <i>
-                    Users with a validated profile can access more features and
-                    data.
-                  </i>
+                  <CompletionStatus isComplete={verified} />
                   <p>
+                    <i>
+                      Users with a validated profile can access more features
+                      and data.
+                    </i>
+                  </p>
+                  <Typography variant={'body1'} sx={{ my: 1 }}>
                     Profile validation requires you to complete your profile,
                     link an ORCID profile, sign and date the Synapse pledge, and
                     upload both the pledge and an identity attestation document,
                     after which your application will be manually reviewed
                     (which may take several days).
-                  </p>
-                  <div className="item-completion">
-                    {verified ? (
-                      <span className="completeIcon">
-                        <IconSvg icon="check" /> Completed
-                      </span>
-                    ) : (
-                      <span className="incompleteIcon">
-                        <IconSvg icon="close" /> Incomplete
-                      </span>
-                    )}
+                  </Typography>
+                  <div className="primary-button-container">
+                    <Button
+                      disabled={!!verified}
+                      variant="outlined"
+                      sx={credentialButtonSX}
+                      onClick={() => handleChangesFn('validate')}
+                    >
+                      Request validation
+                    </Button>
+                    <Link
+                      href="https://help.synapse.org/docs/User-Types.2007072795.html#UserAccountTiers-ValidatedUsers"
+                      target="_blank"
+                    >
+                      More information
+                    </Link>
                   </div>
-                  <Button
-                    disabled={!!verified}
-                    variant="outlined"
-                    sx={credentialButtonSX}
-                    onClick={() => handleChangesFn('validate')}
-                  >
-                    Request validation
-                  </Button>
+                </div>
+              </Paper>
+              <Paper
+                ref={twoFactorAuthRef}
+                className="account-setting-panel main-panel"
+              >
+                <TwoFactorAuthSettingsPanel
+                  onRegenerateBackupCodes={() => {
+                    history.push('/authenticated/2fa/generatecodes')
+                  }}
+                  onBeginTwoFactorEnrollment={() => {
+                    history.push('/authenticated/2fa/enroll')
+                  }}
+                />
+              </Paper>
+              <Paper
+                ref={personalAccessTokenRef}
+                className="account-setting-panel main-panel"
+              >
+                <Typography variant={'headline2'}>
+                  Personal Access Tokens
+                </Typography>
+                <Typography variant={'body1'} sx={{ my: 1 }}>
+                  You can issue personal access tokens to authenticate your
+                  scripts with scoped access to your account. It is important
+                  that you treat personal access tokens with the same security
+                  as your password.
+                </Typography>
+                <div className="primary-button-container">
+                  <Link sx={credentialButtonSX}>
+                    Manage Personal Access Tokens
+                  </Link>
                   <Link
-                    href="https://help.synapse.org/docs/User-Types.2007072795.html#UserAccountTiers-ValidatedUsers"
+                    href="https://help.synapse.org/docs/Managing-Your-Account.2055405596.html#ManagingYourAccount-PersonalAccessTokens"
                     target="_blank"
                   >
                     More information
                   </Link>
                 </div>
-              </div>
-              <div
-                ref={personalAccessTokenRef}
-                className="account-setting-panel main-panel"
-              >
-                <h3>Personal Access Tokens</h3>
-                <p>
-                  You can issue personal access tokens to authenticate your
-                  scripts with scoped access to your account. It is important
-                  that you treat personal access tokens with the same security
-                  as your password.
-                </p>
-                <Link sx={credentialButtonSX}>
-                  Manage Personal Access Tokens
-                </Link>
-                <Link
-                  href="https://help.synapse.org/docs/Managing-Your-Account.2055405596.html#ManagingYourAccount-PersonalAccessTokens"
-                  target="_blank"
-                >
-                  More information
-                </Link>
-              </div>
+              </Paper>
             </div>
           </Box>
         </Container>
       </div>
-    </>
+    </div>
   )
 }

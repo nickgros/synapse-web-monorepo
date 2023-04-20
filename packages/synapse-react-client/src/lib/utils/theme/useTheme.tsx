@@ -1,12 +1,15 @@
 import { createTheme, StyledEngineProvider, ThemeOptions } from '@mui/material'
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
-import { merge } from 'lodash-es'
+import { deepmerge } from '@mui/utils'
 import React, { useMemo } from 'react'
-import defaultMuiTheme from './DefaultTheme'
+import defaultMuiThemeOptions from './DefaultTheme'
+import type { PartialDeep } from 'type-fest'
 
-export function mergeTheme(themeOverrides: ThemeOptions): ThemeOptions {
+export function mergeTheme(
+  themeOverrides: PartialDeep<ThemeOptions>,
+): ThemeOptions {
   // TODO: Handle merging color palettes where an entire palette can be generated from a single base color.
-  return merge({}, defaultMuiTheme, themeOverrides)
+  return deepmerge(defaultMuiThemeOptions, themeOverrides)
 }
 
 export type ThemeProviderProps = React.PropsWithChildren<{
@@ -14,7 +17,7 @@ export type ThemeProviderProps = React.PropsWithChildren<{
 }>
 
 export const ThemeProvider = ({
-  theme = defaultMuiTheme,
+  theme = defaultMuiThemeOptions,
   children,
 }: ThemeProviderProps) => {
   const mergedTheme = useMemo(() => mergeTheme(theme), [theme])

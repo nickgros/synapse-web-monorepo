@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Box } from '@mui/material'
+import { Box, Button, useTheme } from '@mui/material'
 import { useAppContext } from 'AppContext'
-import { Typography, SynapseClient } from 'synapse-react-client'
+import { SynapseClient, Typography } from 'synapse-react-client'
 import { Redirect } from 'react-router-dom'
-import theme from 'style/theme'
-
 import {
   isJoinTeamSignedToken,
   JoinTeamSignedToken,
@@ -21,6 +19,7 @@ export type JoinTeamPageProps = {}
 
 export const JoinTeamPage = (props: JoinTeamPageProps) => {
   const context = useAppContext()
+  const theme = useTheme()
   const [joinTeamToken, setJoinTeamToken] = useState<JoinTeamSignedToken>()
   const [joinedTeamResponseMessage, setJoinedTeamResponseMessage] =
     useState<ResponseMessage>()
@@ -100,7 +99,7 @@ export const JoinTeamPage = (props: JoinTeamPageProps) => {
               Join a Team
             </Typography>
             <Typography
-              variant="body1"
+              variant="subtitle1"
               sx={{ paddingTop: '10px', paddingBottom: '30px' }}
             >
               <UserOrTeamBadge principalId={membershipInvitation.createdBy} />{' '}
@@ -109,7 +108,7 @@ export const JoinTeamPage = (props: JoinTeamPageProps) => {
               <UserOrTeamBadge principalId={membershipInvitation.teamId} />
             </Typography>
             <Typography
-              variant="body1"
+              variant="subtitle1"
               sx={{ paddingTop: '10px', paddingBottom: '10px' }}
             >
               To join this team, you must register for a Sage account using the
@@ -121,10 +120,10 @@ export const JoinTeamPage = (props: JoinTeamPageProps) => {
                 backgroundColor: 'rgba(241, 243, 245, 0.75)',
               }}
             >
-              <Typography variant="body1" sx={{ fontWeight: 700 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                 Use this email address when you register
               </Typography>
-              <Typography variant="body1">
+              <Typography variant="subtitle1">
                 <em>{membershipInvitation.inviteeEmail}</em>
               </Typography>
             </Box>
@@ -148,7 +147,7 @@ export const JoinTeamPage = (props: JoinTeamPageProps) => {
               Joined a Team!
             </Typography>
             <Typography
-              variant="body1"
+              variant="subtitle1"
               sx={{ paddingTop: '10px', paddingBottom: '50px' }}
             >
               <UserOrTeamBadge principalId={joinTeamToken?.memberId} /> is now a

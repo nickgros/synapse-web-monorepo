@@ -2,14 +2,19 @@ import React from 'react'
 import { SynapseClient, Typography } from 'synapse-react-client'
 import { useSynapseContext } from 'synapse-react-client/dist/utils/SynapseContext'
 import { PROVIDERS } from 'synapse-react-client/dist/containers/auth/AuthenticationMethodSelection'
-import { Dialog, DialogActions, DialogContent, Button } from '@mui/material'
-import theme from 'style/theme'
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button,
+  DialogTitle,
+} from '@mui/material'
 
 export const unbindORCiD = async (
   event: React.SyntheticEvent,
   orcid: string | undefined,
   accessToken: string | undefined,
-  setShow: Function,
+  setShow: (show: boolean) => void,
   redirectAfter: string,
 ) => {
   event.preventDefault()
@@ -29,7 +34,7 @@ export const unbindORCiD = async (
 }
 export type UnbindORCiDDialogProps = {
   show: boolean
-  setShow: Function
+  setShow: (show: boolean) => void
   orcid: string | undefined
   redirectAfter: string
 }
@@ -37,16 +42,10 @@ export type UnbindORCiDDialogProps = {
 export const UnbindORCiDDialog = (props: UnbindORCiDDialogProps) => {
   const { accessToken } = useSynapseContext()
   return (
-    <Dialog
-      open={props.show}
-      maxWidth="sm"
-      sx={{ borderRadius: 0 }}
-      PaperProps={{ sx: { borderRadius: 0 } }}
-    >
-      <DialogContent
-        sx={{ margin: theme.spacing(0, 5.5), padding: theme.spacing(3, 0) }}
-      >
-        <Typography variant="body2" paragraph>
+    <Dialog open={props.show} maxWidth="sm">
+      <DialogTitle>Unlink ORCID?</DialogTitle>
+      <DialogContent>
+        <Typography variant="body1" paragraph>
           Are you sure you want to unlink this ORCID from your profile?
         </Typography>
       </DialogContent>

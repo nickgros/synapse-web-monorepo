@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import './Versions.scss'
-import packageJson from '../../package.json'
 import { Tooltip } from '@mui/material'
 import dayjs from 'dayjs'
 
@@ -67,8 +66,6 @@ const Versions: React.FunctionComponent = () => {
               Built: {buildDate}
               <br />
               Deployed: {deployDate}
-              <br />
-              SRC Version: {packageJson.dependencies['synapse-react-client']}
             </div>
           }
         >
@@ -77,7 +74,7 @@ const Versions: React.FunctionComponent = () => {
               className="Versions footer-item"
               target="_blank"
               rel="noopener noreferrer"
-              href="https://github.com/Sage-Bionetworks/portals"
+              href="https://github.com/Sage-Bionetworks/synapse-web-monorepo"
             >
               VERSION
             </a>

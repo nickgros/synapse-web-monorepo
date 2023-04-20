@@ -1,10 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { MemoryRouter } from 'react-router-dom'
-import {
-  defaultQueryClientConfig,
-  SynapseContextProvider,
-  SynapseContextType,
-} from '../utils/SynapseContext'
+import { SynapseContextType } from '../utils/SynapseContext'
 import { QueryClient } from 'react-query'
 import { SynapseClient } from '../utils'
 import { SynapseToastContainer } from './ToastMessage'
@@ -12,13 +8,13 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import dayjs from 'dayjs'
 import {
   getAccessTokenFromCookie,
-  getUserProfile,
   getAuthenticatedOn,
+  getUserProfile,
   signOut,
 } from '../utils/SynapseClient'
 import { SynapseClientError } from '../utils/SynapseClientError'
 import { STACK_MAP, SynapseStack } from '../utils/functions/getEndpoint'
-import defaultMuiTheme from '../utils/theme/DefaultTheme'
+import defaultMuiThemeOptions from '../utils/theme/DefaultTheme'
 import {
   adKnowledgePortalPalette,
   arkPortalPalette,
@@ -34,6 +30,10 @@ import {
   stopAdPortalPalette,
 } from '../utils/theme/palette/Palettes'
 import useDetectSSOCode from '../utils/hooks/useDetectSSOCode'
+import {
+  defaultQueryClientConfig,
+  FullContextProvider,
+} from '../utils/FullContextProvider'
 
 export async function sessionChangeHandler() {
   let accessToken: string | undefined = await getAccessTokenFromCookie()
@@ -135,12 +135,12 @@ export function StorybookComponentWrapper(props: {
   )
 
   return (
-    <SynapseContextProvider
+    <FullContextProvider
       queryClient={storybookQueryClient}
       key={accessToken}
       synapseContext={synapseContext}
       theme={{
-        ...defaultMuiTheme,
+        ...defaultMuiThemeOptions,
         palette: paletteMap[storybookContext.globals.palette],
       }}
     >
@@ -151,7 +151,7 @@ export function StorybookComponentWrapper(props: {
         <SynapseToastContainer />
         <main>{props.children}</main>
       </MemoryRouter>
-    </SynapseContextProvider>
+    </FullContextProvider>
   )
 }
 

@@ -1,94 +1,24 @@
-import React, { useCallback, useEffect, useState } from 'react'
-
+import React, { useEffect, useState } from 'react'
 import { AppContextProvider } from 'AppContext'
-import { Redirect, useLocation } from 'react-router-dom'
-import { SynapseClient, SynapseComponents } from 'synapse-react-client'
-import { SynapseContextProvider } from 'synapse-react-client/dist/utils/SynapseContext'
-import { UserProfile } from 'synapse-react-client/dist/utils/synapseTypes'
+import { Redirect } from 'react-router-dom'
+import { SynapseComponents } from 'synapse-react-client'
 import { getSearchParam } from 'URLUtils'
 import useAnalytics from './useAnalytics'
-import { displayToast } from 'synapse-react-client/dist/containers/ToastMessage'
 import { SignedTokenInterface } from 'synapse-react-client/dist/utils/synapseTypes/SignedToken/SignedTokenInterface'
-import useDetectSSOCode from 'synapse-react-client/dist/utils/hooks/useDetectSSOCode'
-import { ThemeOptions } from '@mui/material'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useSourceApp } from 'components/SourceApp'
-import { deepmerge } from '@mui/utils'
-import theme from './style/theme'
-
-/**
- * State and helpers for managing a user session in the portal
- * @param setShowLoginDialog
- * @returns
- */
-function useSession() {
-  const [token, setToken] = useState<string | undefined>(undefined)
-  const [touSigned, setTouSigned] = useState(true)
-  const [hasCalledGetSession, setHasCalledGetSession] = useState(false)
-  const [userProfile, setUserProfile] = useState<UserProfile | undefined>(
-    undefined,
-  )
-  const initAnonymousUserState = useCallback(() => {
-    SynapseClient.signOut().then(() => {
-      // reset token and user profile
-      setToken(undefined)
-      setUserProfile(undefined)
-      setHasCalledGetSession(true)
-    })
-  }, [])
-
-  const getSession = useCallback(async () => {
-    let token
-    try {
-      token = await SynapseClient.getAccessTokenFromCookie()
-      if (!token) {
-        initAnonymousUserState()
-        return
-      }
-    } catch (e) {
-      console.error('Unable to get the access token: ', e)
-      initAnonymousUserState()
-      return
-    }
-    await setToken(token)
-    await setHasCalledGetSession(true)
-    try {
-      // get user profile
-      const userProfile = await SynapseClient.getUserProfile(token)
-      if (userProfile.profilePicureFileHandleId) {
-        userProfile.clientPreSignedURL = `https://repo-prod.prod.sagebase.org/file/v1/file/${userProfile.profilePicureFileHandleId}?fileAssociateType=UserProfileAttachment&fileAssociateId=${userProfile.ownerId}&redirect=true`
-      }
-      setUserProfile(userProfile)
-    } catch (e) {
-      console.error('Error on getSession: ', e)
-      if (e.reason == 'Terms of use have not been signed.') {
-        setTouSigned(false)
-      } else {
-        // intentionally calling sign out because there token could be stale so we want
-        // the stored session to be cleared out.
-        SynapseClient.signOut().then(() => {
-          // PORTALS-2293: if the token was invalid (caused an error), reload the app to ensure all children
-          // are loading as the anonymous user
-          window.location.reload()
-        })
-      }
-    }
-  }, [initAnonymousUserState])
-
-  return {
-    token,
-    userProfile,
-    hasCalledGetSession,
-    getSession,
-    touSigned,
-  }
-}
+import { useApplicationSessionContext } from 'synapse-react-client/dist/utils/apputils/session/ApplicationSessionContext'
+import { sageAccountWebThemeOverrides } from './style/theme'
+import { Theme } from '@mui/material'
+import defaultMuiThemeOptions from 'synapse-react-client/dist/utils/theme/DefaultTheme'
 
 function AppInitializer(props: { children?: React.ReactNode }) {
   const [isFramed, setIsFramed] = useState(false)
   const [appId, setAppId] = useState<string>()
   const [redirectURL, setRedirectURL] = useState<string>()
-  const [themeOptions, setThemeOptions] = useState<ThemeOptions>()
-  const { token, getSession, hasCalledGetSession, touSigned } = useSession()
+  const [theme, setTheme] = useState<Theme>(
+    createTheme(defaultMuiThemeOptions, sageAccountWebThemeOverrides),
+  )
   const [signedToken, setSignedToken] = useState<
     SignedTokenInterface | undefined
   >()
@@ -121,7 +51,11 @@ function AppInitializer(props: { children?: React.ReactNode }) {
 
   useEffect(() => {
     if (sourceApp?.palette) {
-      setThemeOptions(deepmerge(theme, { palette: sourceApp.palette }))
+      setTheme(
+        createTheme(defaultMuiThemeOptions, sageAccountWebThemeOverrides, {
+          palette: sourceApp.palette,
+        }),
+      )
     }
   }, [sourceApp?.appId])
 
@@ -163,27 +97,10 @@ function AppInitializer(props: { children?: React.ReactNode }) {
     }
   }, [appId])
 
-  /** Call getSession on mount */
-  useEffect(() => {
-    getSession()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   useAnalytics()
 
-  useDetectSSOCode({
-    registerAccountUrl: '/register1',
-    onError: error => {
-      displayToast(error as string, 'danger')
-    },
-  })
+  const { acceptsTermsOfUse } = useApplicationSessionContext()
 
-  if (!hasCalledGetSession) {
-    // Don't render anything until the session has been established
-    // Otherwise we may end up reloading components and making duplicate requests
-    return <></>
-  }
-  const location = useLocation()
   return (
     <AppContextProvider
       appContext={{
@@ -192,20 +109,13 @@ function AppInitializer(props: { children?: React.ReactNode }) {
         signedToken,
       }}
     >
-      <SynapseContextProvider
-        synapseContext={{
-          accessToken: token,
-          isInExperimentalMode: SynapseClient.isInSynapseExperimentalMode(),
-          utcTime: SynapseClient.getUseUtcTimeFromCookie(),
-          downloadCartPageUrl: '',
-        }}
-        theme={themeOptions}
-      >
-        {!touSigned && location.pathname != '/authenticated/signTermsOfUse' && (
-          <Redirect to="/authenticated/signTermsOfUse" />
-        )}
+      <ThemeProvider theme={theme}>
+        {acceptsTermsOfUse === false &&
+          location.pathname != '/authenticated/signTermsOfUse' && (
+            <Redirect to="/authenticated/signTermsOfUse" />
+          )}
         {!isFramed && props.children}
-      </SynapseContextProvider>
+      </ThemeProvider>
     </AppContextProvider>
   )
 }

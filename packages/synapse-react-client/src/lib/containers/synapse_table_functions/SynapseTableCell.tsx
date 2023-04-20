@@ -67,9 +67,7 @@ export const SynapseTableCell: React.FC<SynapseTableCellProps> = ({
   const { entity } = useQueryContext()
 
   if (!columnValue) {
-    return (
-      <p className="SRC-center-text SRC-inactive"> {NOT_SET_DISPLAY_VALUE}</p>
-    )
+    return <p className="SRC-inactive"> {NOT_SET_DISPLAY_VALUE}</p>
   }
 
   if (columnLinkConfig) {
@@ -171,7 +169,11 @@ export const SynapseTableCell: React.FC<SynapseTableCellProps> = ({
       )
     case ColumnTypeEnum.ENTITYID_LIST: {
       const jsonData: string[] = JSON.parse(columnValue)
-      return <EntityIdList entityIdList={jsonData} />
+      return (
+        <p>
+          <EntityIdList entityIdList={jsonData} />
+        </p>
+      )
     }
     case ColumnTypeEnum.USERID_LIST: {
       const jsonData: string[] = JSON.parse(columnValue)
@@ -182,13 +184,13 @@ export const SynapseTableCell: React.FC<SynapseTableCellProps> = ({
     case ColumnTypeEnum.INTEGER_LIST: {
       const jsonData: string[] = JSON.parse(columnValue)
       return (
-        <p>
+        <p className={isBold}>
           {jsonData.map((val: string, index: number) => {
             return (
-              <span key={val} className={isBold}>
+              <React.Fragment key={val}>
                 {val}
                 {index !== jsonData.length - 1 ? ', ' : ''}
-              </span>
+              </React.Fragment>
             )
           })}
         </p>

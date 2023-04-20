@@ -88,7 +88,7 @@ export default class RssFeedCards extends React.Component<
     return (
       <>
         {this.props.mailChimpUrl && (
-          <div className="FeedSubscribe text-center">
+          <div className="FeedSubscribe">
             {!this.state.isShowingSubscribeUI && (
               <a
                 className="FeedSubscribeToNewsLink SRC-no-border-bottom-imp"
@@ -190,13 +190,12 @@ export default class RssFeedCards extends React.Component<
                 <Button
                   variant="secondary"
                   size="lg"
-                  className="pill"
                   onClick={() =>
                     window.open(this.state.allItemsUrl, '_blank', 'noopener')
                   }
                   target="_blank"
                 >
-                  {viewAllNewsButtonText ?? 'VIEW ALL NEWS'}
+                  {viewAllNewsButtonText ?? 'View All News'}
                 </Button>
               </div>
             )}

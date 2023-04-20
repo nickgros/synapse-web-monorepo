@@ -1,10 +1,13 @@
-import { createTheme, Theme } from '@mui/material'
+import { ThemeOptions } from '@mui/material'
 
 export const latoFont = ['Lato', 'Roboto', 'Helvetica', 'Arial'].join(',')
 
-const themeObject = {
+// Merge the default theme (defined in synapse-react-client) with the SageAccountWeb overrides defined here.
+export const sageAccountWebThemeOverrides: ThemeOptions = {
+  styledBackground:
+    "linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('https://s3.amazonaws.com/static.synapse.org/images/SynapseLoginPageBackground.svg')",
+
   components: {
-    MuiCssBaseline: {},
     MuiButton: {
       styleOverrides: {
         contained: {
@@ -26,7 +29,7 @@ const themeObject = {
           fontWeight: 700,
           '&:hover': {
             backgroundColor: '#FFFFFF',
-            border: '2px solid #EAECEE',
+            border: '1px solid #b5bcc3',
           },
         },
         containedSecondary: {
@@ -56,45 +59,11 @@ const themeObject = {
         },
       },
     },
-    MuiDialog: {
-      styleOverrides: {
-        paper: {},
-      },
-    },
-    MuiDialogTitle: {
+    MuiPaper: {
       styleOverrides: {
         root: {
-          padding: '24px 24px 0px 24px',
-        },
-      },
-    },
-    MuiDialogContent: {
-      styleOverrides: {
-        root: {
-          color: '#4A5056',
-        },
-      },
-    },
-    MuiDialogActions: {
-      styleOverrides: {
-        root: {
-          padding: '24px',
-          '& .MuiButton-root': {
-            height: '36px',
-            padding: '0 16px',
-            borderRadius: '0px',
-            fontSize: '15px',
-            '&:first-child': {
-              marginRight: '14px',
-            },
-            '&.MuiButton-outlinedPrimary': {
-              borderWidth: '1px',
-              fontWeight: 700,
-              '&:hover': {
-                '&.MuiButton-outlinedPrimary:hover': { borderWidth: '1px' },
-              },
-            },
-          },
+          borderRadius: '5px',
+          boxShadow: '0px 2px 6px rgba(53, 58, 63, 0.1)',
         },
       },
     },
@@ -104,7 +73,6 @@ const themeObject = {
       fontFamily: latoFont,
       fontSize: '14px',
     },
-    headline1: {},
     headline2: {
       fontWeight: 700,
       fontSize: '24px',
@@ -113,42 +81,17 @@ const themeObject = {
       alignItems: 'center',
       marginBottom: '20px',
     },
-    headline3: {
-      fontWeight: '700',
-      fontSize: '18px',
-      lineHeight: '20px',
-    },
-    body1: {
-      fontWeight: 400,
+    subtitle1: {
+      fontWeight: 500,
       fontSize: '20px',
       lineHeight: '150%',
       letterSpacing: '-0.019em',
-      color: '#4A5056',
     },
-    body1Italic: {},
-    body2: {
-      fontWeight: 400,
-      fontSize: '16px',
-      lineHeight: '24px',
-    },
-    breadcrumb1: {},
-    breadcrumb2: {},
     smallText1: {
       fontWeight: 400,
       fontSize: '14px',
       lineHeight: '21px',
       color: '#878E95',
     },
-    smallText2: {},
-    smallLink: {},
-    label: {},
-    buttonLink: {},
-    hintText: {},
-    sectionTitle: {},
-    subsectionHeader: {},
-    dataFieldKey: {},
   },
 }
-const theme: Theme = createTheme(themeObject)
-
-export default theme

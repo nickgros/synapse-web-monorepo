@@ -5,22 +5,21 @@ import TermsAndConditions from 'synapse-react-client/dist/containers/TermsAndCon
 import { displayToast } from 'synapse-react-client/dist/containers/ToastMessage'
 import { useSynapseContext } from 'synapse-react-client/dist/utils/SynapseContext'
 import { useSourceApp, SourceAppLogo } from './SourceApp'
-import { Button, Link, Box } from '@mui/material'
-import { Typography } from 'synapse-react-client'
+import { Button, Box, useTheme } from '@mui/material'
 import { StyledInnerContainer, StyledOuterContainer } from './StyledComponents'
+import { TermsOfUseRightPanelText } from './TermsOfUseRightPanelText'
+import { TermsAndConditionsLink } from './TermsAndConditionsLink'
 
 export type TermsOfUsePageProps = {}
 
 export const TermsOfUsePage = (props: TermsOfUsePageProps) => {
+  const theme = useTheme()
   const [isLoading, setIsLoading] = useState(false)
   const [isFormComplete, setIsFormComplete] = useState(false)
   const [isDone, setIsDone] = useState(false)
   const { accessToken } = useSynapseContext()
   const sourceApp = useSourceApp()
-  const sourceAppName = sourceApp?.friendlyName
 
-  const tcAgreement =
-    'https://s3.amazonaws.com/static.synapse.org/governance/SageBionetworksSynapseTermsandConditionsofUse.pdf'
   const onSignTermsOfUse = async (event: React.SyntheticEvent) => {
     event.preventDefault()
     setIsLoading(true)
@@ -44,6 +43,10 @@ export const TermsOfUsePage = (props: TermsOfUsePageProps) => {
   const buttonSx = {
     width: '100%',
     padding: '10px',
+    '&.MuiButton-contained': {
+      marginTop: '20px',
+      marginBottom: '10px',
+    },
   }
 
   if (isDone) {
@@ -56,12 +59,18 @@ export const TermsOfUsePage = (props: TermsOfUsePageProps) => {
   }
   return (
     <StyledOuterContainer className="TermsOfUsePage">
-      <StyledInnerContainer>
+      <StyledInnerContainer
+        sx={{
+          width: '1200px',
+          '& > div:nth-of-type(1)': {
+            paddingTop: theme.spacing(10),
+            width: '750px',
+          },
+          '& > div:nth-of-type(2)': { paddingTop: theme.spacing(10) },
+        }}
+      >
         <Box
           sx={{
-            minWidth: '650px',
-            py: 10,
-            px: 8,
             height: '100%',
             position: 'relative',
           }}
@@ -75,8 +84,7 @@ export const TermsOfUsePage = (props: TermsOfUsePageProps) => {
                 onFormChange={(completed: boolean) => {
                   setIsFormComplete(completed)
                 }}
-                // Once SRC version is updated uncomment below
-                // hideLinkToFullTC
+                hideLinkToFullTC={true}
               />
               <Button
                 sx={buttonSx}
@@ -86,43 +94,14 @@ export const TermsOfUsePage = (props: TermsOfUsePageProps) => {
               >
                 Accept and Continue <IconSvg icon="arrowForward" />
               </Button>
-              <Button
-                sx={buttonSx}
-                variant="text"
-                href={tcAgreement}
-                target="_blank"
-              >
-                View and Complete Terms and Conditions for Use
-              </Button>
+              <TermsAndConditionsLink sx={buttonSx} />
             </div>
           </Box>
         </Box>
-        <Box sx={{}}>
-          <div className={'right-panel-text'}>
-            <Typography variant="headline2" sx={{ marginTop: '100px' }}>
-              What is the Synapse Pledge
-            </Typography>
-            {sourceApp?.appId !== 'synapse.org' && (
-              <Typography variant="body2" sx={{ marginBottom: '20px' }}>
-                {sourceAppName} is powered by{' '}
-                <Link href={'https://www.synapse.org/'} target="_blank">
-                  Synapse
-                </Link>
-                , and follows the Synapse Governance polices.
-              </Typography>
-            )}
-            <Typography variant="body2" sx={{ marginBottom: '20px' }}>
-              To ensure secure and confidential access to data, we ask all
-              account holders to affirm their agreement with our governance
-              policies before finishing registration.
-            </Typography>
-            <Typography variant="body2" sx={{ marginBottom: '20px' }}>
-              If you have questions, please contact{' '}
-              <Link href={'mailto:act@sagebionetworks.org'}>
-                act@sagebionetworks.org
-              </Link>
-            </Typography>
-          </div>
+        <Box>
+          <Box sx={{ marginTop: '100px' }}>
+            <TermsOfUseRightPanelText />
+          </Box>
         </Box>
       </StyledInnerContainer>
     </StyledOuterContainer>

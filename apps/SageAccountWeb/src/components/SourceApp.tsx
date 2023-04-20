@@ -54,7 +54,7 @@ export const SourceAppLogo: React.FC<{ sx?: SxProps }> = ({ sx }) => {
 export const SourceAppDescription = () => {
   const sourceAppConfig = useSourceApp()
   return sourceAppConfig ? (
-    <Typography className="description" variant="body1">
+    <Typography className="description" variant="subtitle1">
       {sourceAppConfig?.description}
     </Typography>
   ) : (
@@ -112,6 +112,7 @@ export const useSourceAppConfigs = (): SourceAppConfig[] | undefined => {
       ...palette,
       primary: generatePalette(rowVals[primaryColorColIndex] ?? ''),
       secondary: generatePalette(rowVals[secondaryColorColIndex] ?? ''),
+      contrastThreshold: 2.5,
     }
     const sourceAppConfig: SourceAppConfig = {
       appId: rowVals[appIdColIndex] ?? '',

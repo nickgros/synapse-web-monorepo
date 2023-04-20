@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom'
 import { SynapseConstants, Typography } from 'synapse-react-client'
 import { displayToast } from 'synapse-react-client/dist/containers/ToastMessage'
 import CloseIcon from '@mui/icons-material/Close'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt'
 import {
   createProfileVerificationSubmission,
@@ -20,13 +19,14 @@ import { getSearchParam } from 'URLUtils'
 import { ProfileFieldsEditor } from './ProfileFieldsEditor'
 import { VerifyIdentify } from './VerifyIdentify'
 import { StyledInnerContainer, StyledOuterContainer } from '../StyledComponents'
-import { Box, Button, Divider, IconButton, Link } from '@mui/material'
-import theme from 'style/theme'
+import { Box, Button, Divider, IconButton, Link, useTheme } from '@mui/material'
 import { SourceAppLogo, useSourceApp } from '../SourceApp'
 import Attestation from './Attestation'
 import ThankYou from './ThankYou'
 import TermsAndConditionsWrapped from './TermsAndConditionsWrapped'
 import { ReturnToAppButton } from './ReturnToAppButton'
+import { TermsOfUseRightPanelText } from 'components/TermsOfUseRightPanelText'
+import { BackButton } from 'components/BackButton'
 
 const STEP_CONTENT = [
   {
@@ -34,8 +34,8 @@ const STEP_CONTENT = [
     body: (
       <>
         <Typography
-          variant="body1"
-          sx={{ fontWeight: 500, marginBottom: theme.spacing(3) }}
+          variant="subtitle1"
+          sx={theme => ({ fontWeight: 500, marginBottom: theme.spacing(3) })}
         >
           During <strong>identity verification</strong>, our data governance
           team will check the information you provide here.
@@ -67,17 +67,10 @@ const STEP_CONTENT = [
   },
 
   {
-    title: 'Synapse Pledge',
+    title: null,
     body: (
       <>
-        <Typography variant="body2" paragraph>
-          You need to indicate your understanding and agreement with each of the
-          terms
-        </Typography>
-        .
-        <Typography variant="body2" paragraph>
-          You must complete this step in order to request validation.{' '}
-        </Typography>
+        <TermsOfUseRightPanelText />
       </>
     ),
   },
@@ -86,7 +79,7 @@ const STEP_CONTENT = [
     title: 'Submit recent identity attestation documentation.',
     body: (
       <>
-        <Typography variant="body2" paragraph>
+        <Typography variant="body1" paragraph>
           This document must be current within the past month. Acceptable forms
           of documentation, in English, are any one of the following:{' '}
         </Typography>
@@ -98,7 +91,7 @@ const STEP_CONTENT = [
           }}
         >
           <li>
-            <Typography variant="body2">
+            <Typography variant="body1">
               A letter from a signing official on letterhead attesting to your
               identity (
               <Link
@@ -116,14 +109,14 @@ const STEP_CONTENT = [
               </i>
             </Typography>
             <Typography
-              style={{ textAlign: 'center', margin: theme.spacing(1) }}
-              variant="body2"
+              sx={theme => ({ textAlign: 'center', margin: theme.spacing(1) })}
+              variant="body1"
             >
               OR
             </Typography>
           </li>
           <li>
-            <Typography variant="body2">
+            <Typography variant="body1">
               A notarized letter attesting to your identity (
               <Link
                 color="primary"
@@ -135,18 +128,18 @@ const STEP_CONTENT = [
               )
             </Typography>
             <Typography
-              style={{ textAlign: 'center', margin: theme.spacing(1) }}
-              variant="body2"
+              sx={theme => ({ textAlign: 'center', margin: theme.spacing(1) })}
+              variant="body1"
             >
               OR
             </Typography>
           </li>
           <li>
-            <Typography variant="body2" paragraph>
+            <Typography variant="body1" paragraph>
               A copy of your professional license (e.g., a photocopy of your
               medical license).&nbsp;
             </Typography>
-            <Typography variant="body2" paragraph>
+            <Typography variant="body1" paragraph>
               <i>
                 Note that a copy of a work or university identification badge is{' '}
                 <strong>not</strong> an accepted form of identity attestation
@@ -161,30 +154,31 @@ const STEP_CONTENT = [
 ]
 
 const RightPanel: React.FC<{ stepNumber: number }> = ({ stepNumber }) => {
+  const theme = useTheme()
   const totalSteps = 4
   return (
     <Box sx={{ position: 'relative' }}>
       {stepNumber === 0 && (
         <ReturnToAppButton>
           <IconButton
-            sx={{
+            sx={theme => ({
               position: 'absolute',
               top: theme.spacing(1.5),
               right: theme.spacing(1.5),
-            }}
+            })}
           >
             <CloseIcon />
           </IconButton>
         </ReturnToAppButton>
       )}
       <Divider
-        sx={{
+        sx={theme => ({
           marginTop: theme.spacing(8),
           marginBottom: theme.spacing(4),
           fontWeight: '700',
           fontSize: '16px',
           color: '#4A5056',
-        }}
+        })}
       >
         {' '}
         Step {stepNumber + 1} of {totalSteps}
@@ -431,24 +425,26 @@ export const ProfileValidation = (props: ProfileValidationProps) => {
   return (
     <StyledOuterContainer>
       {step !== ValidationWizardStep.THANK_YOU ? (
-        <StyledInnerContainer>
+        <StyledInnerContainer
+          sx={
+            step === ValidationWizardStep.TERMS_AGREE
+              ? theme => ({
+                  width: '1200px',
+                  '& > div:nth-of-type(1)': {
+                    paddingTop: theme.spacing(10),
+                    width: '750px',
+                  },
+                  '& > div:nth-of-type(2)': { paddingTop: theme.spacing(10) },
+                })
+              : null
+          }
+        >
           {verificationSubmission && (
             <Box>
               {step !== ValidationWizardStep.PROFILE_INFO && (
-                <IconButton
-                  onClick={onPrevious}
-                  sx={{
-                    position: 'absolute',
-                    top: theme.spacing(1.5),
-                    left: theme.spacing(1.5),
-                  }}
-                >
-                  <ArrowBackIcon />
-                </IconButton>
+                <BackButton onClick={onPrevious} />
               )}
-              <SourceAppLogo
-                sx={{ textAlign: 'center', paddingBottom: '35px' }}
-              />
+              <SourceAppLogo sx={{ textAlign: 'center' }} />
               <BodyControlFactory
                 {...{
                   step: step,
@@ -471,7 +467,7 @@ export const ProfileValidation = (props: ProfileValidationProps) => {
             fullWidth
             onClick={() => setIsReturnToAccountSettings(true)}
             type="button"
-            sx={{ marginTop: theme.spacing(5) }}
+            sx={theme => ({ marginTop: theme.spacing(5) })}
             endIcon={<ArrowRightAltIcon />}
           >
             Return to {useSourceApp()?.friendlyName}
