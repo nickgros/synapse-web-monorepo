@@ -1,11 +1,12 @@
-import { popularSearchesSql, toolsSql } from 'configurations/nf/resources'
-import Layout from 'portal-components/Layout'
+import { popularSearchesSql, toolsSql } from '../../configurations/nf/resources'
+import Layout from '../Layout'
 import * as React from 'react'
 import { Typography } from 'synapse-react-client'
 import FeaturedToolsList from 'synapse-react-client/dist/containers/home_page/featured_tools/FeaturedToolsList'
 import IconSvg from 'synapse-react-client/dist/containers/IconSvg'
 import { Query } from 'synapse-react-client/dist/utils/synapseTypes'
 import { TextMatchesQueryFilter } from 'synapse-react-client/dist/utils/synapseTypes/Table/QueryFilter'
+import { WideButton } from 'synapse-react-client/dist/components/styled/WideButton'
 import { ReactComponent as AnimalModels } from './assets/animalmodels.svg'
 import { ReactComponent as Antibodies } from './assets/antibodies.svg'
 import { ReactComponent as Biobanks } from './assets/biobanks.svg'
@@ -54,17 +55,19 @@ const BrowseToolsPage = () => {
     )
   }
 
+  const wideButtonSx = { marginTop: '50px' }
+
   return (
     <div className="browse-tools-page">
       <div className="header">
         <div className="home-container-description">
           <Typography variant="headline1" className="sectionTitle">
-            NF Research Tools Database
+            NF Research Tools Central
           </Typography>
           <div className="center-content">
             <div className="description">
               <Typography variant="body1">
-                The NF Research Tools Database aims to support the development
+                NF Research Tools Central aims to support the development
                 of a robust research toolkit and lower the barrier of entry to
                 neurofibromatosis (NF) research. The database includes
                 NF-associated animal models, cell lines, antibodies, and genetic
@@ -117,24 +120,41 @@ const BrowseToolsPage = () => {
           </button>
         </div>
         <div className="center-content">
-          <Button
-            className="btn-wide"
-            variant='contained'
+          <WideButton
+            sx={wideButtonSx}
+            variant="contained"
             onClick={() => gotoExploreTools()}
           >
             View All Tools
-          </Button>
+          </WideButton>
         </div>
       </Layout>
       <div className="home-container-description  home-bg-dark home-spacer">
-        <Typography variant="sectionTitle" sx={{textAlign:'center', paddingTop:'50px', paddingBottom: '15px'}}>
+        <Typography
+          variant="sectionTitle"
+          sx={{
+            textAlign: 'center',
+            paddingTop: '50px',
+            paddingBottom: '15px',
+          }}
+        >
           What Tools Can We Help You Find?
         </Typography>
-        <Typography variant="body1" sx={{textAlign:'center', paddingBottom: '15px'}}>
-            For the greatest success with your search, ensure your spelling is correct and avoid pluralization or suffixes.
+        <Typography
+          variant="body1"
+          sx={{ textAlign: 'center', paddingBottom: '15px' }}
+        >
+          For the greatest success with your search, ensure your spelling is
+          correct and avoid pluralization or suffixes.
         </Typography>
-        <Typography variant="body1" sx={{textAlign:'center', paddingBottom: '40px'}}>
-          <Link href="https://help.nf.synapse.org/NFdocs/Tips-for-Search.2640478225.html" target="_blank">
+        <Typography
+          variant="body1"
+          sx={{ textAlign: 'center', paddingBottom: '40px' }}
+        >
+          <Link
+            href="https://help.nf.synapse.org/NFdocs/Tips-for-Search.2640478225.html"
+            target="_blank"
+          >
             Learn More About MySQL Full Text Search
           </Link>
         </Typography>
@@ -158,7 +178,7 @@ const BrowseToolsPage = () => {
             </div>
             <div className="search-button-container">
               <Button
-                variant='contained'
+                variant="contained"
                 onClick={() => gotoExploreToolsWithFullTextSearch(searchText)}
               >
                 Search
@@ -193,18 +213,18 @@ const BrowseToolsPage = () => {
           />
         </div>
         <div className="center-content">
-          <Button
-            className="btn-wide"
-            variant='contained'
+          <WideButton
+            sx={wideButtonSx}
+            variant="contained"
             onClick={() => gotoExploreTools()}
           >
             View All Tools
-          </Button>
+          </WideButton>
         </div>
       </Layout>
       <Layout outsideContainerClassName="home-spacer highlightSubmitToolContainer">
         <Typography variant="sectionTitle" className="sectionTitle">
-          Submit a Tool to the Database
+          Submit a Tool to NF Research Tools Central
         </Typography>
         <div className="center-content">
           <div className="description">
@@ -212,20 +232,22 @@ const BrowseToolsPage = () => {
               We are currently accepting submissions that describe any
               NF1-related mouse model, cell line, genetic reagent (e.g. plasmid,
               CRISPR), antibody, or biobank. If you have a tool that you would
-              like to add to the Research Tools Database, please click the {'"'}
+              like to add to NF Research Tools Central, please click the {'"'}
               Submit a Tool{'"'} button below to learn more.
             </Typography>
           </div>
         </div>
         <div className="center-content">
-          <Button
+          <WideButton
+            sx={wideButtonSx}
             href="https://forms.gle/htFkH5yewLzP1RAu7"
-            className="btn-wide highlightSubmitToolButton"
-            variant='contained'
+            className="highlightSubmitToolButton"
+            variant="contained"
+            // @ts-ignore - target prop exists, but TS doesn't recognize on styled component
             target="_blank"
           >
             Submit A Tool
-          </Button>
+          </WideButton>
         </div>
       </Layout>
     </div>

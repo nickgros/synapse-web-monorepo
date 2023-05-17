@@ -25,6 +25,7 @@ import {
   ENTITY,
   ENTITY_ACCESS,
   ENTITY_ACCESS_REQUIREMENTS,
+  ENTITY_ACTIONS_REQUIRED,
   ENTITY_BUNDLE_V2,
   ENTITY_HEADER_BY_ID,
   ENTITY_HEADERS,
@@ -298,6 +299,8 @@ import {
   TwoFactorAuthStatus,
 } from './synapseTypes/TotpSecret'
 import { TwoFactorAuthRecoveryCodes } from './synapseTypes/TwoFactorAuthRecoveryCodes'
+import { SynapseError } from './SynapseError'
+import { ActionRequiredList } from './synapseTypes/DownloadListV2/ActionRequired'
 
 const cookies = new UniversalCookies()
 
@@ -313,7 +316,7 @@ export const ACCESS_TOKEN_COOKIE_KEY =
 const MAX_JS_FILE_DOWNLOAD_SIZE = 5242880
 // This corresponds to the Synapse-managed S3 storage location:
 export const SYNAPSE_STORAGE_LOCATION_ID = 1
-export const getRootURL = () => {
+export function getRootURL(): string {
   const portString = window.location.port ? `:${window.location.port}` : ''
   return `${window.location.protocol}//${window.location.hostname}${portString}/`
 }
@@ -329,13 +332,6 @@ export function delay(t: number) {
   return new Promise(resolve => {
     setTimeout(resolve.bind(null, {}), t)
   })
-}
-
-/**
- * Error message returned by the Synapse Backend
- */
-export type SynapseError = {
-  reason: string
 }
 
 /**
@@ -1438,6 +1434,32 @@ export const getUserTeamList = (
 ): Promise<PaginatedResults<Team>> => {
   const url = `/repo/v1/user/${userId}/team?offset=${offset}&limit=${limit}`
   return doGet(url, accessToken, BackendDestinationEnum.REPO_ENDPOINT)
+}
+
+/**
+ * Get the access requirements associated with a team
+ *
+ * @param {(string | undefined)} accessToken token of user
+ * @param {*} teamId teamId of the synapse team - https://rest-docs.synapse.org/rest/org/sagebionetworks/repo/model/Team.html
+ * @param {*} offset   (optional) the starting index of the returned results (default 0)
+ * @param {*} limit    (optional) the maximum number of access requirements to return (default 50)
+ * @returns {Promise<Array<AccessRequirement>>}
+ */
+export const getTeamAccessRequirements = (
+  accessToken: string | undefined,
+  teamId: string,
+  offset: string | number = 0,
+  limit: string | number = 50,
+): Promise<AccessRequirement[]> => {
+  const url = `/repo/v1/team/${teamId}/accessRequirement?offset=${offset}&limit=${limit}`
+  const fn = () => {
+    return doGet<PaginatedResults<AccessRequirement>>(
+      url,
+      accessToken,
+      BackendDestinationEnum.REPO_ENDPOINT,
+    )
+  }
+  return getAllOfPaginatedService(fn)
 }
 
 /**
@@ -4472,4 +4494,16 @@ export function getPortalFileHandleServletUrl(
   return `${getEndpoint(
     BackendDestinationEnum.PORTAL_ENDPOINT,
   )}/Portal/filehandleassociation?${search.toString()}`
+}
+
+// https://rest-docs.synapse.org/rest/GET/entity/id/actions/download.html
+export const getEntityDownloadActionsRequired = (
+  entityId: string,
+  accessToken?: string,
+) => {
+  return doGet<ActionRequiredList>(
+    ENTITY_ACTIONS_REQUIRED(entityId),
+    accessToken,
+    BackendDestinationEnum.REPO_ENDPOINT,
+  )
 }

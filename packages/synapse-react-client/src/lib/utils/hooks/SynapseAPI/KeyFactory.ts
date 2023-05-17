@@ -56,6 +56,11 @@ const entityQueryKeyObjects = {
     ...entityQueryKeyObjects.entity(id),
     scope: 'json',
   }),
+  // entity actions required
+  entityActions: (id: string) => [
+    entityQueryKeyObjects.entity(id),
+    'entityActions',
+  ],
   activity: (id: string, versionNumber?: number) => ({
     ...entityQueryKeyObjects.version(id),
     scope: 'activity',
@@ -160,7 +165,7 @@ const ACCESS_REQUIREMENT_QUERY_KEY = 'accessRequirement'
  *
  * Co-location of react-query keys for queries related to Synapse data. Two objectives of this strategy are
  * - minimize the risk of inappropriate cache key collisions
- * - simplify clearing the approprate query caches when the entity data is updated
+ * - simplify clearing the appropriate query caches when the entity data is updated
  *
  * For more information, see https://tkdodo.eu/blog/leveraging-the-query-function-context
  */
@@ -190,6 +195,10 @@ export class KeyFactory {
 
   public getEntityActivityQueryKey(id: string, versionNumber?: number) {
     return this.getKey(entityQueryKeyObjects.activity(id, versionNumber))
+  }
+
+  public getEntityActionsRequiredQueryKey(id: string) {
+    return this.getKey(...entityQueryKeyObjects.entityActions(id))
   }
 
   public getEntityVersionQueryKey(id: string, versionNumber?: string | number) {
@@ -358,6 +367,16 @@ export class KeyFactory {
     )
   }
 
+  public getSortedAccessRequirementsAndStatusQueryKey(
+    accessRequirementIds?: string[],
+  ) {
+    return this.getKey(
+      ACCESS_REQUIREMENT_QUERY_KEY,
+      'sortedByStatus',
+      accessRequirementIds,
+    )
+  }
+
   public getDataAccessSubmissionQueryKey(id?: string) {
     return this.getKey('dataAccessSubmission', id)
   }
@@ -495,6 +514,10 @@ export class KeyFactory {
 
   public getIsUserMemberOfTeamQueryKey(teamId: string, userId: string) {
     return this.getKey('team', teamId, 'member', userId)
+  }
+
+  public getTeamAccessRequirementsQueryKey(teamId: string) {
+    return this.getKey('team', teamId, 'accessRequirements')
   }
 
   public getFavoritesQueryKey() {

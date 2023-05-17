@@ -4,7 +4,7 @@ env:
   NODE_OPTIONS: '--max-old-space-size=4096'
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
 
@@ -13,6 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
+        with:
+          # Must retrieve full git history for Chromatic to track changes
+          fetch-depth: 0
       - uses: ./.github/actions/pnpm-setup-action
-      - name: Build docs
-        run: pnpm nx run synapse-react-client:build:docs
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: packages/synapse-react-client

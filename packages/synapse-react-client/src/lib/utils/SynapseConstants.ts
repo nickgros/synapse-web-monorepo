@@ -1,5 +1,3 @@
-import { UserCardSize } from '../containers/UserCard'
-
 /** Bootstrapped principals */
 /** The group representing all users logged-in to Synapse */
 export const AUTHENTICATED_PRINCIPAL_ID = 273948
@@ -83,6 +81,7 @@ export const SETTINGS: string = 'settings'
 export const COLUMNS: string = 'columns'
 export const COLUMNSDARK: string = 'columnsdark'
 export const VERTICAL_DOTS: string = 'verticaldots'
+export const CHALLENGE: string = 'challenge'
 export const FILE: string = 'file'
 export const CHART2: string = 'chart2'
 export const EXTERNALLINK: string = 'externallink'
@@ -94,10 +93,17 @@ export const DOWNLOAD_PERMISSION_REQUIRED: string =
 
 export const DEFAULT_PAGE_SIZE: number = 25
 // For User Profile Cards
-export const AVATAR: UserCardSize = 'AVATAR'
-export const SMALL_USER_CARD: UserCardSize = 'SMALL USER CARD'
-export const MEDIUM_USER_CARD: UserCardSize = 'MEDIUM USER CARD'
-export const LARGE_USER_CARD: UserCardSize = 'LARGE USER CARD'
+export const AVATAR = 'AVATAR'
+export const SMALL_USER_CARD = 'SMALL USER CARD'
+export const MEDIUM_USER_CARD = 'MEDIUM USER CARD'
+export const LARGE_USER_CARD = 'LARGE USER CARD'
+
+export type UserCardSize =
+  | typeof AVATAR
+  | typeof SMALL_USER_CARD
+  | typeof MEDIUM_USER_CARD
+  | typeof LARGE_USER_CARD
+
 export const SEPERATOR = 'SEPERATOR'
 export const AUTHENTICATED_USERS = 'AUTHENTICATED_USERS'
 

@@ -28,6 +28,7 @@ import {
   AccessRequirementSearchResponse,
 } from '../../../synapseTypes/AccessRequirement/AccessRequirementSearch'
 import { ResearchProject } from '../../../synapseTypes/ResearchProject'
+import { sortAccessRequirementsByCompletion } from '../../../../containers/AccessRequirementList/AccessRequirementListUtils'
 
 export function useGetAccessRequirements<T extends AccessRequirement>(
   accessRequirementId: string | number,
@@ -53,6 +54,18 @@ export function useGetAccessRequirementsForEntity(
   return useQuery<AccessRequirement[], SynapseClientError>(
     keyFactory.getEntityAccessRequirementsQueryKey(entityId),
     () => SynapseClient.getAllAccessRequirements(accessToken, entityId),
+    options,
+  )
+}
+
+export function useGetAccessRequirementsForTeam(
+  teamId: string,
+  options?: UseQueryOptions<AccessRequirement[], SynapseClientError>,
+) {
+  const { accessToken, keyFactory } = useSynapseContext()
+  return useQuery<AccessRequirement[], SynapseClientError>(
+    keyFactory.getTeamAccessRequirementsQueryKey(teamId),
+    () => SynapseClient.getTeamAccessRequirements(accessToken, teamId),
     options,
   )
 }
@@ -166,6 +179,21 @@ export function useGetAccessRequirementStatus<
         accessToken,
         accessRequirementId,
       ),
+    options,
+  )
+}
+
+export function useSortAccessRequirementIdsByCompletion(
+  accessRequirementIds: string[],
+  options?: UseQueryOptions<string[], SynapseClientError>,
+) {
+  const { accessToken, keyFactory } = useSynapseContext()
+
+  return useQuery<string[], SynapseClientError>(
+    keyFactory.getSortedAccessRequirementsAndStatusQueryKey(
+      accessRequirementIds,
+    ),
+    () => sortAccessRequirementsByCompletion(accessToken, accessRequirementIds),
     options,
   )
 }
