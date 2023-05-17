@@ -31,28 +31,8 @@ export const generatePalette = (
  * Default colors here match the default colors in _variables.scss.  We now have a single point of control
  */
 export const palette: PaletteOptions = {
-  primary: generatePalette('#395979', {
-    100: '#d7dee4',
-    200: '#b0bdc9',
-    300: '#889baf',
-    400: '#617a94',
-    500: '#395979',
-    600: '#2e4761',
-    700: '#223549',
-    800: '#172430',
-    900: '#0b1218',
-  }),
-  secondary: generatePalette('#469285', {
-    100: '#dae9e7',
-    200: '#b5d3ce',
-    300: '#90beb6',
-    400: '#6ba89d',
-    500: '#469285',
-    600: '#38756a',
-    700: '#2a6960',
-    800: '#1c3a35',
-    900: '#0e1d1b',
-  }),
+  primary: generatePalette('#7f04ab'),
+  secondary: generatePalette('#e58c25'),
   tertiary: generatePalette('#EDC766', {
     100: '#fbf4e0',
     200: '#f8e9c2',
