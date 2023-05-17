@@ -169,6 +169,7 @@
     "babel-jest": "^29.4.3",
     "babel-loader": "^8.2.5",
     "buffer": "^6.0.3",
+    "chromatic": "^6.17.4",
     "copyfiles": "^2.4.1",
     "core-js": "^3.1.4",
     "esbuild": "^0.17.11",
@@ -233,7 +234,8 @@
     "unlink-src": "pnpm unlink && cd ./node_modules/react && pnpm unlink && cd ../react-router && pnpm unlink && cd ../react-router-dom && pnpm unlink && cd ../../",
     "storybook": "storybook dev -p 6060",
     "lint": "eslint src",
-    "watch:js": "tsc --watch"
+    "watch:js": "tsc --watch",
+    "chromatic": "chromatic --exit-zero-on-changes --build-script-name=build:storybook"
   },
   "resolutions": {
     "js-yaml": "3.13.1",
@@ -263,5 +265,7 @@
   },
   "msw": {
     "workerDirectory": "public"
-  }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "synapse-react-client@3.1.34"
 }
