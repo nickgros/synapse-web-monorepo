@@ -60,9 +60,9 @@ jobs:
           exitOnceUploaded: true
           autoAcceptChanges: 'main'
           repositorySlug: ${{ steps.comment-branch.outputs.head_owner }}/${{ steps.comment-branch.outputs.head_repo }}
-          branchName: ${{ steps.comment-branch.outputs.head_sha }}
+          branchName: ${{ steps.comment-branch.outputs.head_ref }}
         env:
-          STORYBOOK_GITHUB_SHA: ${{ github.sha }}
+          CHROMATIC_SHA: ${{ steps.comment-branch.outputs.head_sha }}
       - name: Add comment to PR
         uses: actions/github-script@v6
         if: always()
