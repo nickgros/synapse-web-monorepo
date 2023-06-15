@@ -49,7 +49,8 @@ jobs:
       - name: Prebuild dependencies
         # we technically only need to build the dependencies of SRC, but Nx doesn't expose an easy way to do that
         run: pnpm nx run synapse-react-client:build
-      - name: Publish to Chromatic
+      - id: chromatic-deploy
+        name: Publish to Chromatic
         uses: chromaui/action@v1
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
@@ -59,3 +60,21 @@ jobs:
           autoAcceptChanges: 'main'
           repositorySlug: ${{ steps.comment-branch.outputs.head_owner }}/${{ steps.comment-branch.outputs.head_repo }}
           branchName: ${{ steps.comment-branch.outputs.head_ref }}
+      - name: Add comment to PR
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          script: |
+            const name = '${{ github.workflow }}';
+            const url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+            const success = '${{ job.status }}' === 'success';
+            let body = `${name}: ${success ? 'succeeded ✅' : 'failed ❌'}\n${url}\n\n`;
+            body += `Open deployed Storybook here: ${{ steps.chromatic-deploy.output.storybookUrl }}\n\n`
+            body += `[View UI tests: ${{ steps.chromatic-deploy.output.changeCount }} / ${{ steps.chromatic-deploy.output.actualCaptureCount }} changed](${{ steps.chromatic-deploy.output.buildUrl }})`
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
