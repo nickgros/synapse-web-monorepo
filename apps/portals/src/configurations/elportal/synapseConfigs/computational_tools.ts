@@ -22,7 +22,7 @@ export const computationalCardConfiguration: CardConfiguration = {
     {
       isMarkdown: false,
       matchColumnName: 'grant',
-      URLColumnName: 'Grant Number',
+      URLColumnName: 'grantNumber',
       baseURL: 'Explore/Projects/DetailsPage',
     },
   ],
@@ -39,16 +39,6 @@ const computationalTools: SynapseConfig = {
     shouldDeepLink: true,
     name: 'Computational Tools',
     facetsToPlot: ['grant', 'softwareType'],
-    searchConfiguration: {
-      searchable: [
-        'contributor',
-        'name',
-        'grant',
-        'program',
-        'softwareType',
-        'summary',
-      ],
-    },
   },
 }
 

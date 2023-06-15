@@ -270,14 +270,15 @@ export const challengeDetailsPageConfig: DetailsPageProps = {
           name: 'ProjectDiscussionForum',
           title: 'Discussion Forum',
           columnName: 'id',
-          props: undefined
+          props: undefined,
         },
-      ]
-    }
+      ],
+    },
   ],
 }
 
 export const challengeDetailsLandingPage: SynapseConfig[] = [
+  // Register For Challenge component is here, and the wrapper positions it properly in the header card
   {
     name: 'CardContainerLogic',
     isOutsideContainer: true,
@@ -286,8 +287,13 @@ export const challengeDetailsLandingPage: SynapseConfig[] = [
       sql: challengeProjectsSql,
       isHeader: true,
     },
+    className: 'challengeDetailPageHeaderCard',
   },
-  // TODO: Add Register For Challenge component here, and position it properly in the header card
+  {
+    name: 'ChallengeDetailPageWrapper',
+    isOutsideContainer: true,
+    props: undefined,
+  },
   {
     name: 'DetailsPage',
     props: challengeDetailsPageConfig,

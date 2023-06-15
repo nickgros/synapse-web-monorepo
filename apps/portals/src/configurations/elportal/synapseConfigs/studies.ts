@@ -4,7 +4,10 @@ import { SynapseConstants } from 'synapse-react-client'
 import type { CardConfiguration } from 'synapse-react-client'
 import studyHeaderSvg from '../style/study-header.svg'
 import { studiesSql, dataSql, dataOnStudiesPageSql } from '../resources'
-import { ColumnMultiValueFunction, ColumnSingleValueFilterOperator } from '@sage-bionetworks/synapse-types'
+import {
+  ColumnMultiValueFunction,
+  ColumnSingleValueFilterOperator,
+} from '@sage-bionetworks/synapse-types'
 
 const rgbIndex = 0
 export const studyCardConfiguration: CardConfiguration = {
@@ -29,7 +32,7 @@ export const studyCardConfiguration: CardConfiguration = {
     title: 'studyName',
     subTitle: 'dataContributor',
     icon: 'Access_Type',
-    description: 'studyDescription',
+    description: 'studyAbstract',
     secondaryLabels: [
       'dataTypeAll',
       'studyFocus',
@@ -57,19 +60,6 @@ const studies: SynapseConfig = {
     name: 'Studies',
     shouldDeepLink: true,
     cardConfiguration: studyCardConfiguration,
-    searchConfiguration: {
-      searchable: [
-        'Study_Name',
-        'Study_Description',
-        'DataType_All',
-        'studyFocus',
-        'Data_Contributor',
-        'specimenType',
-        'Species',
-        'Grant Number',
-        'Program',
-      ],
-    },
   },
 }
 
@@ -85,7 +75,7 @@ export const studiesDetailsPageProps: DetailsPageProps = {
       synapseConfigArray: [
         {
           name: 'Markdown',
-          columnName: 'studyMetadata',
+          columnName: 'studyDescription',
           title: 'Study Description',
           props: {},
         },

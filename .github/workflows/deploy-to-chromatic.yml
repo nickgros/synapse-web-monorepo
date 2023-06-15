@@ -7,17 +7,16 @@ on:
   push:
     branches:
       - main
-  pull_request_target:
-    branches:
-      - main
+  issue_comment:
+    types: [created]
 
 jobs:
-  build:
+  main-deploy-to-chromatic:
+    if: github.event.push
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
           # Chromatic requires full git history to track changes
           fetch-depth: 0
       - uses: ./.github/actions/pnpm-setup-action
@@ -31,3 +30,30 @@ jobs:
           workingDir: packages/synapse-react-client
           exitZeroOnChanges: true
           exitOnceUploaded: true
+          autoAcceptChanges: 'main'
+  pr-deploy-to-chromatic:
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/chromatic')
+    runs-on: ubuntu-latest
+    steps:
+      - if: github.event.issue.pull_request
+        name: Get PR branch
+        uses: alessbell/pull-request-comment-branch@v1.1
+        id: comment-branch
+      - uses: actions/checkout@v3.1.0
+        with:
+          repository: ${{ steps.comment-branch.outputs.head_owner }}/${{ steps.comment-branch.outputs.head_repo }}
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+          # Chromatic requires full git history to track changes
+          fetch-depth: 0
+      - uses: ./.github/actions/pnpm-setup-action
+      - name: Prebuild dependencies
+        # we technically only need to build the dependencies of SRC, but Nx doesn't expose an easy way to do that
+        run: pnpm nx run synapse-react-client:build
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: packages/synapse-react-client
+          exitZeroOnChanges: true
+          exitOnceUploaded: true
+          autoAcceptChanges: 'main'

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { PRODUCTION_ENDPOINT_CONFIG } from '../../utils/functions/getEndpoint'
 import useGetInfoFromIds, {
   UseGetInfoFromIdsProps,
@@ -40,6 +40,7 @@ import {
 import TwoFactorAuthEnabledRequirement from './RequirementItem/TwoFactorAuthEnabledRequirement'
 import { AccessRequirementListItem } from './AccessRequirementListItem'
 import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useCanShowManagedACTWikiInWizard } from './AccessRequirementListUtils'
 
 export type AccessRequirementListProps = {
   entityId: string // will show this entity info
@@ -49,6 +50,7 @@ export type AccessRequirementListProps = {
   renderAsModal?: boolean
   numberOfFilesAffected?: number // if provided, will show this instead of the entity information
   requestObjectName?: string // if provided, will show this instead of the entity information or numberOfFilesAffected
+  dialogTitle?: string // if provided, will show this instead of Data Access Request
 }
 
 const SUPPORTED_ACCESS_REQUIREMENTS = new Set<
@@ -126,6 +128,7 @@ export default function AccessRequirementList(
     renderAsModal,
     numberOfFilesAffected,
     requestObjectName,
+    dialogTitle = 'Data Access Request',
   } = props
   const { accessToken } = useSynapseContext()
   const isSignedIn = !!accessToken
@@ -143,6 +146,7 @@ export default function AccessRequirementList(
     ids: [entityId],
     type: 'ENTITY_HEADER',
   }
+  const canShowManagedACTWikiInWizard = useCanShowManagedACTWikiInWizard()
 
   const entityInformation = useGetInfoFromIds<EntityHeader>(entityHeaderProps)
 
@@ -152,14 +156,14 @@ export default function AccessRequirementList(
       enabled: Boolean(!accessRequirementFromProps && teamId),
     },
   )
-  const { data: fetchedRequirementsForEntity } = useGetAccessRequirementsForEntity(
-    entityId,
-    {
+  const { data: fetchedRequirementsForEntity } =
+    useGetAccessRequirementsForEntity(entityId, {
       enabled: Boolean(!accessRequirementFromProps && entityId && !teamId),
-    },
-  )
+    })
 
-  const fetchedRequirements = teamId ? fetchedRequirementsForTeam : fetchedRequirementsForEntity
+  const fetchedRequirements = teamId
+    ? fetchedRequirementsForTeam
+    : fetchedRequirementsForEntity
 
   const accessRequirements = accessRequirementFromProps ?? fetchedRequirements
 
@@ -249,7 +253,7 @@ export default function AccessRequirementList(
     <>
       <DialogTitle>
         <Stack direction="row" alignItems={'center'} gap={'5px'}>
-          Data Access Request
+          {dialogTitle}
           <Box sx={{ flexGrow: 1 }} />
           <IconButton onClick={onHide}>
             <IconSvg icon={'close'} wrap={false} sx={{ color: 'grey.700' }} />
@@ -293,6 +297,14 @@ export default function AccessRequirementList(
       </DialogContent>
     </>
   )
+
+  const dialogWidth =
+    [
+      RequestDataStep.UPDATE_ACCESSORS_AND_FILES,
+      RequestDataStep.UPDATE_RESEARCH_PROJECT,
+    ].includes(requestDataStep) && canShowManagedACTWikiInWizard
+      ? 'xl'
+      : 'md'
 
   let renderContent = content
   if (renderAsModal) {
@@ -363,7 +375,7 @@ export default function AccessRequirementList(
         renderContent = content
     }
     return (
-      <Dialog maxWidth="md" fullWidth open={true} onClose={onHide}>
+      <Dialog maxWidth={dialogWidth} fullWidth open={true} onClose={onHide}>
         {renderContent}
       </Dialog>
     )

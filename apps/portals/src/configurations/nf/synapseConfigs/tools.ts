@@ -13,7 +13,6 @@ import {
   usageRequirementsSql,
   vendorSql,
   catalogNumberSql,
-  mtaRequiredSql,
   toolApplicationsSql,
   mutationsSql,
   publicationsV2Sql,
@@ -187,24 +186,6 @@ export const toolDetailsPageConfig: DetailsPageProps = {
             sql: fundingAgencySql,
             isMarkdown: true,
             sqlOperator: ColumnSingleValueFilterOperator.EQUAL,
-          },
-          tableSqlKeys: ['resourceId'],
-          columnName: 'resourceId',
-        },
-        {
-          name: 'SubsectionRowRenderer',
-          outsideContainerClassName: 'home-spacer',
-          props: {
-            sql: mtaRequiredSql,
-            sqlOperator: ColumnSingleValueFilterOperator.EQUAL,
-            columnNameIsSectionTitle: true,
-            isMarkdown: true,
-            friendlyValuesMap: {
-              no: 'A MTA is **not** required for usage of this resource.',
-              yes: 'A MTA is required for usage of this resource.',
-              unknown:
-                'It is unknown whether a MTA is required for usage of this resource.',
-            },
           },
           tableSqlKeys: ['resourceId'],
           columnName: 'resourceId',
