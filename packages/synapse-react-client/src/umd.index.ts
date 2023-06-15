@@ -6,7 +6,7 @@ import { DownloadConfirmation } from './components/download_list/DownloadConfirm
 import DirectProgrammaticDownload from './components/DownloadCart/DirectProgrammaticDownload'
 import { DownloadCartPage } from './components/DownloadCart/DownloadCartPage'
 import ShowDownloadV2 from './components/DownloadCart/ShowDownloadV2'
-import { SchemaDrivenAnnotationEditor } from './components/entity/annotations/SchemaDrivenAnnotationEditor'
+import { SchemaDrivenAnnotationEditor } from './components/SchemaDrivenAnnotationEditor/SchemaDrivenAnnotationEditor'
 import { EntityModal } from './components/entity/metadata/EntityModal'
 import { EntityBadgeIcons } from './components/EntityBadgeIcons/EntityBadgeIcons'
 import EntityForm from './components/EntityForm/EntityForm'
@@ -65,6 +65,9 @@ import TwoFactorBackupCodes from './components/Authentication/TwoFactorBackupCod
 import TwoFactorEnrollmentForm from './components/Authentication/TwoFactorEnrollmentForm'
 import TwoFactorAuthSettingsPanel from './components/Authentication/TwoFactorAuthSettingsPanel'
 import { FullContextProvider } from './utils/context/FullContextProvider'
+import SubscriptionPage from './components/SubscriptionPage'
+import OrientationBanner from './components/OrientationBanner/OrientationBanner'
+import AccessRequirementList from './components/AccessRequirementList/AccessRequirementList'
 
 // Also include scss in the bundle
 import './style/main.scss'
@@ -132,6 +135,9 @@ const SynapseComponents = {
   TwoFactorAuthSettingsPanel,
   TwoFactorBackupCodes,
   TwoFactorEnrollmentForm,
+  SubscriptionPage,
+  OrientationBanner,
+  AccessRequirementList,
 }
 
 // Include the version in the build

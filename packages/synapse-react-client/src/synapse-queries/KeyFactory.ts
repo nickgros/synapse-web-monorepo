@@ -1,32 +1,29 @@
-import { SubmissionSearchRequest } from '@sage-bionetworks/synapse-types'
 import {
   AccessApprovalSearchRequest,
+  AccessRequirementSearchRequest,
+  AvailableFilesRequest,
   BatchFileRequest,
-  EntityBundleRequest,
-  EntityChildrenRequest,
-  FileHandle,
-  QueryBundleRequest,
-  ReferenceList,
-  RestrictionInformationRequest,
-  TYPE_FILTER,
-} from '@sage-bionetworks/synapse-types'
-import { AccessRequirementSearchRequest } from '@sage-bionetworks/synapse-types'
-import { SubmissionInfoPageRequest } from '@sage-bionetworks/synapse-types'
-import { AvailableFilesRequest } from '@sage-bionetworks/synapse-types'
-import { QueryKey } from 'react-query'
-import {
   DiscussionFilter,
   DiscussionReplyOrder,
   DiscussionThreadOrder,
-} from '@sage-bionetworks/synapse-types'
-import { SearchQuery } from '@sage-bionetworks/synapse-types'
-import { SubscriptionObjectType } from '@sage-bionetworks/synapse-types'
-import {
+  EntityBundleRequest,
+  EntityChildrenRequest,
   FavoriteSortBy,
   FavoriteSortDirection,
+  FileHandle,
+  GetProjectsParameters,
+  PrincipalAliasRequest,
+  QueryBundleRequest,
+  ReferenceList,
+  RestrictionInformationRequest,
+  SearchQuery,
+  SubmissionInfoPageRequest,
+  SubmissionSearchRequest,
+  SubscriptionObjectType,
+  SubscriptionQuery,
+  TYPE_FILTER,
 } from '@sage-bionetworks/synapse-types'
-import { GetProjectsParameters } from '@sage-bionetworks/synapse-types'
-import { PrincipalAliasRequest } from '@sage-bionetworks/synapse-types'
+import { QueryKey } from 'react-query'
 import { removeTrailingUndefinedElements } from '../utils/functions/ArrayUtils'
 
 const entityQueryKeyObjects = {
@@ -431,6 +428,10 @@ export class KeyFactory {
     return this.getKey('moderators', forumId)
   }
 
+  public getForumMetadataQueryKey(forumId: string) {
+    return this.getKey('forumThread', forumId, 'metadata')
+  }
+
   public getAllForumThreadsQueryKey(forumId: string) {
     return this.getKey('forumthread', forumId)
   }
@@ -509,6 +510,14 @@ export class KeyFactory {
     return this.getKey('subscribers', objectId, objectType)
   }
 
+  public getBaseSubscriptionQueryKey() {
+    return this.getKey('subscription')
+  }
+
+  public getAllSubscriptionsQueryKey(query?: SubscriptionQuery) {
+    return this.getKey('subscription', 'all', query)
+  }
+
   public getSubscriptionQueryKey(
     objectId: string,
     objectType: SubscriptionObjectType,
@@ -516,12 +525,16 @@ export class KeyFactory {
     return this.getKey('subscription', objectId, objectType)
   }
 
-  public getAllSubscriptionsQueryKey() {
-    return this.getKey('subscription')
-  }
-
   public getSearchEntitiesQueryKey(query: SearchQuery) {
     return this.getKey('searchEntities', query)
+  }
+
+  public getTeamListQueryKey(teamIds: string) {
+    return this.getKey('team', teamIds, 'teamList')
+  }
+
+  public getChallengeTeamListQueryKey(challengeId: string) {
+    return this.getKey('challenge', challengeId, 'teamList')
   }
 
   public getTeamMembersQueryKey(teamId: string) {
@@ -530,6 +543,10 @@ export class KeyFactory {
 
   public getIsUserMemberOfTeamQueryKey(teamId: string, userId: string) {
     return this.getKey('team', teamId, 'member', userId)
+  }
+
+  public getMembershipStatusQueryKey(teamId: string, userId: string) {
+    return this.getKey('team', teamId, 'membershipStatus', userId)
   }
 
   public getTeamAccessRequirementsQueryKey(teamId: string) {
@@ -559,6 +576,10 @@ export class KeyFactory {
 
   public getUserChallengesQueryKey(userId: string) {
     return this.getKey('userChallenges', userId)
+  }
+
+  public getSubmissionTeamsQueryKey(challengeId: string) {
+    return this.getKey('submissionTeams', challengeId)
   }
 
   public getUserProjectsQueryKey(
