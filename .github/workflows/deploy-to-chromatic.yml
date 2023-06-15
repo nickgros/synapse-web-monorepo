@@ -12,7 +12,7 @@ on:
 
 jobs:
   main-deploy-to-chromatic:
-    if: github.event.push
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.1.0
@@ -57,3 +57,5 @@ jobs:
           exitZeroOnChanges: true
           exitOnceUploaded: true
           autoAcceptChanges: 'main'
+          repositorySlug: ${{ steps.comment-branch.outputs.head_owner }}/${{ steps.comment-branch.outputs.head_repo }}
+          branchName: ${{ steps.comment-branch.outputs.head_ref }}
