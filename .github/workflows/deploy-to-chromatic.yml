@@ -34,7 +34,7 @@ jobs:
           HEAD_REF: ${{ steps.comment-branch.outputs.head_ref }}
         run: |
           echo "FULL_REPO_NAME=$FULL_REPO_NAME" >> "$GITHUB_ENV"
-          echo "HEAD_REF=$HEAD_REF" >> "$GITHUB_ENV
+          echo "HEAD_REF=$HEAD_REF" >> "$GITHUB_ENV"
       - name: Output configuration
         run: echo "Deploying $FULL_REPO_NAME to Chromatic using branch $HEAD_REF"
       - uses: actions/checkout@v3.1.0
