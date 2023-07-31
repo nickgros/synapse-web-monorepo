@@ -1,9 +1,11 @@
 import React, { useLayoutEffect, useRef } from 'react'
-import { Tab, Tabs, TabScrollButton } from '@mui/material'
-import { useShowDesktop } from './utils'
-export type NamedRoute = {
-  name: string
-}
+import {
+  Tab,
+  Tabs,
+  TabScrollButton,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
 
 export type RouteControlProps = {
   handleChanges: (text: string, index: number) => void
@@ -16,10 +18,8 @@ export const RouteControl: React.FunctionComponent<RouteControlProps> = ({
   isSelected,
   customRoutes,
 }) => {
-  const setActiveClass = (isSelected: boolean) =>
-    isSelected ? 'isSelected' : ''
-
-  const isMobileView = !useShowDesktop()
+  const theme = useTheme()
+  const isMobileView = useMediaQuery(theme.breakpoints.down('sm'))
 
   const selectedRef = useRef<HTMLDivElement>(null)
 
@@ -30,29 +30,21 @@ export const RouteControl: React.FunctionComponent<RouteControlProps> = ({
     }, 100)
   }, [])
 
-  if (isMobileView) {
-    return (
-      <nav className="flex-display nav explore-nav">
-        {customRoutes.map((name, index) => {
-          const handleClick = () => handleChanges(name, index)
-          return (
-            <button
-              onClick={handleClick}
-              key={name}
-              className={`nav-button nav-button-container center-content ${setActiveClass(
-                isSelected(name),
-              )}`}
-            >
-              {name}
-            </button>
-          )
-        })}
-      </nav>
-    )
-  }
-
   const CustomScrollButton = (props) => {
-    return <TabScrollButton {...props} classes={{ root: 'TabScrollButton' }} />
+    if (props.disabled) {
+      return <></>
+    }
+    return (
+      <TabScrollButton
+        {...props}
+        sx={{
+          svg: {
+            color: 'secondary.main',
+            fontSize: '26px',
+          },
+        }}
+      />
+    )
   }
 
   /**
@@ -62,10 +54,16 @@ export const RouteControl: React.FunctionComponent<RouteControlProps> = ({
     <Tabs
       value={customRoutes.find((name) => isSelected(name))}
       variant="scrollable"
+      orientation={isMobileView ? 'vertical' : 'horizontal'}
       scrollButtons="auto"
       ScrollButtonComponent={CustomScrollButton}
       aria-label="Explore Sections"
-      className="flex-display nav explore-nav"
+      sx={{
+        '.MuiTabs-flexContainer': {
+          gap: 5,
+          alignItems: 'center',
+        },
+      }}
       TabIndicatorProps={{
         style: { background: 'transparent' },
       }}
@@ -76,15 +74,25 @@ export const RouteControl: React.FunctionComponent<RouteControlProps> = ({
             value={name}
             ref={isSelected(name) ? selectedRef : undefined}
             key={name}
-            label={<div className={`explore-nav-button-text `}>{name}</div>}
-            className={`nav-button nav-button-container center-content ${setActiveClass(
-              isSelected(name),
-            )}`}
+            label={name}
             disableRipple={true}
             disableTouchRipple
             onClick={() => handleChanges(name, index)}
             sx={{
-              padding: '0 2rem',
+              fontSize: '16px',
+              fontWeight: 700,
+              color: 'grey.700',
+              minWidth: { xs: '100%', sm: 'unset' },
+              py: 1,
+              px: 0,
+              borderBottom: '4px solid',
+              borderBottomColor: 'transparent',
+              '&.Mui-selected': {
+                borderBottomColor: 'secondary.main',
+              },
+              '&:hover:not(.Mui-selected)': {
+                color: 'grey.800',
+              },
             }}
           />
         )
