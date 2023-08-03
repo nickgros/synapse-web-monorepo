@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Plotly from 'plotly.js-basic-dist'
-import createPlotlyComponent from 'react-plotly.js/factory'
 import { SizeMe } from 'react-sizeme'
 import {
   ColumnTypeEnum,
@@ -36,8 +35,7 @@ import {
 } from './FacetPlotsCardGrid'
 import { SkeletonParagraph, SkeletonTable } from '../Skeleton'
 import { times } from 'lodash-es'
-
-const Plot = createPlotlyComponent(Plotly)
+import { Plot } from '../Plot'
 
 export type FacetPlotsCardProps = {
   title?: string

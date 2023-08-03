@@ -369,6 +369,10 @@ export class KeyFactory {
     return this.getKey(ACCESS_REQUIREMENT_QUERY_KEY, 'search', params)
   }
 
+  public getAccessRequirementSubjectsQueryKey(id: string) {
+    return this.getKey(ACCESS_REQUIREMENT_QUERY_KEY, id, 'subjects')
+  }
+
   public getAccessRequirementWikiPageKey(id: string) {
     return this.getKey(ACCESS_REQUIREMENT_QUERY_KEY, id, 'wikiPageKey')
   }

@@ -128,11 +128,14 @@ import {
   BulkFileDownloadResponse,
   Challenge,
   ChallengePagedResults,
+  ChallengeTeam,
+  ChallengeTeamPagedResults,
   ChangePasswordWithCurrentPassword,
   ChangePasswordWithToken,
   CreateDiscussionReply,
   CreateDiscussionThread,
   CreateSubmissionRequest,
+  Direction,
   DiscussionFilter,
   DiscussionReplyBundle,
   DiscussionReplyOrder,
@@ -140,6 +143,7 @@ import {
   DiscussionSearchResponse,
   DiscussionThreadBundle,
   DiscussionThreadOrder,
+  DockerCommit,
   DoiAssociation,
   DownloadFromTableRequest,
   DownloadFromTableResult,
@@ -184,6 +188,7 @@ import {
   FormGroup,
   FormRejection,
   Forum,
+  GetEvaluationParameters,
   GetProjectsParameters,
   HasAccessResponse,
   InviteeVerificationSignedToken,
@@ -196,6 +201,7 @@ import {
   ManagedACTAccessRequirementStatus,
   MembershipInvitation,
   MembershipInvtnSignedToken,
+  MembershipRequest,
   MessageURL,
   MultipartUploadRequest,
   MultipartUploadStatus,
@@ -232,10 +238,12 @@ import {
   Request,
   ResearchProject,
   ResponseMessage,
+  RestrictableObjectDescriptorResponse,
   RestrictionInformationRequest,
   RestrictionInformationResponse,
   SearchQuery,
   SearchResults,
+  SortBy,
   SqlTransformResponse,
   Submission as DataAccessSubmission,
   SubmissionInfoPage,
@@ -252,6 +260,8 @@ import {
   TableUpdateTransactionRequest,
   Team,
   TeamMember,
+  TeamMembershipStatus,
+  TeamSubmissionEligibility,
   Topic,
   TotpSecret,
   TotpSecretActivationRequest,
@@ -267,6 +277,7 @@ import {
   UpdateThreadTitleRequest,
   UploadDestination,
   UserBundle,
+  UserEntityPermissions,
   UserEvaluationPermissions,
   UserGroupHeaderResponse,
   UserGroupHeaderResponsePage,
@@ -276,17 +287,6 @@ import {
   VersionInfo,
   WikiPage,
   WikiPageKey,
-  MembershipRequest,
-  ChallengeTeamPagedResults,
-  ChallengeTeam,
-  TeamMembershipStatus,
-  UserEntityPermissions,
-  GetEvaluationParameters,
-  DockerCommit,
-  SortBy,
-  Direction,
-  TeamSubmissionEligibility,
-  RestrictableObjectDescriptor,
 } from '@sage-bionetworks/synapse-types'
 import { SynapseClientError } from '../utils/SynapseClientError'
 import { calculateFriendlyFileSize } from '../utils/functions/calculateFriendlyFileSize'
@@ -4898,10 +4898,7 @@ export function getSubjects(
   if (nextPageToken) {
     params.set('nextPageToken', nextPageToken)
   }
-  return doGet<{
-    subjects: RestrictableObjectDescriptor[]
-    nextPageToken?: string
-  }>(
+  return doGet<RestrictableObjectDescriptorResponse>(
     `/repo/v1/accessRequirement/${requirementId}/subjects?${params.toString()}`,
     accessToken,
     BackendDestinationEnum.REPO_ENDPOINT,

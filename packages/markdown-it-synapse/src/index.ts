@@ -30,7 +30,7 @@ let suffix: string | undefined
 let widgetIndex: number | undefined
 let navIndex: number | undefined
 let footnoteId: number | undefined
-let footnotes: string | undefined
+let _footnotes: string | undefined
 let baseURL: string | undefined
 
 function getParamValue(params: string, name: string) {
@@ -211,7 +211,7 @@ const synapse: RuleInline = function (state, silent) {
     decodedWidgetParams = decodeURIComponent(widgetParams)
     footnoteText = getParamValue(decodedWidgetParams, 'text')
     if (footnoteText) {
-      footnotes +=
+      _footnotes +=
         '${bookmark?text=[' +
         footnoteId +
         ']&bookmarkID=wikiReference' +
@@ -259,12 +259,12 @@ const synapse: RuleInline = function (state, silent) {
   return true
 }
 
-module.exports = function synapse_plugin(md, _suffix, _baseURL) {
+export function synapse_plugin(md, _suffix, _baseURL) {
   widgetIndex = 0
   navIndex = 0
   footnoteId = 1
   suffix = _suffix
-  footnotes = ''
+  _footnotes = ''
   baseURL = ''
   if (_baseURL) {
     baseURL = _baseURL
@@ -272,16 +272,16 @@ module.exports = function synapse_plugin(md, _suffix, _baseURL) {
   md.inline.ruler.after('emphasis', 'synapse', synapse)
 }
 
-module.exports.footnotes = function () {
-  return footnotes
+export function footnotes() {
+  return _footnotes
 }
 
-module.exports.resetFootnotes = function () {
-  footnotes = ''
+export function resetFootnotes() {
+  _footnotes = ''
   footnoteId = 1
 }
 
-module.exports.preprocessMarkdown = function (mdString) {
+export function preprocessMarkdown(mdString) {
   let md = ''
   const splitMD = mdString.split('\n')
 
@@ -307,7 +307,7 @@ module.exports.preprocessMarkdown = function (mdString) {
   return md
 }
 
-module.exports.init_markdown_it = function (
+export function init_markdown_it(
   md,
   markdownitSub,
   markdownitSup,
@@ -778,4 +778,12 @@ module.exports.init_markdown_it = function (
   }
 
   initMarkdownIt()
+}
+
+export default {
+  init_markdown_it,
+  synapse_plugin,
+  footnotes,
+  resetFootnotes,
+  preprocessMarkdown,
 }

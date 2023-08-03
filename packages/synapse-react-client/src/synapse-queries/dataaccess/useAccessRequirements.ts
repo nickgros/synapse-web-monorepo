@@ -14,20 +14,19 @@ import {
   AccessApproval,
   AccessControlList,
   AccessRequirement,
+  AccessRequirementSearchRequest,
+  AccessRequirementSearchResponse,
   AccessRequirementStatus,
   ACTSubmissionStatus,
   ManagedACTAccessRequirementStatus,
   Renewal,
   Request,
+  ResearchProject,
+  RestrictableObjectDescriptorResponse,
   RestrictionInformationRequest,
   RestrictionInformationResponse,
   WikiPageKey,
 } from '@sage-bionetworks/synapse-types'
-import {
-  AccessRequirementSearchRequest,
-  AccessRequirementSearchResponse,
-} from '@sage-bionetworks/synapse-types'
-import { ResearchProject } from '@sage-bionetworks/synapse-types'
 import { sortAccessRequirementsByCompletion } from '../../components/AccessRequirementList/AccessRequirementListUtils'
 
 export function useGetAccessRequirements<T extends AccessRequirement>(
@@ -356,6 +355,33 @@ export function useCancelDataAccessRequest(
         }
         return
       },
+    },
+  )
+}
+
+export function useGetAccessRequirementSubjectsInfinite(
+  accessRequirementId: string,
+  options?: UseInfiniteQueryOptions<
+    RestrictableObjectDescriptorResponse,
+    SynapseClientError
+  >,
+) {
+  const { accessToken, keyFactory } = useSynapseContext()
+  return useInfiniteQuery<
+    RestrictableObjectDescriptorResponse,
+    SynapseClientError
+  >(
+    keyFactory.getAccessRequirementSubjectsQueryKey(accessRequirementId),
+    async context => {
+      return await SynapseClient.getSubjects(
+        accessToken,
+        accessRequirementId,
+        context.pageParam,
+      )
+    },
+    {
+      ...options,
+      getNextPageParam: page => page.nextPageToken,
     },
   )
 }

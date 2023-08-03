@@ -1,9 +1,6 @@
 import Plotly from 'plotly.js-basic-dist'
 import React from 'react'
-import createPlotlyComponent from 'react-plotly.js/factory'
-
-// We must use the createPlotlyComponent factory method because we use plotly.js-basic-dist and not plotly.js
-const Plot = createPlotlyComponent(Plotly)
+import { Plot } from './Plot'
 
 export type PlotlyWrapperProps = {
   data: Plotly.Data[]

@@ -1,5 +1,5 @@
 import React from 'react'
-import MarkdownIt from 'markdown-it'
+import markdownit, { PluginWithParams } from 'markdown-it'
 import xss from 'xss'
 import SynapseClient from '../../synapse-client'
 import { xssOptions } from '../../utils/functions/SanitizeHtmlUtils'
@@ -19,22 +19,30 @@ import {
 import Bookmarks from './widget/Bookmarks'
 import { SkeletonTable } from '../Skeleton/SkeletonTable'
 import { Link, Typography } from '@mui/material'
-
-declare const katex: any
-declare const markdownitSynapse: any
-declare const markdownitSub: any
-declare const markdownitSup: any
-declare const markdownitCentertext: any
-declare const markdownitSynapseHeading: any
-declare const markdownitSynapseTable: any
-declare const markdownitStrikethroughAlt: any
-declare const markdownitContainer: any
-declare const markdownitEmphasisAlt: any
-declare const markdownitInlineComments: any
-declare const markdownitBr: any
-declare const markdownitMath: any
-
-declare const markdownit: typeof MarkdownIt
+import markdownitSynapse from 'markdown-it-synapse'
+// @ts-expect-error
+import markdownitSub from 'markdown-it-sub-alt'
+// @ts-expect-error
+import markdownitSup from 'markdown-it-sup-alt'
+// @ts-expect-error
+import markdownitCentertext from 'markdown-it-center-text'
+// @ts-expect-error
+import markdownitSynapseHeading from 'markdown-it-synapse-heading'
+// @ts-expect-error
+import markdownitSynapseTable from 'markdown-it-synapse-table'
+// @ts-expect-error
+import markdownitStrikethroughAlt from 'markdown-it-strikethrough-alt'
+// @ts-expect-error
+import markdownitContainer from 'markdown-it-container'
+// @ts-expect-error
+import markdownitEmphasisAlt from 'markdown-it-emphasis-alt'
+// @ts-expect-error
+import markdownitInlineComments from 'markdown-it-inline-comments'
+// @ts-expect-error
+import markdownitBr from 'markdown-it-br'
+// @ts-expect-error
+import markdownitMath from 'markdown-it-synapse-math'
+import katex from 'katex'
 
 export type MarkdownSynapseProps = {
   ownerId?: string
@@ -48,7 +56,7 @@ export type MarkdownSynapseProps = {
 const md = markdownit({ html: true })
 
 type MarkdownSynapseState = {
-  md: MarkdownIt
+  md: typeof markdownit
   data: Partial<WikiPage>
   fileHandles?: FileHandleResults
   error: SynapseClientError | undefined
@@ -91,15 +99,17 @@ export class MarkdownSynapse extends React.Component<
 
     const mathSuffix = ''
     // Update the internal markdownit object with the wrapped synapse object
-    md.use(markdownitSynapse, mathSuffix, 'https://synapse.org').use(
-      markdownitMath,
+    md.use(
+      markdownitSynapse as unknown as PluginWithParams,
       mathSuffix,
-    )
+      'https://synapse.org',
+    ).use(markdownitMath, mathSuffix)
     const data: any = {}
     if (this.props.markdown) {
       data.markdown = this.props.markdown
     }
     this.state = {
+      // @ts-expect-error
       md,
       error: undefined,
       fileHandles: undefined,
@@ -182,8 +192,10 @@ export class MarkdownSynapse extends React.Component<
     }
     // Note - renderInline parses out any block level elements contained in the markdown
     const initText = this.props.renderInline
-      ? this.state.md.renderInline(markdown)
-      : this.state.md.render(markdown)
+      ? // @ts-expect-error
+        this.state.md.renderInline(markdown)
+      : // @ts-expect-error
+        this.state.md.render(markdown)
     const cleanText = xss(initText, xssOptions)
     return { __html: cleanText }
   }
@@ -221,7 +233,7 @@ export class MarkdownSynapse extends React.Component<
    * @memberof MarkdownSynapse
    */
   public addBookmarks() {
-    markdownitSynapse.resetFootnotes()
+    ;(markdownitSynapse as any).resetFootnotes()
     this.createHTML(this.state.data.markdown)
     const footnotesHtml = this.createHTML(markdownitSynapse.footnotes()).__html
     if (footnotesHtml.length > 0) {

@@ -1,12 +1,14 @@
-import { ThemesPlot } from './ThemesPlot'
 import type { ThemesPlotProps } from './ThemesPlot'
-import { UpsetPlot } from './UpsetPlot'
+import { ThemesPlot } from './ThemesPlot'
 import type { UpsetPlotProps } from './UpsetPlot'
-import { SynapsePlot } from './SynapsePlot'
+import { UpsetPlot } from './UpsetPlot'
 import type { SynapsePlotProps } from './SynapsePlot'
-import type { ClickCallbackParams } from './types'
-import type { GraphItem } from './types'
+import { SynapsePlot } from './SynapsePlot'
+import type { ClickCallbackParams, GraphItem } from './types'
+import Plot from './PlotlyComponent'
+
 export {
+  Plot,
   ThemesPlot,
   ThemesPlotProps,
   UpsetPlot,

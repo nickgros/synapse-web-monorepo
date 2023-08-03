@@ -2,7 +2,6 @@ import { InfoOutlined } from '@mui/icons-material'
 import Plotly from 'plotly.js-basic-dist'
 import React, { useCallback, useState } from 'react'
 import { Dropdown } from 'react-bootstrap'
-import createPlotlyComponent from 'react-plotly.js/factory'
 import { SizeMe } from 'react-sizeme'
 import { SkeletonInlineBlock } from '../../Skeleton/SkeletonInlineBlock'
 import getColorPalette from '../../ColorGradient'
@@ -26,8 +25,7 @@ import { ConfirmationDialog } from '../../ConfirmationDialog/ConfirmationDialog'
 import { FacetPlotLegendList } from './FacetPlotLegendList'
 import { FacetWithLabel, truncate } from './FacetPlotLegendUtils'
 import { Box } from '@mui/material'
-
-const Plot = createPlotlyComponent(Plotly)
+import { Plot } from '../../Plot'
 
 export type FacetNavPanelProps = {
   applyChangesToGraphSlice: (

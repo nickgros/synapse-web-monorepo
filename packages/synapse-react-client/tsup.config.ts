@@ -9,7 +9,8 @@ export default defineConfig({
   dts: true,
   // MUI doesn't support directory import in ESM, but we can get around that by just bundling it
   // https://github.com/mui/material-ui/issues/35233
-  noExternal: ['@mui/material'],
+  noExternal: ['@mui/material', '@sage-bionetworks/synapse-types'],
+  external: ['react-plotly.js'],
   esbuildPlugins: [
     sassPlugin({
       loadPaths: ['../../node_modules', 'node_modules'],
