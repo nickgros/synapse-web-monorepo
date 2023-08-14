@@ -19,7 +19,7 @@
     window.FRAMEWORK_OPTIONS = {"builder":{"viteConfigPath":"./.storybook/storybook-vite.config.ts"}};
     window.CHANNEL_OPTIONS = {};
     window.FEATURES = {"warnOnLegacyHierarchySeparator":true,"buildStoriesJson":false,"storyStoreV7":true,"argTypeTargetsV7":true,"legacyDecoratorFileOrder":false};
-    window.STORIES = [{"titlePrefix":"","directory":"./stories","files":"**/*.stories.mdx","importPathMatcher":"^\\.[\\\\/](?:stories(?:\\/(?!\\.)(?:(?:(?!(?:^|\\/)\\.).)*?)\\/|\\/|$)(?!\\.)(?=.)[^/]*?\\.stories\\.mdx)$"},{"titlePrefix":"","directory":"./stories","files":"**/*.stories.@(js|jsx|ts|tsx)","importPathMatcher":"^\\.[\\\\/](?:stories(?:\\/(?!\\.)(?:(?:(?!(?:^|\\/)\\.).)*?)\\/|\\/|$)(?!\\.)(?=.)[^/]*?\\.stories\\.(js|jsx|ts|tsx))$"}];
+    window.STORIES = [{"titlePrefix":"","directory":".","files":"**/*.stories.mdx","importPathMatcher":"^\\.(?:(?:^|\\/|(?:(?:(?!(?:^|\\/)\\.).)*?)\\/)(?!\\.)(?=.)[^/]*?\\.stories\\.mdx)$"},{"titlePrefix":"","directory":".","files":"**/*.stories.@(js|jsx|ts|tsx)","importPathMatcher":"^\\.(?:(?:^|\\/|(?:(?:(?!(?:^|\\/)\\.).)*?)\\/)(?!\\.)(?=.)[^/]*?\\.stories\\.(js|jsx|ts|tsx))$"}];
     window.DOCS_OPTIONS = {"defaultName":"Docs","autodocs":"tag"};
 
     // We do this so that "module && module.hot" etc. in Storybook source code
@@ -394,7 +394,7 @@
 ></script>
 
 <script src="https://cdn.jsdelivr.net/npm/markdown-it@8.4.2/dist/markdown-it.min.js"></script>
-<script src="https://unpkg.com/markdown-it-synapse@latest/dist/markdown-it-synapse.min.js"></script>
+<script src="https://unpkg.com/markdown-it-synapse@latest/dist/index.global.js"></script>
 <script src="https://unpkg.com/markdown-it-center-text@1.0.4/dist/markdown-it-center-text.min.js"></script>
 <script src="https://unpkg.com/markdown-it-synapse-heading@1.0.1/dist/markdown-it-synapse-heading.min.js"></script>
 <script src="https://unpkg.com/markdown-it-synapse-table@1.0.6/dist/markdown-it-synapse-table.min.js"></script>
@@ -409,7 +409,7 @@
 <!-- end synapse markdown imports -->
 <script crossorigin src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-  <script type="module" crossorigin src="./assets/iframe-09485600.js"></script>
+  <script type="module" crossorigin src="./assets/iframe-6c172d82.js"></script>
 </head>
 
 <body>
