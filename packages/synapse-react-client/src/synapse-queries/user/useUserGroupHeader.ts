@@ -76,6 +76,7 @@ export function useSearchUserGroupHeaders(
   options?: UseQueryOptions<UserGroupHeader[], SynapseClientError>,
 ) {
   const { keyFactory } = useSynapseContext()
+  const queryClient = useQueryClient()
   const queryKey = keyFactory.getUserGroupHeaderSearchQueryKey(prefix, filter)
 
   return useQuery<UserGroupHeader[], SynapseClientError>(
@@ -85,6 +86,15 @@ export function useSearchUserGroupHeaders(
         prefix,
         filter,
       )
+
+      // Update the cache with each individual header
+      responsePage.children.forEach(userGroupHeader => {
+        queryClient.setQueryData(
+          keyFactory.getUserGroupHeaderQueryKey(userGroupHeader.ownerId),
+          userGroupHeader,
+        )
+      })
+
       return responsePage.children
     },
     options,

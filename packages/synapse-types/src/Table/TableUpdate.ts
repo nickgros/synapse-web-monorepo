@@ -74,3 +74,21 @@ export type SnapshotRequest = {
   /* Optional. If createNewSnapshot=true, the Activity ID to be applied to the snapshot version. Null by default */
   snapshotActivityId?: string
 }
+
+/**
+ * https://rest-docs.synapse.org/rest/org/sagebionetworks/repo/model/table/TableUpdateResponse.html
+ */
+export type TableUpdateResponse = {
+  concreteType: string
+}
+
+/**
+ * An AsynchronousResponseBody returned from a table update transaction.
+ */
+export type TableUpdateTransactionResponse = {
+  concreteType: 'org.sagebionetworks.repo.model.table.TableUpdateTransactionResponse'
+  /* List of responses. There will be one response for each request in the transaction. */
+  results: TableUpdateResponse[]
+  /* The version number of the snapshot. Returned only, if a new snapshot was requested. */
+  snapshotVersionNumber?: number
+}

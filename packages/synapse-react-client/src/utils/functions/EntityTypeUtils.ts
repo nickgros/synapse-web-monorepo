@@ -374,9 +374,11 @@ export const entityJsonKeys: Record<ENTITY_CONCRETE_TYPE, string[]> = {
   [PROJECT_CONCRETE_TYPE_VALUE]: [...allEntityKeys, 'alias'],
 }
 
-type EntityTypeGroupKey = 'ALL_TABLES'
+type EntityTypeGroupKey = 'ALL_TYPES' | 'ALL_TABLES' | 'CONTAINER'
 
 export const EntityTypeGroup: Record<EntityTypeGroupKey, EntityType[]> = {
+  ['ALL_TYPES']: Object.values(EntityType),
+  ['CONTAINER']: [EntityType.PROJECT, EntityType.FOLDER],
   ['ALL_TABLES']: [
     EntityType.TABLE,
     EntityType.ENTITY_VIEW,

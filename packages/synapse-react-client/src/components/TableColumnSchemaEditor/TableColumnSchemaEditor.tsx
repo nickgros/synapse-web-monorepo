@@ -109,6 +109,7 @@ function _TableColumnSchemaEditor(props: TableColumnSchemaEditorProps) {
   )
 }
 
+// TODO: Jotai provider for TableColumnSchemaForm ?
 export default function TableColumnSchemaEditor(
   props: TableColumnSchemaEditorProps,
 ) {

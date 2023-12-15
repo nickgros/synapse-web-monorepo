@@ -166,6 +166,15 @@ export const decorators = [
       ['EL Portal']: createTheme(defaultMuiThemeOptions, {
         palette: elPortalPalette,
       }),
+      ['Dark Mode']: createTheme(
+        {
+          ...defaultMuiThemeOptions,
+          palette: { ...defaultMuiThemeOptions.palette, mode: 'dark' },
+        },
+        {
+          palette: { mode: 'dark' },
+        },
+      ),
     },
     defaultTheme: 'Synapse',
   }),

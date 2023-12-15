@@ -165,6 +165,13 @@ const TableColumnSchemaForm = React.forwardRef<
     },
   )
 
+  // const annotationValidationSchema: ZodSchema | undefined = useMemo(() => {
+  //   if (annotationColumnModels) {
+  //     return createSchemaWithAnnotationColumns(annotationColumnModels)
+  //   }
+  //   return undefined
+  // }, [annotationColumnModels])
+
   /**
    * Set the initialData in the form state atom on mount, if it exists and we have no data.
    */

@@ -459,7 +459,9 @@ export const EntityHeaderTable = (props: EntityHeaderTableProps) => {
         confirmButtonCopy={`Add ${pluralObjectName}`}
         onConfirm={items => {
           if (hideTextFieldToPasteValue) {
-            onUpdate([...refsInState, ...items])
+            const newRefs = [...refsInState, ...items]
+            setRefsInState(newRefs)
+            onUpdate(newRefs)
           } else {
             const newEntityIDsArray = items.map(ref => ref.targetId)
             const newEntityIDsString =
