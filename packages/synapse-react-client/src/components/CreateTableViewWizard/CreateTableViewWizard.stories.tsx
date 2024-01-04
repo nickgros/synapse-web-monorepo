@@ -12,6 +12,7 @@ type Story = StoryObj<typeof meta>
 export const Demo: Story = {
   name: 'Create Table Wizard',
   args: {
+    open: true,
     parentId: 'syn23567475',
   },
 }

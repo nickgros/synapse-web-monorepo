@@ -1,4 +1,4 @@
-import React, { useState, useMemo, MouseEventHandler, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import {
   useReactTable,
   ColumnFiltersState,
@@ -23,7 +23,10 @@ import {
   Tooltip,
 } from '@mui/material'
 import { EntityHeader, ReferenceList } from '@sage-bionetworks/synapse-types'
-import { getEntityTypeFromHeader } from '../../utils/functions/EntityTypeUtils'
+import {
+  entityTypeToFriendlyName,
+  getEntityTypeFromHeader,
+} from '../../utils/functions/EntityTypeUtils'
 import { useGetEntityHeaders } from '../../synapse-queries'
 import IconSvg from '../IconSvg'
 import { SkeletonTable } from '../Skeleton'
@@ -192,7 +195,9 @@ export const EntityHeaderTable = (props: EntityHeaderTableProps) => {
       },
       {
         accessorFn: (row: EntityHeaderOrDummy) =>
-          row.isDummy ? '-' : getEntityTypeFromHeader(row),
+          row.isDummy
+            ? '-'
+            : entityTypeToFriendlyName(getEntityTypeFromHeader(row)),
         id: 'type',
         header: 'Type',
         cell: EntityHeaderTypeCell,
@@ -241,7 +246,7 @@ export const EntityHeaderTable = (props: EntityHeaderTableProps) => {
       }
     })
     return newData.concat(dummyEntityHeaders)
-  }, [results])
+  }, [refsInState, results])
   const table = useReactTable({
     data,
     columns,
@@ -264,12 +269,7 @@ export const EntityHeaderTable = (props: EntityHeaderTableProps) => {
     columnResizeMode: 'onChange',
   })
 
-  if (isLoading) {
-    return <SkeletonTable numCols={3} numRows={10} />
-  } else if (!isSuccess) {
-    return <></>
-  }
-  const onRemoveFromAR: MouseEventHandler<HTMLButtonElement> = e => {
+  const onRemove = useCallback(() => {
     // rowSelection looks like {3: true. 5: true} where the key is the row index.
     // Create a new ReferenceList based on the entityHeaders in the current table.
     const updatedData = data.filter(
@@ -281,54 +281,93 @@ export const EntityHeaderTable = (props: EntityHeaderTableProps) => {
       }
     })
     setRefsInState(newRowRefs)
-  }
+  }, [data, rowSelection, setRefsInState])
 
   const isSelection = selectionCount > 0
   const totalRowCount = data.length
   const filteredRowCount = table.getPrePaginationRowModel().rows.length
+  const showFilterControls = totalRowCount > UNMANAGEABLE_SUBJECT_COUNT
+
+  /**
+   * Reset the column filters when the filter controls are hidden.
+   * This handles the following edge case:
+   *      1. List contains 100 items of type "A" and 1 of type "B"
+   *      2. User filters to show just "A" items
+   *      3. User removes all "A" items
+   *      4. Only the single "B" item remains, but the filter is still present on type "A".
+   *         The filter controls are hidden, so the user cannot see the "B" item.
+   *
+   * This effect will clear the filters when the filter controls are hidden, preventing this scenario.
+   */
+  useEffect(
+    function resetFiltersWhenFilterControlsAreHidden() {
+      if (!showFilterControls) {
+        table.setColumnFilters([])
+      }
+    },
+    [showFilterControls],
+  )
+
+  if (isLoading) {
+    return <SkeletonTable numCols={3} numRows={10} />
+  } else if (!isSuccess) {
+    return <></>
+  }
   return (
     <div>
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: '12px 10px 10px 5px',
-        }}
+        display={'flex'}
+        justifyContent={'space-between'}
+        p={'12px 10px 10px 5px'}
       >
-        <div>
-          {totalRowCount > UNMANAGEABLE_SUBJECT_COUNT && (
-            <Typography variant="body1" sx={{ marginBottom: '10px' }}>
-              {totalRowCount} {pluralObjectName}{' '}
-              {filteredRowCount < totalRowCount
-                ? `(${filteredRowCount} visible)`
-                : ''}
-              {isSelection && <span>{` (${selectionCount} selected)`}</span>}
-            </Typography>
-          )}
-        </div>
-        <div>
-          {isEditable && refsInState.length > 0 && (
-            <Button
-              variant="contained"
-              disabled={!isSelection}
-              onClick={onRemoveFromAR}
-            >
-              {removeSelectedRowsButtonText}
-            </Button>
-          )}
-        </div>
+        {showFilterControls && (
+          <Typography variant="body1" sx={{ marginBottom: '10px' }}>
+            {totalRowCount} {pluralObjectName}{' '}
+            {filteredRowCount < totalRowCount
+              ? `(${filteredRowCount} visible)`
+              : ''}
+            {isSelection && <span>{` (${selectionCount} selected)`}</span>}
+          </Typography>
+        )}
+        {isEditable && refsInState.length > 0 && (
+          <Button
+            variant="contained"
+            disabled={!isSelection}
+            onClick={onRemove}
+          >
+            {removeSelectedRowsButtonText}
+          </Button>
+        )}
+      </Box>
+      <Box display={'flex'} pb={2}>
+        {table.getHeaderGroups().map(headerGroup =>
+          headerGroup.headers.map(header => {
+            return header.isPlaceholder ? null : (
+              <>
+                {header.column.getCanFilter() && showFilterControls ? (
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Filter column={header.column} table={table} />
+                  </Box>
+                ) : null}
+              </>
+            )
+          }),
+        )}
       </Box>
       {totalRowCount > 0 && (
         <Box
-          sx={{
+          sx={theme => ({
             overflow: 'auto',
             maxHeight: '250px',
             paddingLeft: '2px',
             th: {
-              backgroundColor: '#eee',
+              backgroundColor: theme.palette.grey[200],
               zIndex: 100,
             },
-          }}
+            ['tr:nth-of-type(2n)']: {
+              backgroundColor: theme.palette.grey[100],
+            },
+          })}
         >
           <table style={{ borderCollapse: 'collapse', width: '100%' }}>
             <thead>
@@ -357,7 +396,6 @@ export const EntityHeaderTable = (props: EntityHeaderTableProps) => {
                           width: columnSize,
                           position: 'sticky',
                           top: '0px',
-                          background: '#fff',
                         }}
                       >
                         {header.isPlaceholder ? null : (
@@ -402,12 +440,6 @@ export const EntityHeaderTable = (props: EntityHeaderTableProps) => {
                                 ),
                               }[header.column.getIsSorted() as string] ?? null}
                             </div>
-                            {header.column.getCanFilter() &&
-                            totalRowCount > UNMANAGEABLE_SUBJECT_COUNT ? (
-                              <div>
-                                <Filter column={header.column} table={table} />
-                              </div>
-                            ) : null}
                           </>
                         )}
                         {header.column.getCanResize() && (

@@ -1,9 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react'
 import SubmissionViewScopeEditor from './SubmissionViewScopeEditor'
-import mockProject from '../../mocks/entity/mockProject'
-import { mockFolderEntity } from '../../mocks/entity/mockEntity'
 import { Paper } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 
 const meta: Meta = {
   title: 'Synapse/SubmissionView Scope Editor',
@@ -15,6 +13,16 @@ const meta: Meta = {
       </Paper>
     ),
   ],
+  render: function Render(args) {
+    const [ids, setIds] = useState<string[]>([])
+    return (
+      <SubmissionViewScopeEditor
+        {...args}
+        evaluationIds={ids}
+        onChange={setIds}
+      />
+    )
+  },
 } satisfies Meta
 export default meta
 type Story = StoryObj<typeof meta>
@@ -22,11 +30,5 @@ type Story = StoryObj<typeof meta>
 export const Empty: Story = {
   args: {
     scopeIds: [],
-  },
-}
-
-export const HasItems: Story = {
-  args: {
-    scopeIds: [mockProject.id, mockFolderEntity.id!],
   },
 }

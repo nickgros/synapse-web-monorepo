@@ -5,22 +5,26 @@ import {
   Box,
   Button,
   FormControl,
+  FormGroup,
   LinearProgress,
   Typography,
 } from '@mui/material'
-import { RadioGroup } from '../widgets/RadioGroup'
 import { GetEvaluationParameters } from '@sage-bionetworks/synapse-types'
+import { Checkbox } from '../widgets/Checkbox'
 
 export type EvaluationFinderProps = Pick<
   GetEvaluationParameters,
   'accessType' | 'activeOnly'
->
+> & {
+  selectedIds: string[]
+  onChange: (newSelectedIds: string[]) => void
+}
 
 export default function EvaluationFinder(props: EvaluationFinderProps) {
-  const { accessType, activeOnly } = props
+  const { accessType, activeOnly, selectedIds = [], onChange } = props
   const [currentPage, setCurrentPage] = useState(0)
   const LIMIT = 20
-  const { data, isLoading, isFetching, isPreviousData } = useGetEvaluations(
+  const { data, isLoading } = useGetEvaluations(
     {
       accessType,
       activeOnly,
@@ -32,30 +36,24 @@ export default function EvaluationFinder(props: EvaluationFinderProps) {
   const hasNextPage =
     data?.totalNumberOfResults &&
     data?.totalNumberOfResults > (currentPage + 1) * LIMIT
-  const [value, setValue] = useState<string | undefined>(undefined)
 
-  if (!data && isLoading) {
+  if (isLoading) {
     return <LinearProgress />
   }
   if (!data) {
-    return <>oh no</>
+    return <></>
   }
 
-  console.log(data)
   return (
     <>
       <FormControl>
-        <RadioGroup<string>
-          value={value}
-          onChange={value => setValue(value)}
-          disabled={isFetching && isPreviousData}
-          options={data.results.map(evaluation => {
-            return {
-              label: (
-                <Box display={'flex'} key={evaluation.id} gap={1}>
-                  <Typography variant={'smallText1'}>
-                    {evaluation.name}
-                  </Typography>
+        <FormGroup sx={{ gap: 1 }}>
+          {data.results.map(evaluation => (
+            <Checkbox
+              key={evaluation.id}
+              label={
+                <Typography variant={'smallText1'}>
+                  {evaluation.name}{' '}
                   {evaluation.submissionInstructionsMessage &&
                     evaluation.submissionInstructionsMessage.length > 0 && (
                       <HelpPopover
@@ -63,12 +61,19 @@ export default function EvaluationFinder(props: EvaluationFinderProps) {
                         placement={'right'}
                       />
                     )}
-                </Box>
-              ),
-              value: evaluation.id!,
-            }
-          })}
-        />
+                </Typography>
+              }
+              checked={selectedIds.includes(evaluation.id!)}
+              onChange={() => {
+                if (selectedIds.includes(evaluation.id!)) {
+                  onChange(selectedIds.filter(id => id !== evaluation.id))
+                } else {
+                  onChange([...selectedIds, evaluation.id!])
+                }
+              }}
+            />
+          ))}
+        </FormGroup>
       </FormControl>
       <Box display={'flex'} my={2} gap={1}>
         {currentPage > 0 && (

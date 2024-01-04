@@ -1,19 +1,20 @@
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 import IconSvg from '../IconSvg'
+import WizardChoiceButtonDescription from './WizardChoiceButtonDescription'
 
 export default function WizardChoiceButton(props: {
   title: string
-  description: React.ReactNode
+  description?: React.ReactNode
   onClick?: () => void
 }) {
   const { title, description, onClick } = props
 
   const descriptionNode =
     typeof description === 'string' ? (
-      <Typography variant={'body1'} color={'grey.700'} fontStyle={'italic'}>
+      <WizardChoiceButtonDescription>
         {description}
-      </Typography>
+      </WizardChoiceButtonDescription>
     ) : (
       description
     )

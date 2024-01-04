@@ -16,15 +16,15 @@ export function DebouncedInput({
   options: string[]
   delay?: number
 } & Pick<
-  React.InputHTMLAttributes<TextFieldProps>,
-  'type' | 'min' | 'max' | 'value' | 'placeholder' | 'className' | 'list'
+  TextFieldProps,
+  'type' | 'value' | 'placeholder' | 'className' | 'label'
 >) {
   const [value, setValue] = useState(initialValue)
   useDebouncedEffect(
     () => {
       onChange(value)
     },
-    [value],
+    [onChange, value],
     delay,
   )
 
