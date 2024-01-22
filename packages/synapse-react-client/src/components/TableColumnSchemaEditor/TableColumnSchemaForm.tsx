@@ -166,6 +166,13 @@ function TableColumnSchemaFormInternal(
     },
   )
 
+  // const annotationValidationSchema: ZodSchema | undefined = useMemo(() => {
+  //   if (annotationColumnModels) {
+  //     return createSchemaWithAnnotationColumns(annotationColumnModels)
+  //   }
+  //   return undefined
+  // }, [annotationColumnModels])
+
   /**
    * Set the initialData in the form state atom on mount, if it exists and we have no data.
    */
@@ -238,6 +245,12 @@ function TableColumnSchemaFormInternal(
           return !currentFormData.find(fd => fd.name === cm.name)
         },
       )
+      // Delete the ID column so TableColumnSchemaUtils.createTableUpdateTransactionRequest recognizes these as new columns
+      // createTableUpdateTransactionRequest uses the existing column ID to track column updates in the table, so any new columns should have no ID
+      // The user can also modify these columns before submitting them, so the ID may not be accurate when we end up submitting them
+      columnsToAdd.forEach(cm => {
+        delete cm.id
+      })
       if (columnsToAdd.length > 0) {
         dispatch({
           type: 'setValue',

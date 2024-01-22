@@ -149,14 +149,14 @@ export const defaultMuiThemeOptions: ThemeOptions = {
       },
     },
     MuiDialog: {
-      defaultProps: {
-        PaperProps: {
-          sx: theme => ({
+      styleOverrides: {
+        root: ({ theme }) => ({
+          '& .MuiDialog-paper': {
             borderRadius: '0px',
             padding: theme.spacing(5.5),
             alignSelf: 'flex-start',
-          }),
-        },
+          },
+        }),
       },
     },
     MuiDialogTitle: {

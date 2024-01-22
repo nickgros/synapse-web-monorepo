@@ -32,18 +32,14 @@ export const CloseButton: React.FC<CloseButtonProps> = ({
   )
 }
 
-export type DialogBaseProps = {
-  open: boolean
+export type DialogBaseProps = Omit<DialogProps, 'title'> & {
   title: React.ReactNode
   content: React.ReactNode
   actions?: React.ReactNode
-  className?: string
   onCancel: () => void
   hasCloseButton?: boolean
   titleHelpPopoverProps?: HelpPopoverProps
-  maxWidth?: DialogProps['maxWidth']
   fullWidth?: boolean
-  sx?: DialogProps['sx']
   contentProps?: DialogContentProps
 }
 
@@ -51,27 +47,23 @@ export type DialogBaseProps = {
  * A dialog built using MUI components.
  */
 export const DialogBase = ({
-  open,
   title,
   content,
   actions,
-  className,
   onCancel,
   hasCloseButton = true,
   titleHelpPopoverProps,
   maxWidth = 'sm',
   fullWidth = true,
-  sx,
   contentProps = {},
+  ...dialogProps
 }: DialogBaseProps) => {
   return (
     <Dialog
       fullWidth={fullWidth}
       maxWidth={maxWidth}
-      open={open}
-      className={className}
       onClose={() => onCancel()}
-      sx={sx}
+      {...dialogProps}
     >
       <DialogTitle>
         <Stack direction="row" alignItems={'center'} gap={'5px'}>

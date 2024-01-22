@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from 'react-query'
+import { useQuery, useQueryClient, UseQueryOptions } from 'react-query'
 import SynapseClient from '../../synapse-client'
 import { SynapseClientError } from '../../utils/SynapseClientError'
 import { useSynapseContext } from '../../utils/context/SynapseContext'
@@ -17,6 +17,7 @@ export function useGetEntityBundle<
   options?: UseQueryOptions<EntityBundle<T>, SynapseClientError>,
 ) {
   const { accessToken, keyFactory } = useSynapseContext()
+  const queryClient = useQueryClient()
   return useQuery<EntityBundle<T>, SynapseClientError>(
     keyFactory.getEntityBundleQueryKey(entityId, version, bundleRequest),
     () =>
@@ -26,7 +27,21 @@ export function useGetEntityBundle<
         version,
         accessToken,
       ),
-    options,
+    {
+      ...options,
+      onSuccess: data => {
+        if (data.entity) {
+          queryClient.setQueryData(
+            keyFactory.getEntityVersionQueryKey(entityId, version),
+            data.entity,
+          )
+        }
+
+        if (options?.onSuccess) {
+          options.onSuccess(data)
+        }
+      },
+    },
   )
 }
 

@@ -36,6 +36,7 @@ import {
 import { MOCK_ANNOTATION_COLUMNS } from '../../mocks/mockAnnotationColumns'
 import defaultFileViewColumnModels from '../../mocks/query/defaultFileViewColumnModels'
 import { MOCK_ACCESS_TOKEN } from '../../mocks/MockSynapseContext'
+import * as TableColumnSchemaUtils from '../../utils/functions/TableColumnSchemaUtils'
 
 const mockedImportedColumns: SetOptional<ColumnModel, 'id'>[] = [
   {
@@ -93,13 +94,16 @@ async function setUp(props: TableColumnSchemaEditorProps) {
 describe('TableColumnSchemaEditor', () => {
   const mockOnColumnsUpdated = jest.fn()
   const mockOnCancel = jest.fn()
+  const createTableUpdateTransactionRequestSpy = jest.spyOn(
+    TableColumnSchemaUtils,
+    'createTableUpdateTransactionRequest',
+  )
   const updateTableSpy = jest.spyOn(SynapseClient, 'updateTable')
 
   beforeAll(() => {
     server.listen()
   })
   beforeEach(() => {
-    jest.clearAllMocks()
     server.resetHandlers()
     server.use(
       /* Each test in this suite should register its own table query handler */
@@ -121,6 +125,7 @@ describe('TableColumnSchemaEditor', () => {
       }),
     )
   })
+  afterEach(() => jest.clearAllMocks())
   afterAll(() => server.close())
 
   it('Renders a form and preloads data', async () => {
@@ -243,21 +248,35 @@ describe('TableColumnSchemaEditor', () => {
     await user.click(saveButton)
 
     await waitFor(() => {
+      const expectedProposedSchema = defaultFileViewColumnModels.map(cm => ({
+        ...cm,
+        id: undefined,
+      }))
+      expect(createTableUpdateTransactionRequestSpy).toHaveBeenCalledWith(
+        MOCK_ACCESS_TOKEN,
+        mockFileViewEntity.id,
+        [],
+        expectedProposedSchema,
+      )
       expect(updateTableSpy).toHaveBeenCalledWith(
         {
           changes: [
             {
-              // The default columns were added; they are all new
+              // The default columns were added
+              // Note that the IDs will NOT match because MSW generates new IDs for each of these columns
+              // We don't track column IDs for new columns to simplify keeping track of column updates for tables
               changes: expect.arrayContaining(
-                defaultFileViewColumnModels.map(cm => ({
-                  newColumnId: cm.id,
+                defaultFileViewColumnModels.map(() => ({
+                  newColumnId: expect.any(String),
                   oldColumnId: null,
                 })),
               ),
               concreteType:
                 'org.sagebionetworks.repo.model.table.TableSchemaChangeRequest',
               entityId: mockFileViewEntity.id,
-              orderedColumnIds: defaultFileViewColumnModels.map(cm => cm.id),
+              orderedColumnIds: defaultFileViewColumnModels.map(() =>
+                expect.any(String),
+              ),
             },
           ],
           concreteType:
@@ -316,16 +335,16 @@ describe('TableColumnSchemaEditor', () => {
             {
               // The annotation columns were added; they are all new
               changes: expect.arrayContaining(
-                MOCK_ANNOTATION_COLUMNS.results.map(cm => ({
-                  newColumnId: cm.id,
+                MOCK_ANNOTATION_COLUMNS.results.map(() => ({
+                  newColumnId: expect.any(String),
                   oldColumnId: null,
                 })),
               ),
               concreteType:
                 'org.sagebionetworks.repo.model.table.TableSchemaChangeRequest',
               entityId: mockFileViewEntity.id,
-              orderedColumnIds: MOCK_ANNOTATION_COLUMNS.results.map(
-                cm => cm.id,
+              orderedColumnIds: MOCK_ANNOTATION_COLUMNS.results.map(() =>
+                expect.any(String),
               ),
             },
           ],
@@ -848,9 +867,14 @@ describe('TableColumnSchemaEditor', () => {
         MOCK_ACCESS_TOKEN,
       )
     })
-    // `onColumnsUpdated` should NOT be called because the update failed
+
+    const errorAlert = await screen.findByRole('alert')
+    within(errorAlert).getByText(errorMessage)
+
+    // `onColumnsUpdated` should NOT have been called because the update failed
     expect(mockOnColumnsUpdated).not.toHaveBeenCalled()
   })
+
   it('Clicking cancel calls onCancel', async () => {
     server.use(
       getEntityBundleHandler({
