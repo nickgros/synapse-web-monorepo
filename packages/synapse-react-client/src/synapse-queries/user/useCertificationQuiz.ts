@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
   UseQueryOptions,
-} from 'react-query'
+} from '@tanstack/react-query'
 import SynapseClient from '../../synapse-client'
 import { SynapseClientError, useSynapseContext } from '../../utils'
 import { PassingRecord, QuizResponse } from '@sage-bionetworks/synapse-types'
