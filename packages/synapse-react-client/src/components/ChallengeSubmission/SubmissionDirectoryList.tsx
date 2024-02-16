@@ -91,7 +91,7 @@ function SubmissionDirectoryList({
 
   const { data: headerResults, refetch } = useGetEntityChildren(request, {
     enabled: !!challengeProjectId,
-    useErrorBoundary: true,
+    throwOnError: true,
   })
 
   useEffect(() => {

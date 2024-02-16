@@ -297,9 +297,9 @@ const ChallengeTeamWizard: React.FunctionComponent<
       .then(() => {
         // invalidate submissions team membership status to update the ChallengeRegisterButton
         if (challenge) {
-          queryClient.invalidateQueries(
-            keyFactory.getSubmissionTeamsQueryKey(challenge?.id),
-          )
+          queryClient.invalidateQueries({
+            queryKey: keyFactory.getSubmissionTeamsQueryKey(challenge?.id),
+          })
         }
         handleStepChange(StepsEnum.REGISTRATION_SUCCESSFUL)
       })

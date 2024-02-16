@@ -83,7 +83,6 @@ export default function ChallengeTeamTable({
     const teams =
       teamsList?.list.filter(team => team.canRequestMembership !== false) ?? []
     let filtered = teams
-
     if (term.length) {
       filtered = teams.filter(team => {
         return (

@@ -118,11 +118,12 @@ export const DetailsView: React.FunctionComponent<DetailsViewProps> = ({
   const cancelQuery = () => {
     // It's likely that the user will be throttled by the Synapse backend and may be waiting a
     // noticeable amount of time for the current request, so cancel it (in addition to cancelling future requests)
-    queryClient.cancelQueries(
-      queryClientKeyFactory.getEntityChildrenQueryKey(
+    queryClient.cancelQueries({
+      queryKey: queryClientKeyFactory.getEntityChildrenQueryKey(
         getChildrenInfiniteRequestObject!,
         true,
-      ),
+      )
+    }
     )
     setShowLoadingScreen(false)
     setShouldSelectAll(false)
@@ -212,20 +213,21 @@ export const DetailsView: React.FunctionComponent<DetailsViewProps> = ({
 
                         const versionsQueryOffset = 0
                         const versionsQueryLimit = 1
-                        const versions = await queryClient.fetchQuery(
-                          queryClientKeyFactory.getPaginatedEntityVersionsQueryKey(
-                            e.id,
-                            versionsQueryLimit,
-                            versionsQueryOffset,
-                          ),
-                          () =>
+                        const versions = await queryClient.fetchQuery({
+                          queryKey:
+                            queryClientKeyFactory.getPaginatedEntityVersionsQueryKey(
+                              e.id,
+                              versionsQueryLimit,
+                              versionsQueryOffset,
+                            ),
+                          queryFn: () =>
                             getEntityVersions(
                               e.id,
                               accessToken,
                               versionsQueryOffset,
                               versionsQueryLimit,
                             ),
-                        )
+                        })
                         // we pick the first version in the list because it is the most recent
                         latestVersion = versions.results[0]?.versionNumber
                       }
