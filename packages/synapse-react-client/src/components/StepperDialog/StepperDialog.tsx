@@ -9,7 +9,7 @@ export type Step = {
   id: string
   title: string
   cancelButtonText?: string
-  onConfirm?: (() => Promise<void>) | (() => undefined)
+  onConfirm?: () => void
   confirmStep?: string
   confirmEnabled?: boolean
   confirmButtonText?: string
@@ -24,7 +24,7 @@ export type Steps = Step[]
 export type StepperDialogProps = {
   errorMessage: string | undefined
   onCancel: () => void
-  onConfirm: (() => Promise<void>) | (() => undefined)
+  onConfirm: () => void
   confirming?: boolean
   onStepChange: (arg: string) => void
   open: boolean
@@ -51,10 +51,8 @@ const StepperDialog: React.FunctionComponent<StepperDialogProps> = ({
 
   const dialogContent = (
     <Box display="flex" flexDirection="column" gap={1}>
-      <>
-        {loading ? <SynapseSpinner size={40} /> : content}
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      </>
+      {loading ? <SynapseSpinner size={40} /> : content}
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
     </Box>
   )
 

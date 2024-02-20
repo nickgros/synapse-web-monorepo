@@ -1,0 +1,35 @@
+import { useMutation, UseMutationOptions, useQueryClient } from 'react-query'
+import {
+  ChallengeTeam,
+  CreateChallengeTeamRequest,
+} from '@sage-bionetworks/synapse-types'
+import { SynapseClientError, useSynapseContext } from '../../utils'
+import SynapseClient from '../../synapse-client'
+
+export function useRegisterTeamForChallenge(
+  options?: Partial<
+    UseMutationOptions<
+      ChallengeTeam,
+      SynapseClientError,
+      CreateChallengeTeamRequest
+    >
+  >,
+) {
+  const { accessToken, keyFactory } = useSynapseContext()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    ...options,
+    mutationFn: request =>
+      SynapseClient.registerChallengeTeam(request, accessToken),
+    onSuccess: async (data, request, context) => {
+      await queryClient.invalidateQueries(
+        keyFactory.getChallengeTeamListQueryKey(request.challengeId),
+      )
+      if (options?.onSuccess) {
+        return options.onSuccess(data, request, context)
+      }
+      return
+    },
+  })
+}
