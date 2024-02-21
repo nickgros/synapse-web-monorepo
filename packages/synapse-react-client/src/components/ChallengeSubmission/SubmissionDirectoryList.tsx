@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { DataGrid, GridCellParams, GridColDef } from '@mui/x-data-grid'
 import { RadioOption } from '../widgets/RadioGroup'
 import {
   Direction,
   Entity,
-  EntityChildrenRequest,
-  EntityHeader,
   EntityLookupRequest,
   EntityType,
   FILE_ENTITY_CONCRETE_TYPE_VALUE,
+  FileEntity,
   FileUploadComplete,
   SortBy,
+  UploadCallbackResp,
 } from '@sage-bionetworks/synapse-types'
 import { Link } from 'react-router-dom'
 import {
@@ -19,9 +19,10 @@ import {
   getEndpoint,
 } from '../../utils/functions/getEndpoint'
 import {
-  invalidateAllQueriesForEntity,
+  useCreateEntity,
   useGetEntities,
-  useGetEntityChildren,
+  useGetEntityChildrenInfinite,
+  useUpdateEntity,
 } from '../../synapse-queries'
 import { formatDate } from '../../utils/functions/DateFormatter'
 import dayjs from 'dayjs'
@@ -32,12 +33,9 @@ import { useSynapseContext } from '../../utils'
 import { ErrorBanner } from '../error/ErrorBanner'
 import FileUpload from '../FileUpload'
 import IconSvg from '../IconSvg'
-import { UploadCallbackResp } from '@sage-bionetworks/synapse-types'
-import { FileEntity } from '@sage-bionetworks/synapse-types'
 import { SynapseClientError } from '../../utils/SynapseClientError'
-import { EntityItem } from './ChallengeSubmission'
 import ConfirmationDialog from '../ConfirmationDialog'
-import { useQueryClient } from 'react-query'
+import { EntityItem } from './ChallengeSubmission'
 
 type SubmissionDirectoryRow = {
   id: string
@@ -62,72 +60,46 @@ function SubmissionDirectoryList({
   entityType,
   onItemSelected,
 }: SubmissionDirectoryListProps) {
-  const queryClient = useQueryClient()
-  const { accessToken, keyFactory } = useSynapseContext()
+  const { accessToken } = useSynapseContext()
   const [page, setPage] = useState<number>(0)
   const [selectedItem, setSelectedItem] = useState<EntityItem | undefined>()
   const [errorMessage, setErrorMessage] = useState<string>()
   const [canSubmit, setCanSubmit] = useState<boolean>()
-  const [fetchedHeaders, setFetchedHeaders] = useState<EntityHeader[]>([])
-  const [nextPageToken, setNextPageToken] = useState<string | undefined>()
-  const [fetchNextPage, setFetchNextPage] = useState<boolean>(false)
   const [confirmOpen, setConfirmOpen] = useState<boolean>(false)
   const [uploadAttempt, setUploadAttempt] = useState<FileUploadAttempt>()
 
   const PER_PAGE = pageSize
-  const HEADERS_PER_PAGE = 50
   const PROJECT_URL = `${getEndpoint(
     BackendDestinationEnum.PORTAL_ENDPOINT,
   )}#!Synapse:${challengeProjectId}`
 
-  const request: EntityChildrenRequest = {
-    parentId: challengeProjectId,
-    nextPageToken: fetchNextPage ? nextPageToken : null,
-    includeTypes: [entityType],
-    includeTotalChildCount: true,
-    sortBy: SortBy.MODIFIED_ON,
-    sortDirection: Direction.DESC,
-  }
+  const { data: headerResults, fetchNextPage } = useGetEntityChildrenInfinite(
+    {
+      parentId: challengeProjectId,
+      includeTypes: [entityType],
+      includeTotalChildCount: true,
+      sortBy: SortBy.MODIFIED_ON,
+      sortDirection: Direction.DESC,
+    },
+    {
+      enabled: !!challengeProjectId,
+      useErrorBoundary: true,
+    },
+  )
+  const totalChildCount = headerResults?.pages[0]?.totalChildCount ?? 0
+  const fetchedHeaders = headerResults?.pages.flatMap(page => page.page) ?? []
 
-  const { data: headerResults, refetch } = useGetEntityChildren(request, {
-    enabled: !!challengeProjectId,
-    useErrorBoundary: true,
-  })
-
-  useEffect(() => {
-    if (headerResults) {
-      const newHeaders = [...fetchedHeaders]
-      const headerPage = Math.floor(((page + 1) * PER_PAGE) / HEADERS_PER_PAGE)
-      const start = headerPage * HEADERS_PER_PAGE
-      newHeaders.splice(start, start + HEADERS_PER_PAGE, ...headerResults.page)
-      setFetchedHeaders(newHeaders)
-      setFetchNextPage(false)
-      setNextPageToken(headerResults.nextPageToken)
-    }
-    // TODO: Temporary useEffect hook to remove onSuccess QueryOption for @tanstack/react-query v5
-    // Refactor this component to remove this effect.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerResults])
-
-  function getPageHeaders() {
+  const pageHeaders = useMemo(() => {
     const pageStart = page * PER_PAGE
-    const pageHeaders = fetchedHeaders.slice(pageStart, pageStart + PER_PAGE)
-    return pageHeaders
-  }
+    return fetchedHeaders.slice(pageStart, pageStart + PER_PAGE)
+  }, [PER_PAGE, fetchedHeaders, page])
 
   function reset() {
     setErrorMessage(undefined)
     setCanSubmit(undefined)
-    setFetchedHeaders([])
-    setNextPageToken(undefined)
-    setFetchNextPage(false)
-    refetch()
   }
 
-  useEffect(() => {
-    reset()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entityType, pageSize])
+  const entityQueries = useGetEntities(pageHeaders)
 
   const queries = useGetEntities(getPageHeaders())
   const entities = queries
@@ -242,22 +214,25 @@ function SubmissionDirectoryList({
     return newRows
   }
 
-  const handlePageChange = (newPageNum: number) => {
-    const lastIndexNeeded = Math.min(
-      headerResults?.totalChildCount ?? 0,
-      (newPageNum + 1) * PER_PAGE,
-    )
-    if (lastIndexNeeded > fetchedHeaders.length) {
-      setFetchNextPage(true)
-    }
-    setPage(newPageNum)
-  }
-
   const itemSelectedHandler = () => {
     onItemSelected(selectedItem!)
   }
 
-  function createEntity(file: FileUploadAttempt) {
+  const { mutate: createEntity } = useCreateEntity({
+    onSuccess: reset,
+    onError: (err: SynapseClientError) => {
+      setErrorMessage(err.reason)
+    },
+  })
+
+  const { mutateAsync: updateEntity } = useUpdateEntity({
+    onSuccess: reset,
+    onError: (err: SynapseClientError) => {
+      setErrorMessage(err.reason)
+    },
+  })
+
+  function createEntityForFileUploadAttempt(file: FileUploadAttempt) {
     // Create Entity
     if (!file) return
     const { fileHandleId, fileName } = file
@@ -267,16 +242,10 @@ function SubmissionDirectoryList({
       concreteType: FILE_ENTITY_CONCRETE_TYPE_VALUE,
       dataFileHandleId: fileHandleId,
     }
-    SynapseClient.createEntity(newFileEntity, accessToken)
-      .then(() => {
-        reset()
-      })
-      .catch((err: SynapseClientError) => {
-        setErrorMessage(err.reason)
-      })
+    createEntity(newFileEntity)
   }
 
-  async function updateEntity() {
+  async function onUpdateEntity() {
     if (!uploadAttempt) return
     const { fileHandleId, entityId } = uploadAttempt
     if (!entityId)
@@ -299,25 +268,7 @@ function SubmissionDirectoryList({
       modifiedOn: entity.modifiedOn,
     }
 
-    try {
-      const updatedEntity = await SynapseClient.updateEntity(
-        updateRequest,
-        accessToken,
-        true,
-      )
-      await invalidateAllQueriesForEntity(
-        queryClient,
-        keyFactory,
-        updatedEntity.id!,
-      )
-      queryClient.setQueryData(
-        keyFactory.getEntityQueryKey(updatedEntity.id!),
-        updatedEntity,
-      )
-      reset()
-    } catch (err) {
-      setErrorMessage(err.reason)
-    }
+    await updateEntity(updateRequest)
   }
 
   const handleUpload = async (response: UploadCallbackResp) => {
@@ -342,7 +293,7 @@ function SubmissionDirectoryList({
       } catch (err) {
         // An existing entity was not found for this file, create it
         setUploadAttempt(undefined)
-        createEntity(response.resp)
+        createEntityForFileUploadAttempt(response.resp)
       }
     } else if (!response.success && response.error) {
       setErrorMessage(response.error.reason as string)
@@ -385,13 +336,13 @@ function SubmissionDirectoryList({
           loading={areEntitiesLoading}
           columns={columns}
           rows={getRows(entities)}
-          rowCount={headerResults?.totalChildCount ?? 0}
+          rowCount={totalChildCount}
           pagination
           paginationMode="server"
           paginationModel={{ page, pageSize: PER_PAGE }}
           pageSizeOptions={[PER_PAGE]}
           onPaginationModelChange={({ page }) => {
-            handlePageChange(page)
+            fetchNextPage().then(() => setPage(page))
           }}
           density="compact"
           autoHeight
@@ -476,8 +427,11 @@ function SubmissionDirectoryList({
         }
         onCancel={() => setConfirmOpen(false)}
         onConfirm={() => {
-          updateEntity()
-          setConfirmOpen(false)
+          // TODO: Add loading state and close after loading, be able to show error
+          // Doesn't necessarily have to be in this dialog
+          onUpdateEntity().then(() => {
+            setConfirmOpen(false)
+          })
         }}
       />
     </Box>

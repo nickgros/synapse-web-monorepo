@@ -5,6 +5,7 @@
 import { omit, pick } from 'lodash-es'
 import { useMemo } from 'react'
 import {
+  QueryFunction,
   QueryFunctionContext,
   QueryKey,
   useInfiniteQuery,
@@ -38,6 +39,7 @@ import { invalidateAllQueriesForEntity } from '../QueryClientUtils'
 import { createTableUpdateTransactionRequest } from '../../utils'
 import { SetOptional } from 'type-fest'
 import { getNextPageParamForPaginatedResults } from '../InfiniteQueryUtils'
+import { KeyFactory } from '../KeyFactory'
 
 export function useGetEntity<T extends Entity>(
   entityId: string,
@@ -309,14 +311,31 @@ export function useGetEntityPath(
   )
 }
 
+export function getEntityAclQueryOptions(
+  keyFactory: KeyFactory,
+  accessToken: string | undefined,
+  entityId: string,
+): //UseQueryOptions<AccessControlList, SynapseClientError> // for @tanstack/react-query v5
+{ queryKey: QueryKey; queryFn: QueryFunction<AccessControlList> } {
+  return {
+    queryKey: keyFactory.getEntityACLQueryKey(entityId),
+    queryFn: () => SynapseClient.getEntityACL(entityId, accessToken),
+  }
+}
+
 export function useGetEntityACL(
   entityId: string,
   options?: UseQueryOptions<AccessControlList, SynapseClientError>,
 ) {
   const { accessToken, keyFactory } = useSynapseContext()
+  const queryOptions = getEntityAclQueryOptions(
+    keyFactory,
+    accessToken,
+    entityId,
+  )
   return useQuery<AccessControlList, SynapseClientError>(
-    keyFactory.getEntityPathQueryKey(entityId),
-    () => SynapseClient.getEntityACL(entityId, accessToken),
+    queryOptions.queryKey,
+    queryOptions.queryFn,
     options,
   )
 }
