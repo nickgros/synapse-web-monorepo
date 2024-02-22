@@ -68,6 +68,7 @@ export function StorybookComponentWrapper(props: {
   storybookContext: {
     globals: {
       stack?: SynapseStack
+      authenticatedForMockStack?: boolean
       showReactQueryDevtools?: boolean
     }
     parameters: {
@@ -106,16 +107,25 @@ export function StorybookComponentWrapper(props: {
     resetCache()
   }, [accessToken])
 
-  const synapseContext: Partial<SynapseContextType> = useMemo(
-    () => ({
-      accessToken: accessToken,
+  const synapseContext: Partial<SynapseContextType> = useMemo(() => {
+    let accessTokenOverride = accessToken
+    if (currentStack === 'mock') {
+      accessTokenOverride = storybookContext.globals.authenticatedForMockStack
+        ? 'fake token'
+        : undefined
+    }
+    return {
+      accessToken: accessTokenOverride,
       isInExperimentalMode: SynapseClient.isInSynapseExperimentalMode(),
       utcTime: SynapseClient.getUseUtcTimeFromCookie(),
       withErrorBoundary: true,
       downloadCartPageUrl: '/?path=/story/download-downloadcartpage--demo',
-    }),
-    [accessToken],
-  )
+    }
+  }, [
+    accessToken,
+    currentStack,
+    storybookContext.globals.authenticatedForMockStack,
+  ])
 
   return (
     <QueryClientProvider client={storybookQueryClient}>

@@ -4317,7 +4317,7 @@ export const forumSearch = (
  * https://rest-docs.synapse.org/rest/GET/forum/forumId/threads.html
  */
 
-export const getForumThread = (
+export const getForumThreads = (
   accessToken: string | undefined,
   forumId: string,
   offset: number = 0,
@@ -4328,7 +4328,7 @@ export const getForumThread = (
 ) => {
   const params = new URLSearchParams()
   params.set('offset', offset.toString())
-  params.set('limit', limit?.toString())
+  params.set('limit', limit.toString())
   params.set('sort', sort)
   params.set('ascending', ascending.toString())
   params.set('filter', filter)

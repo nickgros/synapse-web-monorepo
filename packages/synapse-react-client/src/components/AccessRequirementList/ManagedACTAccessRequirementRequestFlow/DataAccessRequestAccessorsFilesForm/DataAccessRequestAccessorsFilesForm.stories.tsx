@@ -1,4 +1,3 @@
-import React from 'react'
 import { Meta, StoryObj } from '@storybook/react'
 import DataAccessRequestAccessorsFilesForm, {
   DataAccessRequestAccessorsFilesFormProps,
@@ -13,10 +12,6 @@ import { getUserProfileHandlers } from '../../../../mocks/msw/handlers/userProfi
 import { getFileHandlers } from '../../../../mocks/msw/handlers/fileHandlers'
 import { getWikiHandlers } from '../../../../mocks/msw/handlers/wikiHandlers'
 import { getAccessRequirementHandlers } from '../../../../mocks/msw/handlers/accessRequirementHandlers'
-import {
-  SynapseContextConsumer,
-  SynapseContextProvider,
-} from '../../../../index'
 import { RestrictableObjectType } from '@sage-bionetworks/synapse-types'
 
 const meta: Meta<
@@ -41,30 +36,6 @@ const meta: Meta<
       ],
     },
   },
-  argTypes: {
-    isAuthenticated: {
-      control: { type: 'boolean' },
-      defaultValue: true,
-    },
-  },
-  decorators: [
-    (Story, args) => (
-      <SynapseContextConsumer>
-        {context => (
-          <SynapseContextProvider
-            synapseContext={{
-              ...context,
-              accessToken: args.isAuthenticated
-                ? context.accessToken ?? 'fake token'
-                : undefined,
-            }}
-          >
-            <Story />
-          </SynapseContextProvider>
-        )}
-      </SynapseContextConsumer>
-    ),
-  ],
 }
 
 export default meta

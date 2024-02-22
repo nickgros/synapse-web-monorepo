@@ -5,6 +5,7 @@ import { SynapseContextType } from '../utils/context/SynapseContext'
 import FullContextProvider, {
   defaultQueryClientConfig,
 } from '../utils/context/FullContextProvider'
+import { defaults } from 'lodash-es'
 
 type RtlWrapperProps = {
   children?: ReactNode
@@ -22,7 +23,7 @@ export const createWrapperAndQueryClient = (
   // This is also easier/more reliable than clearing the queryCache after each test.
   // See https://github.com/tannerlinsley/react-query/discussions/1441
   const queryClient = new QueryClient(defaultQueryClientConfig)
-  const wrapperProps = props ?? MOCK_CONTEXT_VALUE
+  const wrapperProps = { ...MOCK_CONTEXT_VALUE, ...props }
   return {
     wrapperFn: function RtlWrapper({ children }: RtlWrapperProps) {
       return (

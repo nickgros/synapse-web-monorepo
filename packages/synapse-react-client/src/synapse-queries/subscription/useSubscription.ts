@@ -23,6 +23,7 @@ import {
 import { SynapseClientError, useSynapseContext } from '../../utils'
 import SynapseClient from '../../synapse-client'
 import { useCallback } from 'react'
+import { isEmpty } from 'lodash-es'
 
 export function useGetSubscribers(
   topic: Topic,
@@ -44,7 +45,7 @@ export function useGetSubscribers(
 export function useGetSubscription(
   objectId: string,
   objectType: SubscriptionObjectType,
-  options?: Partial<UseQueryOptions<Subscription, SynapseClientError>>,
+  options?: Partial<UseQueryOptions<Subscription | null, SynapseClientError>>,
 ) {
   const { accessToken, keyFactory } = useSynapseContext()
   const queryFn = async () => {
@@ -58,9 +59,13 @@ export function useGetSubscription(
       accessToken,
       subscriptionRequest,
     )
+
+    if (isEmpty(subscriptionList.results)) {
+      return null
+    }
     return subscriptionList.results[0]
   }
-  return useQuery<Subscription, SynapseClientError>({
+  return useQuery<Subscription | null, SynapseClientError>({
     ...options,
     queryKey: keyFactory.getSubscriptionQueryKey(objectId, objectType),
     queryFn,

@@ -17,6 +17,7 @@ import {
   PaginatedIds,
   PaginatedResults,
 } from '@sage-bionetworks/synapse-types'
+import { getNextPageParamForPaginatedResults } from '../InfiniteQueryUtils'
 
 export function useGetModerators(
   forumId: string,
@@ -42,7 +43,7 @@ export function useGetForumMetadata(
   })
 }
 
-export function useGetForumInfinite<
+export function useGetForumThreadsInfinite<
   TData = InfiniteData<PaginatedResults<DiscussionThreadBundle>>,
 >(
   forumId: string,
@@ -78,7 +79,7 @@ export function useGetForumInfinite<
       filter,
     ),
     queryFn: async context => {
-      return SynapseClient.getForumThread(
+      return SynapseClient.getForumThreads(
         accessToken,
         forumId,
         context.pageParam,
@@ -89,13 +90,6 @@ export function useGetForumInfinite<
       )
     },
     initialPageParam: undefined,
-    getNextPageParam: (lastPage, pages) => {
-      const numberOfFetchedResults = pages.flatMap(page => page.results).length
-      if (lastPage.totalNumberOfResults! > numberOfFetchedResults) {
-        return numberOfFetchedResults
-      } else {
-        return undefined
-      }
-    },
+    getNextPageParam: getNextPageParamForPaginatedResults,
   })
 }
