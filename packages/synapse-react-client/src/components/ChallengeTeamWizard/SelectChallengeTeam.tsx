@@ -40,7 +40,6 @@ export const SelectChallengeTeam = ({
           variant="contained"
           onClick={onCreateTeam}
           startIcon={<AddCircleTwoToneIcon />}
-          // sx={{ marginTop: '50px', padding: '6px 18px' }}
         >
           Create New Team
         </Button>

@@ -10,7 +10,8 @@ export const MOCK_TEAM_ID = 987654
 export const MOCK_TEAM_ID_2 = 987655
 export const MOCK_TEAM_ID_3 = 987656
 export const MOCK_TEAM_ID_4 = 987657
-export const MOCK_CHALLENGE_PARTICIPANT_TEAM_ID = 987658
+export const MOCK_TEAM_ID_5 = 987658
+export const MOCK_CHALLENGE_PARTICIPANT_TEAM_ID = 987659
 
 export const mockTeamData: Readonly<Team> = {
   id: String(MOCK_TEAM_ID),
@@ -68,6 +69,20 @@ export const mockTeamData4: Readonly<Team> = {
   modifiedBy: String(MOCK_USER_ID_2),
 }
 
+export const mockTeamData5: Readonly<Team> = {
+  id: String(MOCK_TEAM_ID_5),
+  name: 'Mock team with open request',
+  description: 'A team that fake users have already requested to join',
+  icon: '',
+  canPublicJoin: false,
+  canRequestMembership: true,
+  etag: 'f29b79d6-5b63-4641-93c7-30d954b4328c',
+  createdOn: '2013-11-02T01:01:18.373Z',
+  modifiedOn: '2019-01-31T20:34:40.057Z',
+  createdBy: String(MOCK_USER_ID),
+  modifiedBy: String(MOCK_USER_ID_2),
+}
+
 export const mockChallengeParticipantTeamData: Readonly<Team> = {
   id: String(MOCK_CHALLENGE_PARTICIPANT_TEAM_ID),
   name: 'Mock team with open invitation',
@@ -108,6 +123,7 @@ export const mockTeams: readonly Readonly<Team>[] = [
   mockTeamData2,
   mockTeamData3,
   mockTeamData4,
+  mockTeamData5,
   mockChallengeParticipantTeamData,
 ]
 
@@ -152,6 +168,17 @@ export const mockTeamMembershipStatuses: readonly Readonly<TeamMembershipStatus>
       isMember: false,
       hasOpenInvitation: true,
       hasOpenRequest: false,
+      canJoin: false,
+      membershipApprovalRequired: true,
+      hasUnmetAccessRequirement: false,
+      canSendEmail: false,
+    },
+    {
+      teamId: mockTeamData5.id,
+      userId: String(MOCK_USER_ID),
+      isMember: false,
+      hasOpenInvitation: false,
+      hasOpenRequest: true,
       canJoin: false,
       membershipApprovalRequired: true,
       hasUnmetAccessRequirement: false,

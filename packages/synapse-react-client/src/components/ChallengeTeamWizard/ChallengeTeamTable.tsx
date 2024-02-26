@@ -6,17 +6,14 @@ import { RadioOption } from '../widgets/RadioGroup'
 import { ChallengeTeamSearch } from './ChallengeTeamSearch'
 import { Team } from '@sage-bionetworks/synapse-types'
 import {
+  useGetAllOpenMembershipInvitations,
   useGetChallengeTeamList,
+  useGetCurrentUserProfile,
   useGetTeamList,
-} from '../../synapse-queries/team/useTeamList'
+} from '../../synapse-queries'
 import { Box } from '@mui/material'
 import { Link } from 'react-router-dom'
-import {
-  BackendDestinationEnum,
-  getEndpoint,
-} from '../../utils/functions/getEndpoint'
-import { useGetAllOpenMembershipInvitations } from '../../synapse-queries/team/useTeamMembers'
-import { useGetCurrentUserProfile } from '../../synapse-queries'
+import { BackendDestinationEnum, getEndpoint } from '../../utils/functions'
 
 export type ChallengeTeamTableProps = {
   challengeId: string
@@ -86,7 +83,7 @@ export default function ChallengeTeamTable(props: ChallengeTeamTableProps) {
   const columns: GridColDef[] = useMemo(
     () => [
       {
-        field: '',
+        field: 'radiobutton',
         headerName: '',
         width: 25,
         sortable: false,
@@ -96,11 +93,11 @@ export default function ChallengeTeamTable(props: ChallengeTeamTableProps) {
         renderCell: params => {
           return (
             <RadioOption
-              value={String(params.id)}
-              onChange={() => {
-                onSelectTeam(params.row.id)
+              value={params.row.id}
+              checked={String(params.row.id) === selectedTeamId}
+              onChange={teamId => {
+                onSelectTeam(teamId)
               }}
-              checked={params.api.isRowSelected(params.id)}
               label=""
             />
           )
@@ -143,7 +140,7 @@ export default function ChallengeTeamTable(props: ChallengeTeamTableProps) {
         disableColumnMenu: true,
       },
     ],
-    [onSelectTeam],
+    [onSelectTeam, selectedTeamId],
   )
 
   return (

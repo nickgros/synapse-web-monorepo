@@ -5,10 +5,12 @@ import { Box } from '@mui/system'
 
 export interface ChallengeTeamSearchProps {
   rowCount: number
+  value: string
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 export const ChallengeTeamSearch = ({
+  value,
   rowCount,
   onChange,
 }: ChallengeTeamSearchProps) => {
@@ -31,6 +33,7 @@ export const ChallengeTeamSearch = ({
         <SearchIcon sx={{ color: '#878E95' }} />
       </Box>
       <InputBase
+        value={value}
         onChange={onChange}
         sx={{
           '& .MuiInputBase-input': { p: '1px 8px' },

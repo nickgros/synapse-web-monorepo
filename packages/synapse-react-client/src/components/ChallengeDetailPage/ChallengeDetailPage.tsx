@@ -83,7 +83,7 @@ export function ChallengeDetailPage({ projectId }: ChallengeDetailPageProps) {
   const handleRegistrationComplete = () => {
     setShowRegistrationModal(false)
     // Only guide the user to join/create a submission team if they are not already part of one.
-    setShowSubmissionTeamWizard(!isMemberOfSubmissionTeam)
+    setShowSubmissionTeamWizard(true)
   }
 
   return (

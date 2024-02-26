@@ -68,9 +68,7 @@ const ChallengeDetailPageWrapper = () => {
                       columnGap: '20px',
                     }}
                   >
-                    {isChallengeActive && (
-                      <ChallengeDetailPage projectId={projectId} />
-                    )}
+                    {true && <ChallengeDetailPage projectId={projectId} />}
                     <Link
                       target="_blank"
                       rel="noreferrer"
