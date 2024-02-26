@@ -1,8 +1,12 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query'
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  UseQueryOptions,
+} from '@tanstack/react-query'
 import SynapseClient from '../../synapse-client'
-import { SynapseClientError } from '../../utils/SynapseClientError'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
-import { Team } from '@sage-bionetworks/synapse-types'
+import { SynapseClientError, useSynapseContext } from '../../utils'
+import { CreateTeamRequest, Team } from '@sage-bionetworks/synapse-types'
 
 export function useGetTeam(
   teamId: string,
@@ -14,5 +18,17 @@ export function useGetTeam(
     ...options,
     queryKey: keyFactory.getTeamQueryKey(teamId),
     queryFn: () => SynapseClient.getTeam(teamId, accessToken),
+  })
+}
+
+export function useCreateTeam(
+  options?: Partial<
+    UseMutationOptions<Team, SynapseClientError, CreateTeamRequest>
+  >,
+) {
+  const { accessToken } = useSynapseContext()
+  return useMutation({
+    ...options,
+    mutationFn: team => SynapseClient.createTeam(team, accessToken),
   })
 }

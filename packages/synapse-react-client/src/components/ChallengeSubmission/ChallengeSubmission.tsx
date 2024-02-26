@@ -5,6 +5,7 @@ import {
   useGetEntityAlias,
   useGetEntityChallenge,
   useGetEntityPermissions,
+  useGetTeam,
   useGetUserSubmissionTeams,
   useUpdateEntityACL,
 } from '../../synapse-queries'
@@ -20,7 +21,6 @@ import {
   Team,
 } from '@sage-bionetworks/synapse-types'
 import { ErrorBanner, SynapseErrorBoundary } from '../error/ErrorBanner'
-import { useGetTeam } from '../../synapse-queries/team/useTeam'
 import { createEntity } from '../../synapse-client'
 import SubmissionDirectoryList from './SubmissionDirectoryList'
 import ChallengeSubmissionStepper from './ChallengeSubmissionStepper'
@@ -44,13 +44,11 @@ export function ChallengeSubmission({
   const { accessToken } = useSynapseContext()
   const isLoggedIn = Boolean(accessToken)
 
-  const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string>()
   const [submissionTeamId, setSubmissionTeamId] = useState<string>()
   const [challengeProjectId, setChallengeProjectId] = useState<string>()
   const [newProject, setNewProject] = useState<Project>()
   const [isProjectNewlyCreated, setIsProjectNewlyCreated] = useState<boolean>()
-  const [projectAliasFound, setProjectAliasFound] = useState<boolean>()
   const { mutate: updateACL } = useUpdateEntityACL()
   const [canSubmit, setCanSubmit] = useState<boolean>(false)
   const [selectedEntity, setSelectedEntity] = useState<EntityItem>()
@@ -77,11 +75,12 @@ export function ChallengeSubmission({
     })
 
   // Retrieve the challenge associated with the projectId passed through props
-  const { data: challenge } = useGetEntityChallenge(projectId, {
-    enabled: isLoggedIn && !!projectId,
-    refetchInterval: Infinity,
-    throwOnError: true,
-  })
+  const { data: challenge, isLoading: isChallengeLoading } =
+    useGetEntityChallenge(projectId, {
+      enabled: isLoggedIn && !!projectId,
+      refetchInterval: Infinity,
+      throwOnError: true,
+    })
 
   // Determine whether or not the given user belongs to any submission teams
   const { data: userSubmissionTeams } = useGetUserSubmissionTeams(
@@ -96,13 +95,11 @@ export function ChallengeSubmission({
         setErrorMessage(
           'Error: Please join a Submission Team before continuing.',
         )
-        return setLoading(false)
       }
       if (userSubmissionTeams.results.length > 1) {
         setErrorMessage(
           'Error: You are a member of more than one Submission Team. You may only belong to one Submission Team per Challenge.',
         )
-        return setLoading(false)
       }
       setSubmissionTeamId(userSubmissionTeams.results[0])
     }
@@ -121,12 +118,11 @@ export function ChallengeSubmission({
       throwOnError: true,
     },
   )
+
+  const projectAliasFound = Boolean(entityAlias)
   useEffect(() => {
     if (entityAlias) {
-      setProjectAliasFound(true)
       setChallengeProjectId(entityAlias.id)
-    } else {
-      setProjectAliasFound(false)
     }
   }, [entityAlias])
 
@@ -162,16 +158,14 @@ export function ChallengeSubmission({
       })
       setIsProjectNewlyCreated(false)
     }
-  }, [entityACL])
+  }, [entityACL, isProjectNewlyCreated, submissionTeam, updateACL])
 
-  const { data: entityPermissions } = useGetEntityPermissions(
-    challengeProjectId!,
-    {
+  const { data: entityPermissions, isLoading: isPermissionsLoading } =
+    useGetEntityPermissions(challengeProjectId!, {
       enabled: !!challengeProjectId,
       refetchInterval: Infinity,
       throwOnError: true,
-    },
-  )
+    })
 
   useEffect(() => {
     if (
@@ -181,12 +175,10 @@ export function ChallengeSubmission({
     ) {
       setCanSubmit(true)
     }
-    setLoading(false)
   }, [entityPermissions])
 
   useEffect(() => {
     if (!isLoggedIn && (!!userProfile || !isProfileLoading)) {
-      setLoading(false)
       setErrorMessage('Please login to continue.')
     }
   }, [isLoggedIn, userProfile, isProfileLoading])
@@ -212,7 +204,7 @@ export function ChallengeSubmission({
       submissionTeam &&
       challenge &&
       newProject &&
-      projectAliasFound === false
+      !projectAliasFound
     ) {
       createChallengeProject()
     }
@@ -226,6 +218,8 @@ export function ChallengeSubmission({
   const onModalClose = () => {
     setIsShowingModal(false)
   }
+
+  const loading = isProfileLoading || isChallengeLoading || isPermissionsLoading
 
   return (
     <SynapseErrorBoundary>

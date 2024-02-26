@@ -32,8 +32,6 @@ const challengeTeamResults = mockChallengeTeamResults()
 const challengeTeams = mockTeamList(challengeTeamResults.results)
 const team1 = challengeTeams.list[0]
 
-// console.log(challengeTeams)
-
 jest
   .spyOn(SynapseClient, 'getUserProfile')
   .mockResolvedValue(mockUserProfileData)

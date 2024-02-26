@@ -47,14 +47,12 @@ const StepperDialog: React.FunctionComponent<StepperDialogProps> = ({
   content,
   loading,
 }) => {
-  if (!step) return null
+  if (!step) return <></>
 
   const dialogContent = (
     <Box display="flex" flexDirection="column" gap={1}>
-      <>
-        {loading ? <SynapseSpinner size={40} /> : content}
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      </>
+      {loading ? <SynapseSpinner size={40} /> : content}
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
     </Box>
   )
 
