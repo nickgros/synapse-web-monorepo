@@ -1,6 +1,9 @@
 import React, { useContext, useMemo } from 'react'
 import { SynapseErrorBoundary } from '../../components/error/ErrorBanner'
 import { KeyFactory } from '../../synapse-queries/KeyFactory'
+import { FeatureFlagService } from '../feature/FeatureFlagService'
+import LocalStorageFeatureFlagDataStore from '../feature/LocalStorageFeatureFlagDataStore'
+import { SynapseTableFeatureFlagDataStore } from '../feature/SynapseTableFeatureFlagDataStore'
 
 export type SynapseContextType = {
   /** The user's access token. If undefined, the user is not logged in */
@@ -13,8 +16,10 @@ export type SynapseContextType = {
   withErrorBoundary: boolean
   /** The URL of the download cart page in the current app. Used to properly link components */
   downloadCartPageUrl: string
-  /* The key factory to use for react-query. Generated automatically. */
+  /** The key factory to use for react-query. Generated automatically. */
   keyFactory: KeyFactory
+  /** Service used to check the status of feature flags */
+  featureFlagService: FeatureFlagService
 }
 
 const defaultContext = {
@@ -24,6 +29,7 @@ const defaultContext = {
   withErrorBoundary: false,
   keyFactory: new KeyFactory(undefined),
   downloadCartPageUrl: '/DownloadCart',
+  featureFlagService: new FeatureFlagService([]),
 } satisfies SynapseContextType
 
 /**
@@ -50,6 +56,18 @@ export function SynapseContextProvider(props: SynapseContextProviderProps) {
     [providedContext.accessToken],
   )
 
+  const featureFlagService = useMemo(
+    () =>
+      new FeatureFlagService([
+        new LocalStorageFeatureFlagDataStore(),
+        new SynapseTableFeatureFlagDataStore(
+          'syn53917743', // TODO: synapse ID should be provided to context
+          providedContext.accessToken,
+        ),
+      ]),
+    [providedContext.accessToken],
+  )
+
   const synapseContext: SynapseContextType = useMemo(
     () => ({
       accessToken: providedContext.accessToken,
@@ -59,15 +77,19 @@ export function SynapseContextProvider(props: SynapseContextProviderProps) {
       downloadCartPageUrl:
         providedContext.downloadCartPageUrl ?? '/DownloadCart',
       keyFactory: providedContext.keyFactory ?? queryKeyFactory,
+      featureFlagService:
+        providedContext.featureFlagService ?? featureFlagService,
     }),
     [
       providedContext.accessToken,
       providedContext.downloadCartPageUrl,
+      providedContext.featureFlagService,
       providedContext.isInExperimentalMode,
       providedContext.keyFactory,
       providedContext.utcTime,
       providedContext.withErrorBoundary,
       queryKeyFactory,
+      featureFlagService,
     ],
   )
 

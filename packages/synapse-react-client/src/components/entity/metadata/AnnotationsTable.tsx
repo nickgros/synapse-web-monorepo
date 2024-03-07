@@ -4,21 +4,19 @@ import {
   convertToEntityType,
   entityTypeToFriendlyName,
 } from '../../../utils/functions/EntityTypeUtils'
-import {
-  BackendDestinationEnum,
-  getEndpoint,
-} from '../../../utils/functions/getEndpoint'
+import { BackendDestinationEnum, getEndpoint } from '../../../utils/functions'
 import {
   useGetJson,
   useGetSchemaBinding,
   useGetValidationResults,
 } from '../../../synapse-queries'
-import { useSynapseContext } from '../../../utils'
 import { SkeletonTable } from '../../Skeleton'
 import dayjs from 'dayjs'
 import FullWidthAlert from '../../FullWidthAlert'
 import { isISOTimestamp } from '../../../utils/functions/DateTimeUtils'
 import { formatDate } from '../../../utils/functions/DateFormatter'
+import { FeatureFlagKey } from '../../../utils/feature/FeatureFlagKey'
+import { useSynapseContext } from '../../../utils'
 
 export type AnnotationsTableProps = {
   readonly entityId: string
@@ -37,10 +35,13 @@ function getDisplayedAnnotation(value: string | number | boolean): string {
 export function AnnotationsTable(props: AnnotationsTableProps) {
   const { entityId, versionNumber } = props
   const [isManuallyRefetching, setIsManuallyRefetching] = useState(false)
+  const { featureFlagService } = useSynapseContext()
   /**
-   * Currently, schema/validation features are only shown in experimental mode.
+   * Currently, schema/validation features are only shown under a feature flag.
    */
-  const { isInExperimentalMode } = useSynapseContext()
+  const showValidationResults = featureFlagService.getValue(
+    FeatureFlagKey.JSON_SCHEMA_VALIDATION,
+  )
 
   const {
     data: entityData,
@@ -51,15 +52,15 @@ export function AnnotationsTable(props: AnnotationsTableProps) {
   const annotations = entityData?.annotations
 
   const { data: boundSchema } = useGetSchemaBinding(entityId, {
-    enabled: isInExperimentalMode,
+    enabled: Boolean(showValidationResults),
   })
 
   const { data: validationResults, refetch: refetchValidationInformation } =
     useGetValidationResults(entityId, {
-      enabled: isInExperimentalMode && Boolean(boundSchema),
+      enabled: Boolean(showValidationResults && boundSchema),
     })
 
-  const showSchemaInformation = isInExperimentalMode && Boolean(boundSchema)
+  const showSchemaInformation = Boolean(showValidationResults && boundSchema)
 
   // If the entity has not yet been validated since the last fetch, then derived annotations may not have been calculated.
   const recentChangesHaveNotBeenValidated =
