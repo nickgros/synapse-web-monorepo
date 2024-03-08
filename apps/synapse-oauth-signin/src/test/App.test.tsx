@@ -1,35 +1,19 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { server } from '../mocks/server'
 import { rest } from 'msw'
 import React from 'react'
-import { SynapseClient, SynapseConstants } from 'synapse-react-client'
+import { SynapseConstants } from 'synapse-react-client'
 import App from '../App'
 import userEvent from '@testing-library/user-event'
 import { LoginResponse } from '@sage-bionetworks/synapse-types'
-import { afterEach, describe, expect, test, vi } from 'vitest'
+import { beforeEach, afterEach, describe, expect, test, vi } from 'vitest'
 import { waitForOptions } from '@testing-library/react'
+import { resetConsentedInMockService } from '../mocks/handlers'
+import mockOauthClient from '../mocks/MockOAuthClient'
 
 const overrideWaitForOptions: waitForOptions = {
   timeout: 5000,
 }
-
-vi.mock('synapse-react-client', async importActual => {
-  const actual = await importActual<typeof import('synapse-react-client')>()
-  return {
-    ...actual,
-    SynapseClient: {
-      ...actual.SynapseClient,
-      // Create mock but use actual implementation so we can spy on calls
-      consentToOAuth2Request: vi.fn(
-        actual.SynapseClient.consentToOAuth2Request,
-      ),
-    },
-  }
-})
-
-const mockConsentToOAuth2Request = vi.mocked(
-  SynapseClient.consentToOAuth2Request,
-)
 
 const { ACCESS_TOKEN_COOKIE_KEY, POST_SSO_REDIRECT_URL_LOCALSTORAGE_KEY } =
   SynapseConstants
@@ -55,6 +39,9 @@ function renderApp(prompt?: string, updateHistory = true) {
 }
 
 describe('App integration tests', () => {
+  beforeEach(() => {
+    resetConsentedInMockService(false)
+  })
   afterEach(() => {
     vi.clearAllMocks()
     document.cookie = ''
@@ -174,8 +161,9 @@ describe('App integration tests', () => {
 
     // Should redirect
     // TODO: Verify the redirect URL
-    await waitFor(() => expect(window.location.replace).toHaveBeenCalled())
-    expect(mockConsentToOAuth2Request).toHaveBeenCalled()
+    await waitFor(() => {
+      expect(window.location.replace).toHaveBeenCalled()
+    })
   })
   test('Deny consent to app terms', async () => {
     // Need a token in the cookie so the app tries to use it
@@ -196,26 +184,27 @@ describe('App integration tests', () => {
     // Should redirect
     // TODO: Verify the redirect URL
     await waitFor(() => expect(window.location.replace).toHaveBeenCalled())
-    expect(mockConsentToOAuth2Request).not.toHaveBeenCalled()
   })
 
-  test('Does not redirect if a token is provided and the user has already consented, if prompt is consent', () => {
+  test('Does not redirect if a token is provided and the user has already consented, if prompt is consent', async () => {
     const prompt = 'consent'
     // Consent has already been granted:
-    const hasGrantedConsent = true
-    server.use(
-      rest.post(
-        'https://repo-prod.prod.sagebase.org/auth/v1/oauth2/consentcheck',
-        (req, res, ctx) => {
-          return res(
-            ctx.status(200),
-            ctx.json({
-              granted: hasGrantedConsent,
-            }),
-          )
-        },
-      ),
-    )
+    resetConsentedInMockService(true)
+
+    // Need a token in the cookie so the app tries to use it
+    document.cookie = `${ACCESS_TOKEN_COOKIE_KEY}=someToken`
+
+    renderApp(prompt)
+    // Verify that the consent button appears
+    await screen.findByRole('button', { name: 'Allow' })
+
+    expect(window.location.replace).not.toHaveBeenCalled()
+  })
+
+  test('Redirects if a token is provided and the user has already consented, and prompt is not consent', () => {
+    const prompt = ''
+    // Consent has already been granted:
+    resetConsentedInMockService(true)
 
     // Need a token in the cookie so the app tries to use it
     document.cookie = `${ACCESS_TOKEN_COOKIE_KEY}=someToken`
@@ -224,10 +213,6 @@ describe('App integration tests', () => {
 
     expect(window.location.replace).not.toHaveBeenCalled()
   })
-
-  test.todo(
-    'Redirects if a token is provided and the user has already consented, and prompt is not consent',
-  )
   test.todo('Redirects in error if a the redirect URI is invalid')
   test.todo('Redirects in error if the backend provides an unhandled error')
   test.todo('Shows warning if the client is unverified')

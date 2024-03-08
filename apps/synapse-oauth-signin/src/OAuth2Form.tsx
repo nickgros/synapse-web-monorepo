@@ -1,14 +1,10 @@
 import { Button, Link, Paper, Typography } from '@mui/material'
 import {
-  AccessCodeResponse,
   FileHandleAssociateType,
-  OAuthClientPublic,
-  OAuthConsentGrantedResponse,
   OIDCAuthorizationRequest,
-  OIDCAuthorizationRequestDescription,
 } from '@sage-bionetworks/synapse-types'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import {
   AppUtils,
   FullWidthAlert,
@@ -24,18 +20,35 @@ import {
 } from 'synapse-react-client'
 import { OAuthClientError } from './OAuthClientError'
 import { StyledInnerContainer } from './StyledInnerContainer'
-import { getStateParam, getURLParam, handleErrorRedirect } from './URLUtils'
+import { getStateParam, handleErrorRedirect } from './URLUtils'
+
+const sendGTagEvent = (event: string) => {
+  // send event to Google Analytics
+  // (casting to 'any' type to get compile-time access to gtag())
+  const windowAny: any = window
+  const gtag = windowAny.gtag
+  if (gtag) {
+    gtag('event', event, {
+      event_category: 'SynapseOAUTH',
+    })
+  }
+}
+
+function redirectToURL(redirectURL: string) {
+  window.location.replace(redirectURL)
+}
 
 export function OAuth2Form() {
-  const isMounted = useRef(true)
-
-  const { accessToken } = useSynapseContext()
   const { refreshSession, twoFactorAuthSSOErrorResponse, clearSession } =
     AppUtils.useApplicationSessionContext()
-  const history = useHistory()
+  const { accessToken } = useSynapseContext()
+  const isLoggedIn = Boolean(accessToken)
 
-  const [error, setError] = useState<any>()
-
+  const { search } = useLocation()
+  const queryParams = useMemo(() => new URLSearchParams(search), [search])
+  const [error, setError] = useState<
+    Error | SynapseClientError | OAuthClientError
+  >()
   const onError = useCallback(
     (error: Error | OAuthClientError | SynapseClientError) => {
       if (error instanceof SynapseClientError && error.status === 401) {
@@ -49,11 +62,33 @@ export function OAuth2Form() {
     [clearSession],
   )
 
-  // In addition to fetching the current user profile, the success of this request will determine if the current access token is valid.
-  const { data: profile, error: fetchProfileError } =
-    SynapseQueries.useGetCurrentUserProfile({
-      enabled: !!accessToken,
+  const clientId = useMemo(() => {
+    const code = queryParams.get('code')
+    if (code) return // we're in the middle of a SSO, do not attempt to get OAuthClient info yet
+
+    const clientId = queryParams.get('client_id')
+    if (!clientId) {
+      onError(new Error('Synapse OAuth client_id is required'))
+      return
+    }
+    return clientId
+  }, [onError, queryParams])
+
+  const { data: oauthClientInfo, isLoading: isLoadingClientInfo } =
+    SynapseQueries.useGetOAuth2Client(clientId!, {
+      enabled: Boolean(clientId),
     })
+
+  const history = useHistory()
+
+  // In addition to fetching the current user profile, the success of this request will determine if the current access token is valid.
+  const {
+    data: profile,
+    error: fetchProfileError,
+    isLoading: isLoadingProfile,
+  } = SynapseQueries.useGetCurrentUserProfile({
+    enabled: isLoggedIn,
+  })
 
   useEffect(() => {
     if (fetchProfileError) {
@@ -62,6 +97,7 @@ export function OAuth2Form() {
   }, [fetchProfileError, onError])
 
   if (profile?.profilePicureFileHandleId) {
+    // Note: `getPortalFileHandleServletUrl` is not a web request.
     profile.clientPreSignedURL = SynapseClient.getPortalFileHandleServletUrl(
       profile.profilePicureFileHandleId,
       profile.ownerId,
@@ -69,69 +105,103 @@ export function OAuth2Form() {
     )
   }
 
-  const [oidcRequestDescription, setOidcRequestDescription] =
-    useState<OIDCAuthorizationRequestDescription>()
-  const [oauthClientInfo, setOauthClientInfo] = useState<OAuthClientPublic>()
-  const [redirectURL, setRedirectURL] = useState<string>()
-  const [isPreviousAuthCheckComplete, setIsPreviousAuthCheckComplete] =
-    useState<boolean>(false)
-  const [isConsenting, setIsConsenting] = useState<boolean>(false)
+  const oidcAuthorizationRequestFromSearchParams:
+    | OIDCAuthorizationRequest
+    | undefined = useMemo(() => {
+    const clientId = queryParams.get('client_id')
+    const scope = queryParams.get('scope')
+    const responseType = queryParams.get('response_type')
+    const redirectUri = queryParams.get('redirect_uri')
 
-  const sendGTagEvent = (event: string) => {
-    // send event to Google Analytics
-    // (casting to 'any' type to get compile-time access to gtag())
-    const windowAny: any = window
-    const gtag = windowAny.gtag
-    if (gtag) {
-      gtag('event', event, {
-        event_category: 'SynapseOAUTH',
-      })
+    if (
+      clientId == null ||
+      scope == null ||
+      responseType == null ||
+      redirectUri == null
+    ) {
+      // We don't have the params to construct the request
+      return undefined
     }
-  }
+
+    const authRequest: OIDCAuthorizationRequest = {
+      clientId: clientId,
+      scope: scope,
+      responseType: responseType,
+      redirectUri: redirectUri,
+      nonce: queryParams.get('nonce') || undefined,
+    }
+    const claimsString = queryParams.get('claims')
+    if (claimsString) {
+      authRequest.claims = JSON.parse(claimsString)
+    }
+    return authRequest
+  }, [queryParams])
+
+  const { data: hasUserAuthorizedOAuthClient } =
+    SynapseQueries.useGetHasUserAuthorizedOAuthClient(
+      oidcAuthorizationRequestFromSearchParams!,
+      {
+        enabled: Boolean(oidcAuthorizationRequestFromSearchParams),
+      },
+    )
+
+  const { mutate: consentToRequest } = SynapseQueries.useConsentToOAuth2Request(
+    {
+      onSuccess: accessCode => {
+        if (!accessCode || !accessCode.access_code) {
+          onError(
+            new Error(
+              'Something went wrong - the access code is missing from the Synapse call.',
+            ),
+          )
+          return
+        }
+        // done!  redirect with access code.
+        const redirectUri = queryParams.get('redirect_uri')!
+        redirectToURL(
+          `${redirectUri}?${getStateParam()}code=${encodeURIComponent(
+            accessCode.access_code,
+          )}`,
+        )
+      },
+      onError: e => {
+        onError(e)
+      },
+    },
+  )
 
   const onConsent = useCallback(() => {
-    if (!isConsenting) {
-      setIsConsenting(true)
+    sendGTagEvent('UserConsented')
+    if (oidcAuthorizationRequestFromSearchParams) {
+      consentToRequest(oidcAuthorizationRequestFromSearchParams)
     }
-  }, [isConsenting])
+  }, [consentToRequest, oidcAuthorizationRequestFromSearchParams])
 
+  // Handle auto-consent when the user has already consented
   useEffect(() => {
-    let isSubscribed = true
-    if (isConsenting) {
-      sendGTagEvent('UserConsented')
-      const request: OIDCAuthorizationRequest =
-        getOIDCAuthorizationRequestFromSearchParams()
-      SynapseClient.consentToOAuth2Request(request, accessToken)
-        .then((accessCode: AccessCodeResponse) => {
-          if (isSubscribed) {
-            if (!accessCode || !accessCode.access_code) {
-              onError(
-                new Error(
-                  'Something went wrong - the access code is missing from the Synapse call.',
-                ),
-              )
-              return
-            }
-            // done!  redirect with access code.
-            const redirectUri = getURLParam('redirect_uri')
-            setRedirectURL(
-              `${redirectUri}?${getStateParam()}code=${encodeURIComponent(
-                accessCode.access_code,
-              )}`,
-            )
-          }
-        })
-        .catch(_err => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          onError(_err)
-        })
+    if (hasUserAuthorizedOAuthClient) {
+      const prompt = queryParams.get('prompt')
+      if (hasUserAuthorizedOAuthClient.granted) {
+        // SWC-5285: before auto-consenting, make sure we're allowed to auto-consent.
+        // Only allow if prompt is undefined or set to none.
+        if (!prompt || prompt !== 'consent') {
+          // auto-consent!
+          onConsent()
+        } //else if prompt is defined and another value ('login', 'consent', or 'select_account') then always prompt!
+      } else if (prompt && prompt === 'none') {
+        // granted === false and prompt === none
+        onError(
+          new OAuthClientError(
+            'consent_required',
+            'Current user has not previously granted permission, and prompt was set to none',
+          ),
+        )
+      }
     }
-    return () => {
-      isSubscribed = false
-    }
-  }, [accessToken, isConsenting, onError])
+  }, [hasUserAuthorizedOAuthClient, onConsent, onError, queryParams])
 
   const onGoBack = () => {
+    // TODO: Does this work with Google signin?
     window.history.back()
   }
 
@@ -141,156 +211,47 @@ export function OAuth2Form() {
     if (oauthClientInfo && oauthClientInfo.client_uri) {
       redirect = oauthClientInfo.client_uri
     } else {
-      redirect = getURLParam('redirect_uri')!
+      redirect = queryParams.get('redirect_uri')!
     }
-    setRedirectURL(redirect)
+    redirectToURL(redirect)
   }
 
-  // if user has already consented to this client request, no need to ask again
+  const { data: oidcRequestDescription } =
+    SynapseQueries.useGetOAuth2RequestDescription(
+      oidcAuthorizationRequestFromSearchParams!,
+      {
+        enabled: Boolean(oidcAuthorizationRequestFromSearchParams),
+      },
+    )
+
   useEffect(() => {
-    const getHasAlreadyConsented = () => {
-      const code = getURLParam('code')
-      if (code) return // we're in the middle of a SSO, do not attempt to get OAuth2RequestDescription yet
-      const request: OIDCAuthorizationRequest =
-        getOIDCAuthorizationRequestFromSearchParams()
-      SynapseClient.hasUserAuthorizedOAuthClient(request, accessToken!)
-        .then((consentGrantedResponse: OAuthConsentGrantedResponse) => {
-          const prompt = getURLParam('prompt')
-          if (consentGrantedResponse.granted) {
-            // SWC-5285: before auto-consenting, make sure we're allowed to auto-consent.
-            // Only allow if prompt is undefined or set to none.
-            if (!prompt || prompt !== 'consent') {
-              // auto-consent!
-              onConsent()
-            } //else if prompt is defined and another value ('login', 'consent', or 'select_account') then always prompt!
-          } else if (prompt && prompt === 'none') {
-            // granted === false and prompt === none
-            onError(
-              new OAuthClientError(
-                'consent_required',
-                'Current user has not previously granted permission, and prompt was set to none',
-              ),
-            )
-          }
-        })
-        .catch((_err: Error | OAuthClientError | SynapseClientError) => {
-          onError(_err)
-        })
-        .finally(() => {
-          setIsPreviousAuthCheckComplete(true)
-        })
-    }
-    if (profile && !error) {
-      getHasAlreadyConsented()
-    }
-  }, [profile, error, accessToken, onConsent, onError])
+    if (oidcRequestDescription) {
+      sendGTagEvent('SynapseOAuthClientRequestDescriptionLoaded')
 
-  const getOAuth2RequestDescription = () => {
-    if (!oidcRequestDescription && !error) {
-      const code = getURLParam('code')
-      if (code) return // we're in the middle of a SSO, do not attempt to get OAuth2RequestDescription yet
-
-      const request: OIDCAuthorizationRequest =
-        getOIDCAuthorizationRequestFromSearchParams()
-      SynapseClient.getOAuth2RequestDescription(request)
-        .then((oidcRequestDescription: OIDCAuthorizationRequestDescription) => {
-          if (isMounted.current) {
-            sendGTagEvent('SynapseOAuthClientRequestDescriptionLoaded')
-            setOidcRequestDescription(oidcRequestDescription)
-
-            // if we were able to get the oidc request description, also check for params that this web app does not support
-            // sorry, we don't support JWT in the url query params today
-            // https://openid.net/specs/openid-connect-core-1_0.html#JWTRequests
-            const requestObject = getURLParam('request')
-            const requestUri = getURLParam('request_uri')
-            if (requestObject) {
-              handleErrorRedirect(new OAuthClientError('request_not_supported'))
-            }
-            if (requestUri) {
-              handleErrorRedirect(
-                new OAuthClientError('request_uri_not_supported'),
-              )
-            }
-            // sorry, we don't support registration (yet?)
-            // https://openid.net/specs/openid-connect-core-1_0.html#RegistrationParameter
-            const registration = getURLParam('registration')
-            if (registration) {
-              handleErrorRedirect(
-                new OAuthClientError('registration_not_supported'),
-              )
-            }
-          }
-        })
-        .catch(_err => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          onError(_err)
-        })
-    }
-  }
-
-  const getOIDCAuthorizationRequestFromSearchParams = () => {
-    const claimsString: string = getURLParam('claims')!
-    const authRequest: OIDCAuthorizationRequest = {
-      clientId: getURLParam('client_id')!,
-      scope: getURLParam('scope')!,
-      responseType: getURLParam('response_type')!,
-      redirectUri: getURLParam('redirect_uri')!,
-      nonce: getURLParam('nonce'),
-    }
-    if (claimsString) {
-      authRequest.claims = JSON.parse(claimsString)
-    }
-    return authRequest
-  }
-
-  //init
-  useEffect(() => {
-    const getOauthClientInfo = () => {
-      if (!oauthClientInfo && !error) {
-        const code = getURLParam('code')
-        if (code) return // we're in the middle of a SSO, do not attempt to get OAuthClient info yet
-
-        const clientId = getURLParam('client_id')
-        if (!clientId) {
-          onError(new Error('Synapse OAuth client_id is required'))
-          return
-        }
-        SynapseClient.getOAuth2Client(clientId)
-          .then((oauthClientInfo: OAuthClientPublic) => {
-            if (oauthClientInfo.verified) {
-              getOAuth2RequestDescription()
-            }
-            setOauthClientInfo(oauthClientInfo)
-          })
-          .catch(_err => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            onError(_err)
-          })
+      // if we were able to get the oidc request description, also check for params that this web app does not support
+      // sorry, we don't support JWT in the url query params today
+      // https://openid.net/specs/openid-connect-core-1_0.html#JWTRequests
+      const requestObject = queryParams.get('request')
+      const requestUri = queryParams.get('request_uri')
+      if (requestObject) {
+        handleErrorRedirect(new OAuthClientError('request_not_supported'))
+      }
+      if (requestUri) {
+        handleErrorRedirect(new OAuthClientError('request_uri_not_supported'))
+      }
+      // sorry, we don't support registration (yet?)
+      // https://openid.net/specs/openid-connect-core-1_0.html#RegistrationParameter
+      const registration = queryParams.get('registration')
+      if (registration) {
+        handleErrorRedirect(new OAuthClientError('registration_not_supported'))
       }
     }
+  }, [oidcRequestDescription, queryParams])
 
-    getOauthClientInfo()
-  }, [])
-
-  useEffect(() => {
-    if (redirectURL) {
-      window.location.replace(redirectURL)
-    }
-  }, [redirectURL])
-
-  const isLoadingProfile =
-    !twoFactorAuthSSOErrorResponse &&
-    !error &&
-    profile &&
-    !isPreviousAuthCheckComplete
-  const isLoadingClientInfo =
-    !error && !oauthClientInfo && !oidcRequestDescription
-  const isRedirecting = redirectURL && oauthClientInfo
   const promptForTwoFactorAuth = !!twoFactorAuthSSOErrorResponse
 
   const isLoading =
-    !promptForTwoFactorAuth &&
-    (isLoadingProfile || isLoadingClientInfo || isRedirecting)
+    !promptForTwoFactorAuth && (isLoadingProfile || isLoadingClientInfo)
 
   const loadingSpinner = (
     <Paper
@@ -303,7 +264,6 @@ export function OAuth2Form() {
       }}
     >
       <div style={{ marginTop: '50px' }}>
-        {isRedirecting && <p>Waiting for {oauthClientInfo?.client_name}...</p>}
         <span
           style={{
             marginLeft: '10px',
@@ -331,11 +291,8 @@ export function OAuth2Form() {
           isGlobal={false}
         />
       )}
-      {!redirectURL &&
-        !error &&
-        isPreviousAuthCheckComplete &&
+      {!error &&
         accessToken &&
-        !isConsenting &&
         oauthClientInfo &&
         oauthClientInfo.verified &&
         oidcRequestDescription && (
@@ -400,8 +357,7 @@ export function OAuth2Form() {
         )}
       {isLoading && loadingSpinner}
       {(!!twoFactorAuthSSOErrorResponse ||
-        (!redirectURL &&
-          !error &&
+        (!error &&
           !accessToken &&
           oauthClientInfo &&
           oauthClientInfo.verified &&
@@ -426,7 +382,9 @@ export function OAuth2Form() {
         <FullWidthAlert
           variant="danger"
           title={error.name || 'Error'}
-          description={`${error.reason} : ${error.message}`}
+          description={`${'reason' in error ? error.reason + ': ' : ''}${
+            error.message
+          }`}
           isGlobal={false}
         />
       )}

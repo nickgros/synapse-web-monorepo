@@ -1,6 +1,12 @@
 import { rest } from 'msw'
 import mockOauthClient from './MockOAuthClient'
 
+let hasConsented = false
+
+export function resetConsentedInMockService(newValue: boolean) {
+  hasConsented = newValue
+}
+
 export const handlers = [
   rest.get(
     'https://repo-prod.prod.sagebase.org/repo/v1/userProfile',
@@ -51,7 +57,7 @@ export const handlers = [
       return res(
         ctx.status(200),
         ctx.json({
-          granted: false,
+          granted: hasConsented,
         }),
       )
     },
@@ -60,6 +66,7 @@ export const handlers = [
   rest.post(
     'https://repo-prod.prod.sagebase.org/auth/v1/oauth2/consent',
     (req, res, ctx) => {
+      hasConsented = true
       return res(
         ctx.status(200),
         ctx.json({

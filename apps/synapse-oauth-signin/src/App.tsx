@@ -4,6 +4,7 @@ import {
   SynapseClient,
   defaultQueryClientConfig,
   SynapseTheme,
+  SynapseErrorBoundary,
 } from 'synapse-react-client'
 import './App.scss'
 import AppInitializer from './AppInitializer'
@@ -28,39 +29,41 @@ function App() {
           <QueryClientProvider client={queryClient}>
             <ThemeProvider theme={theme}>
               <AppInitializer>
-                <Switch>
-                  <Route exact path="/" render={() => <OAuth2Form />} />
-                  <Route
-                    exact
-                    path="/logout"
-                    render={() => {
-                      SynapseClient.signOut().then(() => {
-                        setIsLoggedOut(true)
-                      })
-                      return (
-                        <p style={{ margin: 10 }}>
-                          {isLoggedOut ? 'Logged' : 'Logging'} out
-                        </p>
-                      )
-                    }}
-                  />
-                  <Route
-                    exact
-                    path="/login"
-                    render={() => {
-                      // look for the code from the params
-                      const code = getURLParam('code')
-                      SynapseClient.setAccessTokenCookie(code).then(() => {
-                        setIsLoggedOut(false)
-                      })
-                      return (
-                        <p style={{ margin: 10 }}>
-                          {isLoggedOut ? 'Logging' : 'Logged'} in
-                        </p>
-                      )
-                    }}
-                  />
-                </Switch>
+                <SynapseErrorBoundary>
+                  <Switch>
+                    <Route exact path="/" render={() => <OAuth2Form />} />
+                    <Route
+                      exact
+                      path="/logout"
+                      render={() => {
+                        SynapseClient.signOut().then(() => {
+                          setIsLoggedOut(true)
+                        })
+                        return (
+                          <p style={{ margin: 10 }}>
+                            {isLoggedOut ? 'Logged' : 'Logging'} out
+                          </p>
+                        )
+                      }}
+                    />
+                    <Route
+                      exact
+                      path="/login"
+                      render={() => {
+                        // look for the code from the params
+                        const code = getURLParam('code')
+                        SynapseClient.setAccessTokenCookie(code).then(() => {
+                          setIsLoggedOut(false)
+                        })
+                        return (
+                          <p style={{ margin: 10 }}>
+                            {isLoggedOut ? 'Logging' : 'Logged'} in
+                          </p>
+                        )
+                      }}
+                    />
+                  </Switch>
+                </SynapseErrorBoundary>
               </AppInitializer>
               <Versions />
             </ThemeProvider>
