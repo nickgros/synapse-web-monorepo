@@ -17,7 +17,7 @@ import NavUserLink from './portal-components/NavUserLink'
 import { ConfigRoute, GenericRoute } from './types/portal-config'
 import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material'
 import { useLogInDialogContext } from './LogInDialogContext'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { RESPONSIVE_SIDE_PADDING } from './utils'
 
 type SynapseSettingLink = {
@@ -47,7 +47,7 @@ const synapseQuickLinks: SynapseSettingLink[] = [
 function Navbar() {
   const { accessToken } = useSynapseContext()
   const isSignedIn = !!accessToken
-  const history = useHistory()
+  const navigate = useNavigate()
   const { data: userProfile } = SynapseQueries.useGetCurrentUserProfile()
 
   const [showMenu, setShowMenu] = useState(false)
@@ -247,7 +247,7 @@ function Navbar() {
                       }}
                       sessionCallback={() => {
                         refreshSession().then(() => {
-                          AppUtils.redirectAfterSSO(history)
+                          AppUtils.redirectAfterSSO(navigate)
                         })
                       }}
                     />
@@ -293,8 +293,7 @@ function Navbar() {
                     <Dropdown.Item
                       key="DownloadV2"
                       onClick={() => {
-                        // In React Router ^6.6.1, change to useNavigate
-                        history.push('/DownloadCart')
+                        navigate('/DownloadCart')
                       }}
                       className="SRC-primary-background-color-hover SRC-nested-color border-bottom-1"
                     >
@@ -349,10 +348,13 @@ function Navbar() {
                 }
                 // hide children and only show top level element if all nested routes are hidden
                 const hideChildren =
-                  el.exact ||
-                  (el.routes &&
-                    el.routes.every((route) => route.hideRouteFromNavbar))
-                if (!el.exact && !hideChildren) {
+                  // el.exact ||
+                  el.routes &&
+                  el.routes.every((route) => route.hideRouteFromNavbar)
+                if (
+                  //!el.exact &&
+                  !hideChildren
+                ) {
                   const isSelected =
                     el.routes &&
                     el.routes.some((route) =>

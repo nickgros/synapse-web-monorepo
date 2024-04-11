@@ -2,7 +2,7 @@
 
 ## Setting up End-to-End testing for a New Portal
 
-1. Add the Portal's `src/configurations/` directory name to the `Portal` type in `e2e/configs/routesConfig.ts`, e.g. `elportal` for Elite Portal.
+1. Add the Portal's `src/configurations/` directory name to the `Portal` type in `e2e/configs/routesConfig.tsx`, e.g. `elportal` for Elite Portal.
 2. Add the Portal to relevant configuration files in `e2e/configs`, e.g. use `e2e/configs/exploreConfig.ts` to list the expected objects (cards, charts, table, people) on each Explore tab of the Portal.
 3. Ensure that the e2e tests for the Portal run locally, as described [here](#local).
 4. Add the Portal configurations directory name to the `PORTALS` environment variable in the GitHub Action workflow for end-to-end testing: `.github/workflows/end-to-end-test-portals.yml`.

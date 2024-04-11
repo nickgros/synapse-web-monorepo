@@ -1,9 +1,9 @@
 import React from 'react'
-import { Route, useRouteMatch } from 'react-router-dom'
+import { Route, useMatch } from 'react-router-dom'
 import { GenericRoute } from './types/portal-config'
 import routesConfig from './config/routesConfig'
 import sharedRouteConfig from './shared-config/sharedRoutes'
-import { ComponentRenderer } from './ComponentRenderer'
+import { ComponentRenderer } from './portal-components/ComponentRenderer'
 
 const ROUTES: GenericRoute = {
   ...sharedRouteConfig,
@@ -15,7 +15,7 @@ function RecursiveRouteRenderer(props: {
   getPageNameFromParentRoute: () => string
 }) {
   const { route, getPageNameFromParentRoute } = props
-  const { url } = useRouteMatch()
+  const match = useMatch()
 
   const pageName = route.displayName ?? route.path?.replaceAll('/', '')
   const getPageName = () =>
@@ -33,27 +33,29 @@ function RecursiveRouteRenderer(props: {
 
   return (
     <>
-      {'synapseConfigArray' in route &&
-        route.synapseConfigArray &&
-        route.synapseConfigArray.map((config, index) => {
-          return <ComponentRenderer key={index} config={config} />
-        })}
-      {'routes' in route &&
-        route.routes &&
-        route.routes.map((r) => {
-          return (
-            <Route
-              key={JSON.stringify(r)}
-              path={`${url}${url.endsWith('/') ? '' : '/'}${r.path}`}
-              exact={r.exact}
-            >
-              <RecursiveRouteRenderer
-                route={r}
-                getPageNameFromParentRoute={getPageName}
-              />
-            </Route>
-          )
-        })}
+      {/*{'synapseConfigArray' in route &&*/}
+      {/*  route.synapseConfigArray &&*/}
+      {/*  route.synapseConfigArray.map((config, index) => {*/}
+      {/*    return <ComponentRenderer key={index} config={config} />*/}
+      {/*  })}*/}
+      {/*{match &&*/}
+      {/*  'routes' in route &&*/}
+      {/*  route.routes &&*/}
+      {/*  route.routes.map((r) => {*/}
+      {/*    return (*/}
+      {/*      <Route*/}
+      {/*        key={JSON.stringify(r)}*/}
+      {/*        path={`${match.pathname}${*/}
+      {/*          match.pathname.endsWith('/') ? '' : '/'*/}
+      {/*        }${r.path}`}*/}
+      {/*      >*/}
+      {/*        <RecursiveRouteRenderer*/}
+      {/*          route={r}*/}
+      {/*          getPageNameFromParentRoute={getPageName}*/}
+      {/*        />*/}
+      {/*      </Route>*/}
+      {/*    )*/}
+      {/*  })}*/}
     </>
   )
 }

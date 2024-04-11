@@ -1,6 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { RouteControl, RouteControlProps } from './RouteControl'
-import { Route, useHistory, useLocation } from 'react-router-dom'
+import {
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
 import { SynapseComponent } from '../SynapseComponent'
 import { ConfigRoute, NestedRoute } from '../types/portal-config'
 import { ArrowDropDown, ArrowDropUp } from '@mui/icons-material'
@@ -23,14 +29,14 @@ export type RouteControlWrapperProps = NestedRoute & {
 export default function RouteControlWrapper(props: RouteControlWrapperProps) {
   const { customRoutes = [], searchParams } = props
   const location = useLocation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const pathname = location.pathname
   const subPath = pathname.substring('/Explore/'.length)
   const handleChangesFn = useCallback(
     (val: string, _index: number) => {
-      history.push(`/Explore/${val}`)
+      navigate(`/Explore/${val}`)
     },
-    [history],
+    [navigate],
   )
   const routeControlProps: RouteControlProps = useMemo(
     () => ({
@@ -112,22 +118,26 @@ export default function RouteControlWrapper(props: RouteControlWrapperProps) {
           },
         }}
       >
-        {customRoutes.map((route) => (
-          <Route
-            key={route.path}
-            path={`/Explore/${route.path}`}
-            exact={route.exact}
-          >
-            {route.synapseConfigArray &&
-              route.synapseConfigArray.map((synapseConfig, index) => (
-                <SynapseComponent
-                  key={index}
-                  synapseConfig={synapseConfig}
-                  searchParams={searchParams}
-                />
-              ))}
-          </Route>
-        ))}
+        <Outlet />
+        {/* TODO: Inject searchParams*/}
+        {/*<Routes>*/}
+        {/*  {customRoutes.map((route) => (*/}
+        {/*    <Route*/}
+        {/*      key={route.path}*/}
+        {/*      path={`/Explore/${route.path}`}*/}
+        {/*      element={*/}
+        {/*        route.synapseConfigArray &&*/}
+        {/*        route.synapseConfigArray.map((synapseConfig, index) => (*/}
+        {/*          <SynapseComponent*/}
+        {/*            key={index}*/}
+        {/*            synapseConfig={synapseConfig}*/}
+        {/*            searchParams={searchParams}*/}
+        {/*          />*/}
+        {/*        ))*/}
+        {/*      }*/}
+        {/*    ></Route>*/}
+        {/*  ))}*/}
+        {/*</Routes>*/}
       </Box>
     </>
   )

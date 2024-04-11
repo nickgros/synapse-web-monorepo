@@ -1,4 +1,10 @@
-import { BrowserRouter, Switch } from 'react-router-dom'
+import {
+  createBrowserRouter,
+  Outlet,
+  RouteObject,
+  RouterProvider,
+  Routes,
+} from 'react-router-dom'
 import React from 'react'
 import './App.scss'
 import Footer from './Footer'
@@ -7,48 +13,56 @@ import Navbar from './Navbar'
 import { CookiesProvider } from 'react-cookie'
 import {
   CookiesNotification,
+  defaultQueryClientConfig,
   SynapseTheme,
   SynapseToastContainer,
-  defaultQueryClientConfig,
 } from 'synapse-react-client'
 import { LogInDialogContextProvider } from './LogInDialogContext'
 import { createTheme, ThemeProvider } from '@mui/material'
 import palette from './config/paletteConfig'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import routesConfig from './config/routesConfig'
+import sharedRouteConfig from './shared-config/sharedRoutes'
 
-const RouteResolver = React.lazy(() => import('./RouteResolver'))
 const theme = createTheme(SynapseTheme.mergeTheme({ palette }))
 const queryClient = new QueryClient(defaultQueryClientConfig)
 
-function App() {
+const routes: RouteObject[] = [
+  {
+    Component: Root,
+    children: routesConfig,
+  },
+]
+console.log(routes)
+
+const router = createBrowserRouter(routes)
+
+function Root() {
   return (
     <>
       <CookiesProvider>
-        <BrowserRouter>
-          <LogInDialogContextProvider>
-            <ThemeProvider theme={theme}>
-              <QueryClientProvider client={queryClient}>
-                <AppInitializer>
-                  <SynapseToastContainer />
-                  <Navbar />
-                  <CookiesNotification />
-                  <main className="main">
-                    {/* all the content below */}
-                    <React.Suspense fallback={<div />}>
-                      <Switch>
-                        <RouteResolver />
-                      </Switch>
-                    </React.Suspense>
-                  </main>
-                  <Footer />
-                </AppInitializer>
-              </QueryClientProvider>
-            </ThemeProvider>
-          </LogInDialogContextProvider>
-        </BrowserRouter>
+        <LogInDialogContextProvider>
+          <ThemeProvider theme={theme}>
+            <QueryClientProvider client={queryClient}>
+              <AppInitializer>
+                <SynapseToastContainer />
+                <Navbar />
+                <CookiesNotification />
+                <main className="main">
+                  <Outlet />
+                </main>
+                <Footer />
+              </AppInitializer>
+            </QueryClientProvider>
+          </ThemeProvider>
+        </LogInDialogContextProvider>
       </CookiesProvider>
     </>
   )
+}
+
+function App() {
+  return <RouterProvider router={router} />
 }
 
 export default App

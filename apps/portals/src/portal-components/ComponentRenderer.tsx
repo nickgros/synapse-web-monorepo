@@ -1,9 +1,9 @@
-import { SynapseConfig } from './types/portal-config'
+import { SynapseConfig } from '../types/portal-config'
 import { useLocation } from 'react-router-dom'
 import React from 'react'
-import { scrollToWithOffset } from './utils'
-import { SynapseComponent } from './SynapseComponent'
-import Layout from './portal-components/Layout'
+import { scrollToWithOffset } from '../utils'
+import { SynapseComponent } from '../SynapseComponent'
+import Layout from './Layout'
 
 const ignoreSearchParamsSet: Set<string> = new Set([
   'utm_source',

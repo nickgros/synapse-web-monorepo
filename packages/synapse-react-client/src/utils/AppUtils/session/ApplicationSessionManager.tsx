@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import SynapseClient from '../../../synapse-client'
 import useDetectSSOCode from '../../hooks/useDetectSSOCode'
 import { redirectAfterSSO } from '../AppUtils'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { TwoFactorAuthErrorResponse } from '@sage-bionetworks/synapse-types'
 import { ApplicationSessionContextProvider } from './ApplicationSessionContext'
 import { SynapseContextProvider } from '../../context/SynapseContext'
@@ -44,7 +44,7 @@ export function ApplicationSessionManager(
     onNoAccessTokenFound,
     forceRelogin,
   } = props
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [token, setToken] = useState<string | undefined>(undefined)
   const [acceptsTermsOfUse, setAcceptsTermsOfUse] = useState<
@@ -139,7 +139,7 @@ export function ApplicationSessionManager(
 
   const { isLoading: isLoadingSSO } = useDetectSSOCode({
     onSignInComplete: () => {
-      redirectAfterSSO(history)
+      redirectAfterSSO(navigate)
       refreshSession()
     },
     onTwoFactorAuthRequired: twoFactorAuthError => {

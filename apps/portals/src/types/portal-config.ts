@@ -35,7 +35,7 @@ import { ParticipantsBarPlotProps } from '../portal-components/crc-researcher/Pa
 import { StatusLineChartProps } from '../portal-components/crc-researcher/StatusLineChart'
 import { SurveysCompletedPlotsProps } from '../portal-components/crc-researcher/SurveysCompletedPlots'
 import { ImageProps } from '../portal-components/Image'
-import { RedirectProps } from 'react-router-dom'
+import { NavigateProps } from 'react-router-dom'
 import { ToggleSynapseObjectsProps } from '../portal-components/ToggleSynapseObjects'
 import { CSSProperties } from 'react'
 import { TabbedSynapseObjectsProps } from 'portal-components/TabbedSynapseObjects'
@@ -298,7 +298,7 @@ type TimelinePlot = {
 
 type RedirectWithQuery = {
   name: 'RedirectWithQuery'
-  props: RedirectProps
+  props: NavigateProps
 }
 
 type RedirectToURL = {
@@ -308,7 +308,7 @@ type RedirectToURL = {
 
 type Redirect = {
   name: 'Redirect'
-  props: RedirectProps
+  props: NavigateProps
 }
 
 type Header = {
@@ -384,16 +384,12 @@ type RouteOptions = {
 }
 
 export type ConfigRoute = RouteOptions & {
-  /** See react-router's exact */
-  exact?: boolean
   synapseConfigArray?: SynapseConfig[]
   routes?: never
 }
 export type NestedRoute = RouteOptions & {
   routes?: GenericRoute[]
   synapseConfigArray?: never
-  /** While it's possible to specify 'exact' for a NestedRoute, it's not typically useful because the inner routes won't render */
-  exact?: never
 }
 export type GenericRoute = NestedRoute | ConfigRoute
 // Route - end

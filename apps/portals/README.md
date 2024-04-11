@@ -31,7 +31,7 @@ When a pull request is merged, the following will occur:
 If `package.json` was updated all the staging websites will be built automatically.
 
 If any file under `src/configurations/portal-name/*` is updated then the staging site for **portal-name** will update.
-e.g. updating `src/configurations/adknoweldgeportal/routesConfig.ts` will update adknowledgeportal staging.
+e.g. updating `src/configurations/adknoweldgeportal/routesConfig.tsx` will update adknowledgeportal staging.
 
 ## Jenkins Jobs
 

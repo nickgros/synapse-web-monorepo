@@ -34,7 +34,7 @@ test-configuration/
 │   └── publications.ts                     
 ├── footerConfig.ts                         # Configure the footer data -- terms of use, contact us
 ├── headerConfig.ts                         # Configure the text on the header of the home page
-├── routesConfig.ts                         # Configure main routes for the app -- what is available and what synapse object 
+├── routesConfig.tsx                         # Configure main routes for the app -- what is available and what synapse object 
 ├── scripts                                 # build scripts that export s3 bucket names
 │   ├── exportS3ProductionBucketName.sh     
 │   └── exportS3StagingBucketName.sh        

@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  NavLink,
-  Route,
-  Switch,
-  useLocation,
-  useRouteMatch,
-} from 'react-router-dom'
+import { NavLink, Route, Routes, useLocation, useMatch } from 'react-router-dom'
 import { BarLoader } from 'react-spinners'
 import { QueryResultBundle } from '@sage-bionetworks/synapse-types'
 import { Tooltip } from '@mui/material'
@@ -25,26 +19,34 @@ const DetailsPageTabs: React.FunctionComponent<DetailsPageTabsProps> = (
   props,
 ) => {
   const { tabConfigs, loading, queryResultBundle, showMenu } = props
-  const { url } = useRouteMatch()
+  const match = useMatch('*')
   const rowValues = queryResultBundle?.queryResult?.queryResults.rows[0].values
   const headers = queryResultBundle?.queryResult?.queryResults.headers
-  const urlWithTrailingSlash = `${url}${url.endsWith('/') ? '' : '/'}`
   const { search } = useLocation()
+
+  if (!match) {
+    return <></>
+  }
+
+  const urlWithTrailingSlash = `${match.pathname}${
+    match.pathname.endsWith('/') ? '' : '/'
+  }`
   return (
     <>
-      <Switch>
-        {/* Note -- `exact` in Redirect doesn't work without a Switch */}
+      <Routes>
         <RedirectWithQuery
-          exact={true}
-          from={urlWithTrailingSlash}
+          // exact={true}
+          // from={urlWithTrailingSlash}
           to={`${urlWithTrailingSlash}${tabConfigs[0].uriValue}`}
         />
-      </Switch>
+      </Routes>
       <div className="tab-groups">
         {tabConfigs.map((tab, index) => {
           if (tab.hideIfColumnValueNull) {
             if (rowValues && headers) {
-              const colIndex = headers.findIndex(h => h.name == tab.hideIfColumnValueNull)
+              const colIndex = headers.findIndex(
+                (h) => h.name == tab.hideIfColumnValueNull,
+              )
               if (!rowValues[colIndex]) {
                 return <></>
               }
@@ -80,31 +82,33 @@ const DetailsPageTabs: React.FunctionComponent<DetailsPageTabsProps> = (
       ) : (
         <div className="tab-content-group">
           <div className="tab-content">
-            {tabConfigs.map((tabConfig, index) => {
-              return (
-                <Route
-                  key={tabConfig.uriValue}
-                  path={`${urlWithTrailingSlash}${tabConfig.uriValue}`}
-                >
-                  {'tabLayout' in tabConfig && tabConfig.tabLayout && (
-                    <DetailsPageTabs
-                      tabConfigs={tabConfig.tabLayout}
-                      loading={loading}
-                      queryResultBundle={queryResultBundle}
-                      showMenu={showMenu}
-                    ></DetailsPageTabs>
-                  )}
-                  {'synapseConfigArray' in tabConfig &&
-                    tabConfig.synapseConfigArray && (
-                      <DetailsPageSynapseConfigArray
-                        showMenu={showMenu}
-                        synapseConfigArray={tabConfig.synapseConfigArray}
+            <Routes>
+              {tabConfigs.map((tabConfig, index) => {
+                return (
+                  <Route
+                    key={tabConfig.uriValue}
+                    path={`${urlWithTrailingSlash}${tabConfig.uriValue}`}
+                  >
+                    {'tabLayout' in tabConfig && tabConfig.tabLayout && (
+                      <DetailsPageTabs
+                        tabConfigs={tabConfig.tabLayout}
+                        loading={loading}
                         queryResultBundle={queryResultBundle}
-                      />
+                        showMenu={showMenu}
+                      ></DetailsPageTabs>
                     )}
-                </Route>
-              )
-            })}
+                    {'synapseConfigArray' in tabConfig &&
+                      tabConfig.synapseConfigArray && (
+                        <DetailsPageSynapseConfigArray
+                          showMenu={showMenu}
+                          synapseConfigArray={tabConfig.synapseConfigArray}
+                          queryResultBundle={queryResultBundle}
+                        />
+                      )}
+                  </Route>
+                )
+              })}
+            </Routes>
           </div>
         </div>
       )}

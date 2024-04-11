@@ -1,5 +1,5 @@
 const fs = require('fs')
-fs.readFile('src/config/routesConfig.ts', (err, data) => {
+fs.readFile('src/config/routesConfig.tsx', (err, data) => {
   if (err) {
     return console.error(err)
   }

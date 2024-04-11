@@ -2,7 +2,7 @@ import { omitBy } from 'lodash-es'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, InputAdornment, TextField, Typography } from '@mui/material'
 import { SearchOutlined } from '@mui/icons-material'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useDebouncedEffect } from '../../utils/hooks/useDebouncedEffect'
 import { EntityType } from '@sage-bionetworks/synapse-types'
 import { EntityFinderModal } from '../EntityFinder/EntityFinderModal'
@@ -28,7 +28,7 @@ export function AccessRequirementDashboard(
   const { onCreateNewAccessRequirementClicked } = props
 
   const location = useLocation()
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const [nameOrID, setNameOrID] = useState<string>('')
   const [relatedProjectId, setRelatedProjectId] = useState<string | undefined>(
@@ -86,10 +86,13 @@ export function AccessRequirementDashboard(
         // Add the new params to the URL
         // Replace history because intuitively, the user has not navigated to a new page
         const paramsObject = new URLSearchParams(params)
-        history.replace({
-          pathname: location.pathname,
-          search: paramsObject.toString(),
-        })
+        navigate(
+          {
+            pathname: location.pathname,
+            search: paramsObject.toString(),
+          },
+          { replace: true },
+        )
       }
 
       setTableProps({
@@ -105,7 +108,7 @@ export function AccessRequirementDashboard(
       relatedProjectId,
       reviewerId,
       onCreateNewAccessRequirementClicked,
-      history,
+      navigate,
       location.pathname,
     ],
     INPUT_CHANGE_DEBOUNCE_DELAY_MS,

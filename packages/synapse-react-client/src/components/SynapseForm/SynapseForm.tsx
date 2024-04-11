@@ -20,7 +20,12 @@ import DataDebug from './DataDebug'
 import SummaryTable from './SummaryTable'
 import WarningDialog from './WarningDialog'
 import Switch from 'react-switch'
-import { Prompt } from 'react-router-dom'
+import { unstable_usePrompt, BlockerFunction } from 'react-router-dom'
+
+function Prompt(props: { when: boolean | BlockerFunction; message: string }) {
+  unstable_usePrompt(props)
+  return null
+}
 
 export interface IFormData {
   [key: string]: {

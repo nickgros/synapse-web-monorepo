@@ -17,7 +17,7 @@ import SurveysCompletedPlots from './crc-researcher/SurveysCompletedPlots'
 import Image from './Image'
 import RedirectWithQuery from './RedirectWithQuery'
 import RedirectToURL from './RedirectToURL'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import Header from './Header'
 import ChallengeParticipantGoogleMap from './challengeportal/ChallengeParticipantGoogleMap'
 import ChallengeDetailPageWrapper from './challengeportal/ChallengeDetailPageWrapper'
@@ -40,7 +40,7 @@ const PortalComponents = {
   Image,
   RedirectToURL,
   RedirectWithQuery,
-  Redirect,
+  Redirect: Navigate,
   BrowseToolsPage,
   NFSurveyToast,
   ELBetaLaunchBanner,
