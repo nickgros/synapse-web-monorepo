@@ -7,7 +7,7 @@ import {
   getEndpoint,
 } from '../../utils/functions/getEndpoint'
 import { SRC_SIGN_IN_CLASS } from '../../utils/SynapseConstants'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import {
   EntityBundle,
   RestrictableObjectType,
@@ -56,7 +56,7 @@ const expectArButton = async (linkText: string) => {
   expect(button).not.toHaveClass(SRC_SIGN_IN_CLASS)
 }
 
-const onGetRestrictionInformation = jest.fn()
+const onGetRestrictionInformation = vi.fn()
 
 function useMswEntityBundle(entityBundle: EntityBundle) {
   server.use(
@@ -89,7 +89,7 @@ describe('HasAccess tests', () => {
   afterAll(() => server.close())
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('User has all permissions on a standard FileEntity and any Access Requirements have been met', async () => {

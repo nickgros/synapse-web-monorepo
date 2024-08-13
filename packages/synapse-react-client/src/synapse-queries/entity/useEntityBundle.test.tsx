@@ -8,7 +8,7 @@ import mockFileEntity from '../../mocks/entity/mockFileEntity'
 
 const expected: EntityBundle = mockFileEntity.bundle
 
-jest.spyOn(SynapseClient, 'getEntityBundleV2').mockResolvedValue(expected)
+vi.spyOn(SynapseClient, 'getEntityBundleV2').mockResolvedValue(expected)
 
 describe('useEntityBundle functionality', () => {
   it('correctly calls SynapseClient', async () => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Meta, StoryObj } from '@storybook/react'
 import DateTimePicker from './DateTimePicker'
-import { SynapseContextProvider, useSynapseContext } from '../../utils'
+import { SynapseContextProvider, useSynapseContext } from '../../context'
 import dayjs from 'dayjs'
 
 const meta = {

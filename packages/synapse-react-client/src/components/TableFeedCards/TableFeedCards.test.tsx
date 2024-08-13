@@ -7,12 +7,14 @@ import { render, fireEvent } from '@testing-library/react'
 import { SynapseTestContext } from '../../mocks/MockSynapseContext'
 import SynapseClient from '../../synapse-client'
 
-jest.mock('../../synapse-client', () => ({
-  getQueryTableResults: jest.fn(),
+vi.mock('../../synapse-client', () => ({
+  default: {
+    getQueryTableResults: vi.fn(),
+  },
 }))
 
 const data = syn23519444Json as QueryResultBundle
-const mockGetQueryTableResults = jest.mocked(SynapseClient.getQueryTableResults)
+const mockGetQueryTableResults = vi.mocked(SynapseClient.getQueryTableResults)
 
 let container: HTMLElement
 

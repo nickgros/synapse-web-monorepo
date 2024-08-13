@@ -21,7 +21,7 @@ import {
 } from '../../mocks/msw/handlers/changePasswordHandlers'
 import { BackendDestinationEnum, getEndpoint } from '../../utils/functions'
 import { useGetFeatureFlagsOverride } from '../../mocks/msw/handlers/featureFlagHandlers'
-import { SynapseContextType } from '../../utils'
+import { SynapseContextType } from '../../context'
 import { KeyFactory } from '../../synapse-queries'
 import { getResetTwoFactorAuthHandlers } from '../../mocks/msw/handlers/resetTwoFactorAuthHandlers'
 import {
@@ -30,27 +30,34 @@ import {
   TWO_FACTOR_RESET_CONFIRMATION_TEXT,
 } from '../Authentication/OneTimePasswordForm'
 import { TWO_FACTOR_AUTH_CHANGE_PASSWORD_PROMPT } from './useChangePasswordFormState'
+import { MemoryRouter } from 'react-router-dom'
 
-const mockDisplayToast = jest
+const mockDisplayToast = vi
   .spyOn(ToastMessage, 'displayToast')
   .mockImplementation(() => noop)
 
-jest.mock('react-router-dom', () => {
+vi.mock('react-router-dom', async importOriginal => {
   return {
-    Redirect: jest.fn(({ to }) => `Redirected to ${to}`),
+    ...(await importOriginal<typeof import('react-router-dom')>()),
+    Redirect: vi.fn(({ to }) => `Redirected to ${to}`),
   }
 })
 
-const changePasswordSpy = jest.spyOn(SynapseClient, 'changePassword')
-const reset2faSpy = jest.spyOn(SynapseClient, 'resetTwoFactorAuth')
+const changePasswordSpy = vi.spyOn(SynapseClient, 'changePassword')
+const reset2faSpy = vi.spyOn(SynapseClient, 'resetTwoFactorAuth')
 
 function renderComponent(
   changePasswordProps?: ChangePasswordProps,
   wrapperProps?: Partial<SynapseContextType>,
 ) {
-  return render(<ChangePassword {...changePasswordProps} />, {
-    wrapper: createWrapper(wrapperProps),
-  })
+  return render(
+    <MemoryRouter>
+      <ChangePassword {...changePasswordProps} />
+    </MemoryRouter>,
+    {
+      wrapper: createWrapper(wrapperProps),
+    },
+  )
 }
 
 function getUsernameField() {
@@ -143,7 +150,9 @@ async function typeAndSubmitTOTP(
 
 describe('ChangePassword tests', () => {
   beforeAll(() => server.listen())
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeEach(() => {
     useGetFeatureFlagsOverride()
   })

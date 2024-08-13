@@ -16,7 +16,7 @@ import { getAccessRequirementHandlers } from '../../../../mocks/msw/handlers/acc
 import {
   SynapseContextConsumer,
   SynapseContextProvider,
-} from '../../../../index'
+} from '../../../../context'
 import { RestrictableObjectType } from '@sage-bionetworks/synapse-types'
 
 const meta: Meta<

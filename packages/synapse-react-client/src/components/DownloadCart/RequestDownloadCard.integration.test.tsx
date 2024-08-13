@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import React from 'react'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../utils'
+import { SynapseContextType } from '../../context'
 import { rest, server } from '../../mocks/msw/server'
 import { ENTITY_BUNDLE_V2 } from '../../utils/APIConstants'
 import { BackendDestinationEnum, getEndpoint } from '../../utils/functions'
@@ -15,7 +15,7 @@ import { EntityBundle, ErrorResponse } from '@sage-bionetworks/synapse-types'
 import mockFileEntity from '../../mocks/entity/mockFileEntity'
 
 const ENTITY_ID = 'syn29218'
-const onViewSharingSettingsClicked = jest.fn()
+const onViewSharingSettingsClicked = vi.fn()
 const defaultProps: RequestDownloadCardProps = {
   entityId: ENTITY_ID,
   count: 10,

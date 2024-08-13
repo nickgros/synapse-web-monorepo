@@ -21,10 +21,10 @@ const props: RejectDataAccessRequestModalProps = {
   submissionId: mockSubmittedSubmission.id,
   tableId: 'syn50683097',
   open: true,
-  onClose: jest.fn(),
+  onClose: vi.fn(),
 }
 
-const onServerReceivedUpdate = jest.fn()
+const onServerReceivedUpdate = vi.fn()
 
 function renderComponent() {
   return render(<RejectDataAccessRequestModal {...props} />, {

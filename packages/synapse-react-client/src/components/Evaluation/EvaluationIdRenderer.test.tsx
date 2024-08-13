@@ -12,9 +12,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { mockEvaluationQueue } from '../../mocks/entity/mockEvaluationQueue'
 import SynapseClient from '../../synapse-client'
 
-jest
-  .spyOn(SynapseClient, 'getEvaluation')
-  .mockResolvedValue(mockEvaluationQueue)
+vi.spyOn(SynapseClient, 'getEvaluation').mockResolvedValue(mockEvaluationQueue)
 
 describe('EvaluationIdRenderer: basic functionality', () => {
   const props: EvaluationIdRendererProps = {

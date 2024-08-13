@@ -21,7 +21,7 @@ import mockFileEntityData from '../../mocks/entity/mockFileEntity'
 import { MOCK_FILE_HANDLE_ID } from '../../mocks/mock_file_handle'
 import { rest, server } from '../../mocks/msw/server'
 
-jest.spyOn(HtmlPreviewModule, 'default').mockImplementation(() => {
+vi.spyOn(HtmlPreviewModule, 'default').mockImplementation(() => {
   return <div data-testid="HtmlPreview"></div>
 })
 
@@ -97,7 +97,7 @@ describe('FileHandleContentRenderer tests', () => {
     await screen.findByTestId('HtmlPreview')
   })
   it('Throws an error if the file content size is > 30MB', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     const fileSize = 100 * MB
     const fileHandle: FileHandle = {
       id: MOCK_FILE_HANDLE_ID,
@@ -160,7 +160,7 @@ describe('FileHandleContentRenderer tests', () => {
     })
   })
   it('Renders nothing for unsupported render types', async () => {
-    jest.spyOn(console, 'warn').mockImplementation(() => {})
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
     const fileHandle: FileHandle = {
       id: MOCK_FILE_HANDLE_ID,
       fileName: 'test.html',

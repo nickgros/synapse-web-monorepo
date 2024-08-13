@@ -21,8 +21,8 @@ import { entityJsonKeys } from '../../utils/functions/EntityTypeUtils'
 import {
   createTableUpdateTransactionRequest,
   SynapseClientError,
-  useSynapseContext,
 } from '../../utils'
+import { useSynapseContext } from '../../context/SynapseContext'
 import {
   AccessControlList,
   ColumnModel,

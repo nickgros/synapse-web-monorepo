@@ -3,7 +3,7 @@ import React from 'react'
 import { FacetChip, FacetChipProps } from './FacetChip'
 import { createWrapper } from '../../../testutils/TestingLibraryUtils'
 
-const mockOnClick = jest.fn()
+const mockOnClick = vi.fn()
 
 let props: FacetChipProps = {
   children: 'Make',
@@ -12,7 +12,7 @@ let props: FacetChipProps = {
 }
 
 function renderComponent(props: FacetChipProps) {
-  jest.clearAllMocks()
+  vi.clearAllMocks()
   return render(<FacetChip {...props} />, {
     wrapper: createWrapper(),
   })

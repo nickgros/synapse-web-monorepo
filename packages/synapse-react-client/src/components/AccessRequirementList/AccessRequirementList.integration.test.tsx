@@ -17,7 +17,7 @@ import * as AccessRequirementListUtils from './AccessRequirementListUtils'
 
 const MOCK_FILE_ENTITY_ID = mockFileEntityData.id
 
-const sortAccessRequirementsByCompletionSpy = jest.spyOn(
+const sortAccessRequirementsByCompletionSpy = vi.spyOn(
   AccessRequirementListUtils,
   'sortAccessRequirementsByCompletion',
 )
@@ -47,7 +47,7 @@ describe('AccessRequirementList tests', () => {
   const props: AccessRequirementListProps = {
     entityId: MOCK_FILE_ENTITY_ID,
     accessRequirementFromProps: accessRequirements,
-    onHide: jest.fn(),
+    onHide: vi.fn(),
   }
 
   it('Renders a Access Requirements List with valid props', async () => {

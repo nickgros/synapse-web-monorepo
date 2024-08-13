@@ -27,7 +27,7 @@ import {
   BackendDestinationEnum,
   getEndpoint,
 } from '../../utils/functions/getEndpoint'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import mockFileEntity from '../../mocks/entity/mockFileEntity'
 import { mockSchemaBinding, mockValidationSchema } from '../../mocks/mockSchema'
 import { rest, server } from '../../mocks/msw/server'
@@ -39,17 +39,17 @@ async function chooseAutocompleteOption(el: HTMLElement, option: string) {
   await userEvent.click(screen.getByText(option))
 }
 
-const mockToastFn = jest
+const mockToastFn = vi
   .spyOn(ToastMessage, 'displayToast')
   .mockImplementation(() => noop)
 
 const mockAsyncTokenId = 888888
 
-const mockOnSuccessFn = jest.fn()
-const mockOnChange = jest.fn()
+const mockOnSuccessFn = vi.fn()
+const mockOnChange = vi.fn()
 
 // Captures the JSON passed to the server via msw.
-const updatedJsonCaptor = jest.fn()
+const updatedJsonCaptor = vi.fn()
 
 const defaultProps: SchemaDrivenAnnotationEditorProps = {
   entityId: mockFileEntity.id,
@@ -107,7 +107,7 @@ describe('SchemaDrivenAnnotationEditor tests', () => {
   beforeAll(() => server.listen())
   afterEach(() => {
     server.restoreHandlers()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterAll(() => server.close())
 

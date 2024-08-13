@@ -11,9 +11,9 @@ import { DEFAULT_PAGE_SIZE } from '../../utils/SynapseConstants'
 import { SynapseError } from '../../utils/SynapseError'
 import * as ToastMessage from '../../components/ToastMessage/ToastMessage'
 import { noop } from 'lodash-es'
-window.open = jest.fn()
+window.open = vi.fn()
 
-const mockToastFn = jest
+const mockToastFn = vi
   .spyOn(ToastMessage, 'displayToast')
   .mockImplementation(() => noop)
 
@@ -56,14 +56,14 @@ const testQueryRequest: QueryBundleRequest = {
   },
 }
 
-const mockGetDownloadFromTableRequest = jest.spyOn(
+const mockGetDownloadFromTableRequest = vi.spyOn(
   SynapseClient,
   'getDownloadFromTableRequest',
 )
 
 describe('useExportToCavatica', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('Does nothing until function is called', () => {

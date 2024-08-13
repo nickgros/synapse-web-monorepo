@@ -31,8 +31,8 @@ function MockedEntityFinderModal(props: EntityFinderModalProps) {
   )
 }
 
-jest.mock('../EntityFinder/EntityFinderModal', () => ({
-  EntityFinderModal: jest.fn(MockedEntityFinderModal),
+vi.mock('../EntityFinder/EntityFinderModal', () => ({
+  EntityFinderModal: vi.fn(MockedEntityFinderModal),
 }))
 
 const mockColumnModelsOfChosenTable: ColumnModel[] = [
@@ -58,14 +58,11 @@ const returnedBundle: EntityBundle = {
   },
 } as EntityBundle
 
-jest.spyOn(SynapseClient, 'getEntityBundleV2').mockResolvedValue(returnedBundle)
+vi.spyOn(SynapseClient, 'getEntityBundleV2').mockResolvedValue(returnedBundle)
 
-const mockEntityFinderModal: jest.Mocked<typeof EntityFinderModal> =
-  EntityFinderModal
+const mockEntityFinderModal = vi.mocked(EntityFinderModal)
 
-const mockOnAddColumns: jest.Mocked<
-  ImportTableColumnsButtonProps['onAddColumns']
-> = jest.fn()
+const mockOnAddColumns = vi.fn<ImportTableColumnsButtonProps['onAddColumns']>()
 
 function setUp(props: ImportTableColumnsButtonProps) {
   const user = userEvent.setup()
@@ -86,7 +83,7 @@ const mockPickedEntity: Reference = {
 
 describe('ImportTableColumnsButton', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   it('properly handles fetching and returning columns for the selected table', async () => {
     const { user, importTableColumnsButton } = setUp({

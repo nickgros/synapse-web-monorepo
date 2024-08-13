@@ -9,7 +9,7 @@ import TimelinePlotSpeciesSelector, {
 import userEvent from '@testing-library/user-event'
 import { cloneDeep } from 'lodash-es'
 
-const setSpecies = jest.fn()
+const setSpecies = vi.fn()
 
 const timelineSpeciesSelectorProps: TimelinePlotSpeciesSelectorProps = {
   sql: 'select * from syn123',
@@ -47,9 +47,9 @@ async function renderTimelineSelector(
 
 describe('TimelinePlotSpeciesSelector tests', () => {
   it('renders timeline species selector', async () => {
-    jest
-      .spyOn(SynapseClient, 'getFullQueryTableResults')
-      .mockResolvedValueOnce(queryResultBundleJson)
+    vi.spyOn(SynapseClient, 'getFullQueryTableResults').mockResolvedValueOnce(
+      queryResultBundleJson,
+    )
 
     await renderTimelineSelector()
     await waitFor(() => {
@@ -64,9 +64,9 @@ describe('TimelinePlotSpeciesSelector tests', () => {
   })
 
   it('timeline species selector is not shown when a single species is returned', async () => {
-    jest
-      .spyOn(SynapseClient, 'getFullQueryTableResults')
-      .mockResolvedValueOnce(singleRowQueryResultBundle)
+    vi.spyOn(SynapseClient, 'getFullQueryTableResults').mockResolvedValueOnce(
+      singleRowQueryResultBundle,
+    )
     await renderTimelineSelector()
 
     await waitFor(() =>

@@ -112,7 +112,7 @@ export class SynapseFormSubmissionGrid extends React.Component<
     }
   }
 
-  async refresh(token?: string) {
+  refresh = async (token?: string) => {
     if (token) {
       await this.getUserFileListing().catch(error => {
         this.onError(error)

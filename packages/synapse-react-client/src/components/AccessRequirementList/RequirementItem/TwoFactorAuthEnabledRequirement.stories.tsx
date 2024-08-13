@@ -4,8 +4,8 @@ import { rest } from 'msw'
 import { MOCK_REPO_ORIGIN } from '../../../utils/functions/getEndpoint'
 import TwoFactorAuthEnabledRequirement from './TwoFactorAuthEnabledRequirement'
 import { TwoFactorAuthStatus } from '@sage-bionetworks/synapse-types'
-import { SynapseContextConsumer } from '../../../utils/context/SynapseContext'
-import FullContextProvider from '../../../utils/context/FullContextProvider'
+import { SynapseContextConsumer } from '../../../context/SynapseContext'
+import FullContextProvider from '../../../context/FullContextProvider'
 
 const meta: Meta = {
   title:

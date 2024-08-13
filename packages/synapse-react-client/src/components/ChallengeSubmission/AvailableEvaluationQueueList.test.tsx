@@ -7,7 +7,7 @@ import AvailableEvaluationQueueList, {
   AvailableEvaluationQueueListProps,
 } from './AvailableEvaluationQueueList'
 
-const onChangeSelectedEvaluation = jest.fn()
+const onChangeSelectedEvaluation = vi.fn()
 const secondEvaluation = {
   ...mockEvaluationQueue,
   id: '12345',
@@ -60,7 +60,7 @@ function setUp(props: AvailableEvaluationQueueListProps) {
 
 describe('AvailableEvaluationQueueList', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('handles 0 available evaluations', () => {

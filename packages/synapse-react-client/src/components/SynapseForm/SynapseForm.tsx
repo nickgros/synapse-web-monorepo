@@ -456,7 +456,7 @@ export default class SynapseForm extends React.Component<
   }
 
   //we are constantly saving form data. Needed to overwrite on-error behavior
-  handleOnChange({ formData }: any) {
+  handleOnChange = ({ formData }: any) => {
     //this is just for form updates. submit screen goes different route
     if (!this.isSubmitScreen() && !this.state.currentStep.excluded) {
       const hasUnsavedChanges = !_.isEqual(this.state.formData, formData)
@@ -464,7 +464,7 @@ export default class SynapseForm extends React.Component<
     }
   }
 
-  performAction(navAction: NavActionEnum, hasError: boolean) {
+  performAction = (navAction: NavActionEnum, hasError: boolean) => {
     const formData = this.state.formData
 
     switch (navAction) {

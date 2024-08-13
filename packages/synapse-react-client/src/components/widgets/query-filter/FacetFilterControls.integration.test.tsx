@@ -19,19 +19,19 @@ const MockFacetFilter = (props: { testid: string }) => {
   return <div data-testid={props.testid}></div>
 }
 
-jest.mock(
+vi.mock(
   '../../../../src/components/widgets/query-filter/EnumFacetFilter/EnumFacetFilter',
   () => ({
-    EnumFacetFilter: jest.fn(props => (
+    EnumFacetFilter: vi.fn(props => (
       <MockFacetFilter {...props} testid="EnumFacetFilter" />
     )),
   }),
 )
 
-jest.mock(
+vi.mock(
   '../../../../src/components/widgets/query-filter/RangeFacetFilter',
   () => ({
-    RangeFacetFilter: jest.fn(props => (
+    RangeFacetFilter: vi.fn(props => (
       <MockFacetFilter {...props} testid="RangeFacetFilter" />
     )),
   }),
@@ -79,7 +79,7 @@ function init(overrides?: FacetFilterControlsProps) {
 describe('FacetFilterControls tests', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     server.use(...getHandlersForTableQuery(mockQueryResponseData))
   })
   afterEach(() => server.restoreHandlers())

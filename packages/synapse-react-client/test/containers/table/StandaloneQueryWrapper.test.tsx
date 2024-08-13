@@ -4,18 +4,20 @@ import StandaloneQueryWrapper, {
   StandaloneQueryWrapperProps,
 } from '../../../src/components/StandaloneQueryWrapper/StandaloneQueryWrapper'
 import { createWrapper } from '../../../src/testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../../src/utils/context/SynapseContext'
+import { SynapseContextType } from '../../../src/context/SynapseContext'
 import { QueryResultBundle } from '@sage-bionetworks/synapse-types'
 import syn20337467Json from '../../../src/mocks/query/syn20337467.json'
 import SynapseClient from '../../../src/synapse-client'
 
-jest.mock('../../../src/synapse-client', () => ({
-  getEntity: jest.fn(),
-  getQueryTableAsyncJobResults: jest.fn(),
+vi.mock('../../../src/synapse-client', () => ({
+  default: {
+    getEntity: vi.fn(),
+    getQueryTableAsyncJobResults: vi.fn(),
+  },
 }))
 
-const mockGetEntity = jest.mocked(SynapseClient.getEntity)
-const mockGetQueryTableAsyncJobResults = jest.mocked(
+const mockGetEntity = vi.mocked(SynapseClient.getEntity)
+const mockGetQueryTableAsyncJobResults = vi.mocked(
   SynapseClient.getQueryTableAsyncJobResults,
 )
 

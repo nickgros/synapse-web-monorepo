@@ -127,7 +127,7 @@ describe('AdditionalPropertiesSchemaField unit tests', () => {
           idSchema={{ $id: 'root' }}
           formData={initialData}
           registry={registry}
-          onChange={jest.fn()}
+          onChange={vi.fn()}
         />,
       )
 
@@ -164,7 +164,7 @@ describe('AdditionalPropertiesSchemaField unit tests', () => {
           idSchema={{ $id: 'root' }}
           formData={initialData}
           registry={registry}
-          onChange={jest.fn()}
+          onChange={vi.fn()}
         />,
       )
 
@@ -214,7 +214,7 @@ describe('AdditionalPropertiesSchemaField unit tests', () => {
           idSchema={{ $id: 'root' }}
           formData={initialData}
           registry={registry}
-          onChange={jest.fn()}
+          onChange={vi.fn()}
         />,
       )
 

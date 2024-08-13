@@ -9,7 +9,7 @@ import { createWrapper } from '../../../testutils/TestingLibraryUtils'
 
 const USER_OR_TEAM_BADGE_TEST_ID = 'UserOrTeamBadge'
 
-jest.mock('../../UserOrTeamBadge', () => ({
+vi.mock('../../UserOrTeamBadge', () => ({
   __esModule: true,
   default: () => <div data-testid={USER_OR_TEAM_BADGE_TEST_ID}></div>,
 }))

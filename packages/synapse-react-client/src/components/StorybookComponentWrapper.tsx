@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo } from 'react'
 import { MemoryRouter } from 'react-router-dom'
+import { SynapseClientError } from '../utils'
 import {
   defaultQueryClientConfig,
-  SynapseClientError,
   SynapseContextProvider,
   SynapseContextType,
-} from '../utils'
+} from '../context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import SynapseClient, {
   getAccessTokenFromCookie,

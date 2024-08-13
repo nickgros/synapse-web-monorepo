@@ -19,13 +19,13 @@ import SubmissionViewScopeEditorModal, {
 import EvaluationFinder from '../EvaluationFinder/EvaluationFinder'
 import { MOCK_ACCESS_TOKEN } from '../../mocks/MockSynapseContext'
 
-jest.mock('../EvaluationFinder/EvaluationFinder', () => ({
+vi.mock('../EvaluationFinder/EvaluationFinder', () => ({
   __esModule: true,
-  default: jest.fn(() => <div data-testid={'EvaluationFinderMocked'} />),
+  default: vi.fn(() => <div data-testid={'EvaluationFinderMocked'} />),
 }))
 
-const mockEvaluationFinder = jest.mocked(EvaluationFinder)
-const mockUpdateEntity = jest.spyOn(SynapseClient, 'updateEntity')
+const mockEvaluationFinder = vi.mocked(EvaluationFinder)
+const mockUpdateEntity = vi.spyOn(SynapseClient, 'updateEntity')
 const mockTableEntityInstance = mockTableEntityData.entity
 
 function renderComponent(props: SubmissionViewScopeEditorModalProps) {
@@ -48,11 +48,11 @@ async function setUp(props: SubmissionViewScopeEditorModalProps) {
 }
 
 describe('SubmissionViewScopeEditorModal tests', () => {
-  const mockOnCancel = jest.fn()
-  const mockOnUpdate = jest.fn()
+  const mockOnCancel = vi.fn()
+  const mockOnUpdate = vi.fn()
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest.spyOn(SynapseClient, 'getEntity').mockResolvedValue({
+    vi.clearAllMocks()
+    vi.spyOn(SynapseClient, 'getEntity').mockResolvedValue({
       ...mockTableEntity,
       scopeIds: ['123', '456'],
       concreteType: SUBMISSION_VIEW_CONCRETE_TYPE_VALUE,
@@ -60,7 +60,7 @@ describe('SubmissionViewScopeEditorModal tests', () => {
   })
 
   it('displays the correct scope editor which can modify selection', async () => {
-    jest.spyOn(SynapseClient, 'getEvaluation').mockImplementation(id => {
+    vi.spyOn(SynapseClient, 'getEvaluation').mockImplementation(id => {
       return Promise.resolve({
         id: id,
         name: `Evaluation ${id}`,

@@ -11,7 +11,7 @@ import {
   isVersionableEntityType,
 } from '../../../../utils/functions/EntityTypeUtils'
 import { getEntityVersions } from '../../../../synapse-client/SynapseClient'
-import { useSynapseContext } from '../../../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../../../context/SynapseContext'
 import {
   Direction,
   EntityChildrenRequest,

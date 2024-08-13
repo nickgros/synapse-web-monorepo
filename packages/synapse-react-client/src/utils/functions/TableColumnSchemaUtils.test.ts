@@ -9,7 +9,9 @@ import { createTableUpdateTransactionRequest } from './TableColumnSchemaUtils'
 import SynapseClient from '../../synapse-client'
 
 describe('TableColumnSchemaUtils', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   describe('getTableUpdateTransactionRequest tests', () => {
     const OLD_COLUMN_MODEL_ID1 = '10001'
     const OLD_COLUMN_MODEL_ID2 = '10002'
@@ -36,9 +38,9 @@ describe('TableColumnSchemaUtils', () => {
         { ...columnModel1 },
       ]
 
-      jest
-        .spyOn(SynapseClient, 'createColumnModels')
-        .mockResolvedValue({ list: newColumnModels })
+      vi.spyOn(SynapseClient, 'createColumnModels').mockResolvedValue({
+        list: newColumnModels,
+      })
 
       // Call under test
       const request = await createTableUpdateTransactionRequest(
@@ -78,7 +80,7 @@ describe('TableColumnSchemaUtils', () => {
         { ...columnModel1, name: 'col1Changed' },
       ]
 
-      jest.spyOn(SynapseClient, 'createColumnModels').mockResolvedValue({
+      vi.spyOn(SynapseClient, 'createColumnModels').mockResolvedValue({
         list: [
           modifiedColumnModels[0],
           { ...modifiedColumnModels[1], id: NEW_COLUMN_MODEL_ID },
@@ -122,9 +124,9 @@ describe('TableColumnSchemaUtils', () => {
         },
       ]
 
-      jest
-        .spyOn(SynapseClient, 'createColumnModels')
-        .mockResolvedValue({ list: createdColumnModels })
+      vi.spyOn(SynapseClient, 'createColumnModels').mockResolvedValue({
+        list: createdColumnModels,
+      })
 
       const request = await createTableUpdateTransactionRequest(
         MOCK_ACCESS_TOKEN,
@@ -157,7 +159,7 @@ describe('TableColumnSchemaUtils', () => {
         newColumnModelWithId,
       ]
 
-      const createColumnModelsSpy = jest.spyOn(
+      const createColumnModelsSpy = vi.spyOn(
         SynapseClient,
         'createColumnModels',
       )
@@ -226,9 +228,9 @@ describe('TableColumnSchemaUtils', () => {
         colDAfterSave,
       ]
 
-      jest
-        .spyOn(SynapseClient, 'createColumnModels')
-        .mockResolvedValue({ list: newSchemaAfterUpdate })
+      vi.spyOn(SynapseClient, 'createColumnModels').mockResolvedValue({
+        list: newSchemaAfterUpdate,
+      })
 
       // Call under test
       const request = await createTableUpdateTransactionRequest(
@@ -277,9 +279,9 @@ describe('TableColumnSchemaUtils', () => {
         { ...columnModel1, maximumSize: undefined },
       ]
 
-      jest
-        .spyOn(SynapseClient, 'createColumnModels')
-        .mockResolvedValue({ list: newColumnModels })
+      vi.spyOn(SynapseClient, 'createColumnModels').mockResolvedValue({
+        list: newColumnModels,
+      })
 
       // Call under test
       const request = await createTableUpdateTransactionRequest(

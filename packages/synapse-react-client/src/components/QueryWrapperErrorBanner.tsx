@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { ErrorBanner } from './error/ErrorBanner'
 import { useQueryContext } from './QueryContext/QueryContext'
 import { EntityActionsRequired } from './AccessRequirement/EntityActionsRequired'
-import { useSynapseContext } from '../utils'
+import { useSynapseContext } from '../context'
 
 /**
  * Error banner that automatically pulls the error from QueryContext.  If 403, shows entity actions required

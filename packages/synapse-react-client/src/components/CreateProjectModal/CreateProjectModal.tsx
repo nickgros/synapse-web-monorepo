@@ -1,7 +1,7 @@
 import { Alert } from '@mui/material'
 import React, { useState } from 'react'
 import SynapseClient from '../../synapse-client'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { ConfirmationDialog } from '../ConfirmationDialog/ConfirmationDialog'
 import FullWidthAlert from '../FullWidthAlert/FullWidthAlert'
 import TextField from '../TextField/TextField'

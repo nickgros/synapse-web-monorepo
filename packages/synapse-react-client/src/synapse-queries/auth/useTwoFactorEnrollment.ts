@@ -14,7 +14,7 @@ import {
 } from '@sage-bionetworks/synapse-types'
 import { SynapseClientError } from '../../utils/SynapseClientError'
 import SynapseClient from '../../synapse-client'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { getAllActionsRequiredQueryFilters } from '../QueryFilterUtils'
 
 export function useStartTwoFactorEnrollment(

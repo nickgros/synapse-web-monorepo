@@ -14,16 +14,16 @@ import {
 import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils'
 import SynapseClient from '../../synapse-client'
 
-const createTeamSpy = jest.spyOn(SynapseClient, 'createTeam')
-const registerChallengeTeamSpy = jest.spyOn(
+const createTeamSpy = vi.spyOn(SynapseClient, 'createTeam')
+const registerChallengeTeamSpy = vi.spyOn(
   SynapseClient,
   'registerChallengeTeam',
 )
-const addUserToTeamSpy = jest.spyOn(
+const addUserToTeamSpy = vi.spyOn(
   SynapseClient,
   'addTeamMemberAsAuthenticatedUserOrAdmin',
 )
-const createMembershipRequestSpy = jest.spyOn(
+const createMembershipRequestSpy = vi.spyOn(
   SynapseClient,
   'createMembershipRequest',
 )
@@ -32,7 +32,7 @@ function renderComponent() {
   const props = {
     projectId: mockProject.id,
     isShowingModal: true,
-    onClose: jest.fn(),
+    onClose: vi.fn(),
   }
 
   const user = userEvent.setup()
@@ -52,7 +52,7 @@ function renderComponent() {
 describe('ChallengeTeamWizard tests', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())

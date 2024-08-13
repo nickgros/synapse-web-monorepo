@@ -13,7 +13,8 @@ import {
   UpdateThreadTitleRequest,
 } from '@sage-bionetworks/synapse-types'
 import SynapseClient from '../../synapse-client'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 
 export function useGetThread(threadId: string) {
   const { data: threadData, isLoading: isLoadingBundle } =

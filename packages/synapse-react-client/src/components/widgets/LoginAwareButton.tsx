@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, ButtonProps } from '@mui/material'
 import { Link, LinkProps } from 'react-router-dom'
 import { SRC_SIGN_IN_CLASS } from '../../utils/SynapseConstants'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 
 /* Allow component to behave as a MUI Button or a React Router Link */
 export type LoginAwareButtonProps = ButtonProps &

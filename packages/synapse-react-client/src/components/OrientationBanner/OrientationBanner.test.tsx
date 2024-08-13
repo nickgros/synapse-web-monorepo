@@ -11,10 +11,10 @@ import OrientationBanner, {
   OrientationBannerProps,
 } from './OrientationBanner'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 
-const onPrimaryButtonClicked = jest.fn()
-window.open = jest.fn()
+const onPrimaryButtonClicked = vi.fn()
+window.open = vi.fn()
 
 const defaultProps = {
   name: 'Projects',
@@ -68,7 +68,7 @@ function setUp(
 
 describe('OrientationBanner tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterEach(() => {
     localStorage.getItem(defaultStorageId) &&

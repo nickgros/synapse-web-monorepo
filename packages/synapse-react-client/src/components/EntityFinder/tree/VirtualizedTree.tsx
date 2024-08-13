@@ -19,7 +19,7 @@ import {
   getEntityTypeFromHeader,
   isContainerType,
 } from '../../../utils/functions/EntityTypeUtils'
-import { useSynapseContext } from '../../../utils'
+import { useSynapseContext } from '../../../context'
 import {
   EntityChildrenRequest,
   EntityType,

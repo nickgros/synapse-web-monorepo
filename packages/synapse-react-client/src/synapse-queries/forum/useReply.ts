@@ -10,7 +10,8 @@ import {
   UseQueryOptions,
 } from '@tanstack/react-query'
 import SynapseClient from '../../synapse-client'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 import {
   CreateDiscussionReply,
   DiscussionFilter,

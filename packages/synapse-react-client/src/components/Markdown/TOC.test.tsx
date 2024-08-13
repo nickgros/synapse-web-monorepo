@@ -2,21 +2,27 @@ import { render, screen } from '@testing-library/react'
 import React from 'react'
 import MarkdownSynapse from './MarkdownSynapse'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
+import SynapseClient from '../../synapse-client'
+
 describe('renders without crashing', () => {
-  let SynapseClient: any
-  beforeAll(() => {
-    SynapseClient = require('../../synapse-client/SynapseClient')
-    SynapseClient.getWikiAttachmentsFromEntity = jest.fn(() =>
-      Promise.resolve(['']),
-    )
+  vi.spyOn(SynapseClient, 'getWikiAttachmentsFromEntity').mockResolvedValue({
+    list: [],
   })
   const mockOwnerId = 'mock_owner_id'
   const mockWikiId = 'mock_wiki_id'
 
   it('renders a table of contents without crashing', async () => {
-    SynapseClient.getEntityWiki = jest.fn(() =>
-      Promise.resolve({ markdown: '${toc}\n#Heading1' }),
-    )
+    vi.spyOn(SynapseClient, 'getEntityWiki').mockResolvedValue({
+      markdown: '${toc}\n#Heading1',
+      attachmentFileHandleIds: [],
+      createdBy: '',
+      createdOn: '',
+      etag: '',
+      id: '',
+      modifiedBy: '',
+      modifiedOn: '',
+      title: '',
+    })
 
     render(<MarkdownSynapse ownerId={mockOwnerId} wikiId={mockWikiId} />, {
       wrapper: createWrapper(),
@@ -31,9 +37,17 @@ describe('renders without crashing', () => {
   })
 
   it('renders a table of contents with a non-toc-header header', async () => {
-    SynapseClient.getEntityWiki = jest.fn(() =>
-      Promise.resolve({ markdown: "${toc}\n#Heading1\n##! Don't show me!" }),
-    )
+    vi.spyOn(SynapseClient, 'getEntityWiki').mockResolvedValue({
+      markdown: "${toc}\n#Heading1\n##! Don't show me!",
+      attachmentFileHandleIds: [],
+      createdBy: '',
+      createdOn: '',
+      etag: '',
+      id: '',
+      modifiedBy: '',
+      modifiedOn: '',
+      title: '',
+    })
     render(<MarkdownSynapse ownerId={mockOwnerId} wikiId={mockWikiId} />, {
       wrapper: createWrapper(),
     })

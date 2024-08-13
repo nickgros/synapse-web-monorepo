@@ -1,6 +1,6 @@
 import React from 'react'
 import { getEntity, getFiles } from '../../synapse-client/SynapseClient'
-import { SynapseContext } from '../../utils/context/SynapseContext'
+import { SynapseContext } from '../../context/SynapseContext'
 import {
   BatchFileRequest,
   BatchFileResult,

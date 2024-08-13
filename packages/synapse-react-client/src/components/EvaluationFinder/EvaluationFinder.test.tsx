@@ -10,7 +10,7 @@ function renderComponent(props: EvaluationFinderProps) {
   return render(<EvaluationFinder {...props} />, { wrapper: createWrapper() })
 }
 
-const onChange = jest.fn()
+const onChange = vi.fn()
 const selectedIds = ['2']
 
 const mockPage1: PaginatedResults<Evaluation> = {
@@ -25,7 +25,7 @@ const mockPage2: PaginatedResults<Evaluation> = {
   totalNumberOfResults: 3,
 }
 
-jest.spyOn(SynapseClient, 'getEvaluations').mockImplementation(params => {
+vi.spyOn(SynapseClient, 'getEvaluations').mockImplementation(params => {
   if (params == null || params.offset == null || params.offset === 0) {
     return Promise.resolve(mockPage1)
   } else {

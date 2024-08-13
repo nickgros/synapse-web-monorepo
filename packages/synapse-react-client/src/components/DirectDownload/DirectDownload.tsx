@@ -7,7 +7,7 @@ import {
 } from '@sage-bionetworks/synapse-types'
 import { getFiles } from '../../synapse-client/SynapseClient'
 import IconSvg, { IconSvgProps } from '../IconSvg/IconSvg'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { TOOLTIP_DELAY_SHOW } from '../SynapseTable/SynapseTableConstants'
 import { UAParser } from 'ua-parser-js'
 import { Tooltip } from '@mui/material'

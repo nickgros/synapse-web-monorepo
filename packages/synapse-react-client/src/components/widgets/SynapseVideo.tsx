@@ -9,7 +9,7 @@ import {
   BatchFileResult,
 } from '@sage-bionetworks/synapse-types'
 import { SynapseConstants } from '../../utils'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 
 export type SynapseVideoProps = {
   params: {

@@ -1,5 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 import { UploadDestination } from '@sage-bionetworks/synapse-types'
 import {
   getDefaultUploadDestination,

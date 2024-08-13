@@ -52,10 +52,10 @@ const SUBMITTED_SUBMISSION_ID = mockSubmittedSubmission.id
 const APPROVED_SUBMISSION_ID = mockApprovedSubmission.id
 const REJECTED_SUBMISSION_ID = mockRejectedSubmission.id
 
-const onServerReceivedUpdate = jest.fn()
+const onServerReceivedUpdate = vi.fn()
 
 // Mock links to file handles
-jest.mock('../../../src/components/widgets/FileHandleLink', () => ({
+vi.mock('../../../src/components/widgets/FileHandleLink', () => ({
   FileHandleLink: ({
     fileHandleAssociation,
   }: {
@@ -68,13 +68,13 @@ jest.mock('../../../src/components/widgets/FileHandleLink', () => ({
 }))
 
 // Mock the access requirement wiki
-jest.mock('../../../src/components/Markdown/MarkdownSynapse', () => ({
+vi.mock('../../../src/components/Markdown/MarkdownSynapse', () => ({
   __esModule: true,
   default: () => <div>Wiki Contents...</div>,
 }))
 
 // Mock the reject submission modal
-const mockRejectDataAccessRequestModal = jest
+const mockRejectDataAccessRequestModal = vi
   .spyOn(RejectDataAccessRequestModalModule, 'default')
   .mockImplementation(() => <div data-testid="RejectDataAccessRequestModal" />)
 
@@ -149,7 +149,7 @@ describe('Submission Page tests', () => {
   })
   afterEach(() => {
     server.restoreHandlers()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterAll(() => server.close())
 

@@ -5,8 +5,9 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { PassingRecord } from '@sage-bionetworks/synapse-types'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
 import { USER_BUNDLE_MASK_IS_CERTIFIED } from '../../utils/SynapseConstants'
+import { useSynapseContext } from '../../context'
 
 export function useRevokeCertification(
   options?: Partial<

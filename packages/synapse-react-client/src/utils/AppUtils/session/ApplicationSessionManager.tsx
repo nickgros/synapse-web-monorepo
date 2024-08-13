@@ -5,7 +5,7 @@ import { redirectAfterSSO } from '../AppUtils'
 import { useHistory } from 'react-router-dom'
 import { TwoFactorAuthErrorResponse } from '@sage-bionetworks/synapse-types'
 import { ApplicationSessionContextProvider } from './ApplicationSessionContext'
-import { SynapseContextProvider, SynapseContextType } from '../../context'
+import { SynapseContextProvider, SynapseContextType } from '../../../context'
 import dayjs from 'dayjs'
 
 export type ApplicationSessionManagerProps = React.PropsWithChildren<{

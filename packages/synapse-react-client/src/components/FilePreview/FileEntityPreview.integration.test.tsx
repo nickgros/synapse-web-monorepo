@@ -20,14 +20,12 @@ import mockFileEntityData from '../../mocks/entity/mockFileEntity'
 import { MOCK_FILE_HANDLE_ID } from '../../mocks/mock_file_handle'
 import { rest, server } from '../../mocks/msw/server'
 import mockDatasetData from '../../mocks/entity/mockDataset'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import { MOCK_CONTEXT_VALUE } from '../../mocks/MockSynapseContext'
 
-jest
-  .spyOn(FileHandleContentRendererModule, 'default')
-  .mockImplementation(() => {
-    return <div data-testid="FileHandleContentRenderer"></div>
-  })
+vi.spyOn(FileHandleContentRendererModule, 'default').mockImplementation(() => {
+  return <div data-testid="FileHandleContentRenderer"></div>
+})
 
 const defaultWrapperProps: SynapseContextType = {
   ...MOCK_CONTEXT_VALUE,
@@ -160,7 +158,7 @@ describe('FileHandleContentRenderer tests', () => {
   })
 
   it('Throws an error if the entity is not a FileEntity', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
 
     renderComponent({
       bundle: mockDatasetData.bundle,

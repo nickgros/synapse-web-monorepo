@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useQueryContext } from '../QueryContext/QueryContext'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import {
   InteractiveCopyIdsIcon,
   InteractiveCopyIdsIconProps,

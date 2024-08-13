@@ -21,7 +21,7 @@ import {
 import { SynapseClientError } from '../../utils/SynapseClientError'
 import { EvaluationRoundEditorDropdown } from './EvaluationRoundEditorDropdown'
 import { ErrorBanner } from '../error/ErrorBanner'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import IconSvg, { IconSvgProps } from '../IconSvg/IconSvg'
 import utc from 'dayjs/plugin/utc'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'

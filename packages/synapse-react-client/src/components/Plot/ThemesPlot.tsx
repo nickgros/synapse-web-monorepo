@@ -5,7 +5,8 @@ import {
   TooltipVisualProps,
 } from '../widgets/ElementWithTooltip'
 import { unCamelCase } from '../../utils/functions/unCamelCase'
-import { SynapseConstants, useSynapseContext } from '../../utils'
+import { SynapseConstants } from '../../utils'
+import { useSynapseContext } from '../../context'
 import { getFullQueryTableResults } from '../../synapse-client'
 import {
   QueryBundleRequest,

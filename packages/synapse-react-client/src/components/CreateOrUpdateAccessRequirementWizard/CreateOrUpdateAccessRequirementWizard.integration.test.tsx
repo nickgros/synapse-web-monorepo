@@ -41,18 +41,18 @@ const entitySubject: RestrictableObjectDescriptor = {
   type: RestrictableObjectType.ENTITY,
 }
 
-const onCancel = jest.fn()
-const onComplete = jest.fn()
+const onCancel = vi.fn()
+const onComplete = vi.fn()
 
-const createAccessRequirementSpy = jest.spyOn(
+const createAccessRequirementSpy = vi.spyOn(
   SynapseClient,
   'createAccessRequirement',
 )
-const updateAccessRequirementSpy = jest.spyOn(
+const updateAccessRequirementSpy = vi.spyOn(
   SynapseClient,
   'updateAccessRequirement',
 )
-const updateAccessRequirementAclSpy = jest.spyOn(
+const updateAccessRequirementAclSpy = vi.spyOn(
   SynapseClient,
   'updateAccessRequirementAcl',
 )
@@ -103,7 +103,9 @@ function getBtn(name: string) {
 }
 
 describe('CreateOrUpdateAccessRequirementWizard', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeAll(() => server.listen())
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())

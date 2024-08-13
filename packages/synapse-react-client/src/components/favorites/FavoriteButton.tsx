@@ -6,7 +6,7 @@ import {
   useIsFavorite,
   useRemoveFavorite,
 } from '../../synapse-queries'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import ConditionalWrapper from '../utils/ConditionalWrapper'
 
 export type FavoriteButtonProps = {

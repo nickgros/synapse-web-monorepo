@@ -6,7 +6,7 @@ import {
   getThreadMessageUrl,
   getUserProfileById,
 } from '../../synapse-client/SynapseClient'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import {
   DiscussionReplyBundle,
   DiscussionThreadBundle,

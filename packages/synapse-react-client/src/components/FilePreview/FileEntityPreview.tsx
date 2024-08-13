@@ -9,7 +9,7 @@ import {
   getOriginalFileHandleRenderer,
   getPreviewFileHandleRenderer,
 } from './PreviewUtils'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { Alert } from '@mui/material'
 import { SignInPrompt } from '../error/ErrorBanner'
 import {

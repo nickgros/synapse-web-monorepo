@@ -30,8 +30,8 @@ const renderComponent = (
   )
 }
 
-const mockExecuteQueryRequest = jest.fn()
-const mockGetLastQueryRequest = jest.fn()
+const mockExecuteQueryRequest = vi.fn()
+const mockGetLastQueryRequest = vi.fn()
 
 const defaultQueryContext: Partial<QueryContextType> = {
   executeQueryRequest: mockExecuteQueryRequest,
@@ -45,7 +45,7 @@ const defaultQueryVisualizationContext: Partial<QueryVisualizationContextType> =
 
 describe('SqlEditor tests', () => {
   beforeEach(() => {
-    jest.resetAllMocks()
+    vi.resetAllMocks()
     mockGetLastQueryRequest.mockReturnValue({
       query: {},
     })

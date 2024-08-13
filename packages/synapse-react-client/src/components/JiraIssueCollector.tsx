@@ -3,7 +3,7 @@ import {
   useGetCurrentUserProfile,
   useGetNotificationEmail,
 } from '../synapse-queries/user/useUserBundle'
-import { useSynapseContext } from '../utils/context/SynapseContext'
+import { useSynapseContext } from '../context/SynapseContext'
 
 type IssueCollector = 'SWC' | 'Flagged Content' | 'Request Access'
 

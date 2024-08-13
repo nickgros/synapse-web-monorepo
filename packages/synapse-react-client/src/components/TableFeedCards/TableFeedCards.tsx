@@ -10,7 +10,7 @@ import {
 import MarkdownSynapse from '../Markdown/MarkdownSynapse'
 import loadingScreen from '../LoadingScreen/LoadingScreen'
 import LargeButton from '../../components/styled/LargeButton'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 
 export type TableFeedCardsProps = {
   tableEntityId: string

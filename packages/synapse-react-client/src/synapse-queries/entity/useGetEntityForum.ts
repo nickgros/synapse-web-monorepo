@@ -1,7 +1,7 @@
 import { UseQueryOptions, useQuery } from '@tanstack/react-query'
 import SynapseClient from '../../synapse-client'
 import { SynapseClientError } from '../../utils/SynapseClientError'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import { Forum } from '@sage-bionetworks/synapse-types'
 
 export function useGetEntityForum(

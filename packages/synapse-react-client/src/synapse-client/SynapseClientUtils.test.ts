@@ -14,7 +14,7 @@ describe('SynapseClientUtils', () => {
       const expected = {
         arbitrary: 'data',
       }
-      const fn = jest.fn().mockResolvedValue(expected)
+      const fn = vi.fn().mockResolvedValue(expected)
 
       const actual = await allowNotFoundError(fn)
 
@@ -22,7 +22,7 @@ describe('SynapseClientUtils', () => {
     })
     it('Passes null on a 404 response', async () => {
       const expected = null
-      const fn = jest
+      const fn = vi
         .fn()
         .mockRejectedValue(
           new SynapseClientError(
@@ -42,7 +42,7 @@ describe('SynapseClientUtils', () => {
         'Bad request!',
         expect.getState().currentTestName!,
       )
-      const fn = jest.fn().mockRejectedValue(expected)
+      const fn = vi.fn().mockRejectedValue(expected)
 
       await expect(() => allowNotFoundError(fn)).rejects.toEqual(expected)
     })
@@ -52,7 +52,7 @@ describe('SynapseClientUtils', () => {
       const expected = {
         arbitrary: 'data',
       }
-      const fn = jest.fn().mockResolvedValue(expected)
+      const fn = vi.fn().mockResolvedValue(expected)
 
       const actual = await returnIfTwoFactorAuthError(fn)
 
@@ -64,7 +64,7 @@ describe('SynapseClientUtils', () => {
         'Not found!',
         expect.getState().currentTestName!,
       )
-      const fn = jest.fn().mockRejectedValue(notFoundError)
+      const fn = vi.fn().mockRejectedValue(notFoundError)
 
       await expect(returnIfTwoFactorAuthError(fn)).rejects.toEqual(
         notFoundError,
@@ -85,7 +85,7 @@ describe('SynapseClientUtils', () => {
         expect.getState().currentTestName!,
         twoFactorAuthError,
       )
-      const fn = jest.fn().mockRejectedValue(expected)
+      const fn = vi.fn().mockRejectedValue(expected)
 
       const actual = await returnIfTwoFactorAuthError(fn)
       expect(actual).toBe(twoFactorAuthError)

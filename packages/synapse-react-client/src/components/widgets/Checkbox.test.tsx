@@ -3,7 +3,7 @@ import { Checkbox, CheckboxProps } from './Checkbox'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-const mockCallback = jest.fn()
+const mockCallback = vi.fn()
 
 const props = {
   label: 'checkboxLabel',
@@ -14,7 +14,7 @@ const props = {
 
 describe('basic function', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   it('should render with correct properties', () => {
     render(<Checkbox {...props} />)

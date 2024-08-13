@@ -14,7 +14,7 @@ import {
   useGetDownloadListStatistics,
   useSearchAccessSubmissionsInfinite,
 } from '../../synapse-queries'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import { CreateProjectModal } from '../CreateProjectModal/CreateProjectModal'
 import IconSvg, { IconName } from '../IconSvg/IconSvg'
 import UserCard from '../UserCard/UserCard'

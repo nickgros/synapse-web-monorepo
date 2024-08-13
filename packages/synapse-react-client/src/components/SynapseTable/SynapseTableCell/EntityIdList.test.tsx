@@ -11,9 +11,9 @@ import mockFileEntity from '../../../mocks/entity/mockFileEntity'
 import { getEntityHeaders } from '../../../synapse-client/SynapseClient'
 import SynapseClient from '../../../synapse-client'
 
-jest
-  .spyOn(SynapseClient, 'getEntityHeaders')
-  .mockResolvedValue({ results: [mockFileEntity.entityHeader] })
+vi.spyOn(SynapseClient, 'getEntityHeaders').mockResolvedValue({
+  results: [mockFileEntity.entityHeader],
+})
 
 describe('EntityIdList: basic functionality', () => {
   const props: EntityIdListProps = {

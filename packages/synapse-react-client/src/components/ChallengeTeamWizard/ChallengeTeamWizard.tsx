@@ -9,7 +9,7 @@ import {
   MembershipRequestForm,
   MembershipRequestFormHandle,
 } from './MembershipRequestForm'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import {
   useAddMemberToTeam,
   useGetCurrentUserProfile,

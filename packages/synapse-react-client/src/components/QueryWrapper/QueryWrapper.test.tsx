@@ -24,13 +24,9 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { selectedRowsAtom } from './TableRowSelectionState'
 
-jest.mock('../../synapse-client', () => ({
-  getQueryTableAsyncJobResults: jest.fn(),
-  getEntity: jest.fn(),
-}))
-
-const mockGetQueryTableAsyncJobResults = jest.mocked(
-  SynapseClient.getQueryTableAsyncJobResults,
+const mockGetQueryTableAsyncJobResults = vi.spyOn(
+  SynapseClient,
+  'getQueryTableAsyncJobResults',
 )
 
 let providedContext: QueryContextType | undefined
@@ -85,7 +81,7 @@ describe('QueryWrapper', () => {
     currentQueryDataValue = undefined
     selectedRows = undefined
     setSelectedRows = undefined
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     window.history.pushState({}, 'Page Title', '/')
 
     providedContext = undefined
@@ -177,8 +173,8 @@ describe('QueryWrapper', () => {
     })
 
     it('test onQueryChange and onQueryResultBundleChange', async () => {
-      const mockOnQueryChange = jest.fn()
-      const mockOnQueryResultBundleChange = jest.fn()
+      const mockOnQueryChange = vi.fn()
+      const mockOnQueryResultBundleChange = vi.fn()
       renderComponent({
         initQueryRequest: initialQueryRequest,
         shouldDeepLink: true,
@@ -326,7 +322,7 @@ describe('QueryWrapper', () => {
 
   describe('query change when rows are selected', () => {
     it('requires confirmation to change the query when rows are selected', async () => {
-      const mockOnQueryChange = jest.fn()
+      const mockOnQueryChange = vi.fn()
 
       const newQuery = 'SELECT * FROM syn98765'
 
@@ -394,7 +390,7 @@ describe('QueryWrapper', () => {
     })
 
     it('handles canceling the change request when rows are selected', async () => {
-      const mockOnQueryChange = jest.fn()
+      const mockOnQueryChange = vi.fn()
 
       const newQuery = 'SELECT * FROM syn98765'
 

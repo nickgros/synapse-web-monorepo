@@ -19,11 +19,11 @@ import { PasswordResetSignedToken } from '@sage-bionetworks/synapse-types'
 import { useGetFeatureFlagsOverride } from '../../mocks/msw/handlers/featureFlagHandlers'
 import { TWO_FACTOR_AUTH_CHANGE_PASSWORD_PROMPT } from './useChangePasswordFormState'
 
-const mockDisplayToast = jest
+const mockDisplayToast = vi
   .spyOn(ToastMessage, 'displayToast')
   .mockImplementation(() => noop)
 
-const changePasswordSpy = jest.spyOn(SynapseClient, 'changePassword')
+const changePasswordSpy = vi.spyOn(SynapseClient, 'changePassword')
 
 const passwordResetSignedToken: PasswordResetSignedToken = {
   concreteType: 'org.sagebionetworks.repo.model.auth.PasswordResetSignedToken',
@@ -35,7 +35,7 @@ const passwordResetSignedToken: PasswordResetSignedToken = {
   validity: 'valid',
 }
 
-const mockOnSuccess = jest.fn()
+const mockOnSuccess = vi.fn()
 
 function renderComponent() {
   return render(
@@ -115,7 +115,9 @@ async function typeAndSubmitTOTP(
 
 describe('ChangePasswordWithToken tests', () => {
   beforeAll(() => server.listen())
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeEach(() => {
     useGetFeatureFlagsOverride()
   })

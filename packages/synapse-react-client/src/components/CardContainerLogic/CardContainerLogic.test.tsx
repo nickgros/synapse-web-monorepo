@@ -9,29 +9,30 @@ import { NoContentPlaceholderType } from '../SynapseTable/NoContentPlaceholderTy
 import * as CardContainerModule from '../CardContainer/CardContainer'
 import QueryWrapper from '../QueryWrapper'
 
-jest.mock('../../../src/components/QueryWrapper/QueryWrapper', () => ({
-  QueryWrapper: jest.fn(props => {
+vi.mock('../../../src/components/QueryWrapper/QueryWrapper', () => ({
+  QueryWrapper: vi.fn(props => {
     return <div data-testid="QueryWrapper">{props.children}</div>
   }),
 }))
 
-const mockQueryWrapper = jest.mocked(QueryWrapper)
+const mockQueryWrapper = vi.mocked(QueryWrapper)
 
 const renderComponent = (props: CardContainerLogicProps) => {
   return render(<CardContainerLogic {...props} />, { wrapper: createWrapper() })
 }
 
-const mockCardContainer = jest
+const mockCardContainer = vi
   .spyOn(CardContainerModule, 'default')
   .mockImplementation(props => {
     return <div data-testid="CardContainer"></div>
   })
 
-jest
-  .spyOn(QueryVisualizationWrapperModule, 'QueryVisualizationWrapper')
-  .mockImplementation(props => {
-    return <div data-testid="QueryVisualizationWrapper">{props.children}</div>
-  })
+vi.spyOn(
+  QueryVisualizationWrapperModule,
+  'QueryVisualizationWrapper',
+).mockImplementation(props => {
+  return <div data-testid="QueryVisualizationWrapper">{props.children}</div>
+})
 
 describe('it performs basic functionality', () => {
   const sql = 'SELECT * FROM syn16787123'

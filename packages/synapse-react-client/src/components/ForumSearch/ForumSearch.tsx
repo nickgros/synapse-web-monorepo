@@ -4,7 +4,7 @@ import {
   DiscussionSearchResponse,
   Match,
 } from '@sage-bionetworks/synapse-types'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import DiscussionSearchResult from '../Forum/DiscussionSearchResult'
 import { Entity } from '@sage-bionetworks/synapse-types'
 import { Button, Typography } from '@mui/material'

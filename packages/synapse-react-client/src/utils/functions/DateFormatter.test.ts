@@ -1,25 +1,21 @@
-import { getUseUtcTimeFromCookie } from '../../synapse-client'
+import SynapseClient from '../../synapse-client'
 import { formatDate } from './DateFormatter'
 import dayjs, { Dayjs } from 'dayjs'
+import { Mocked } from 'vitest'
 
-jest.mock('../../synapse-client', () => {
-  return {
-    getUseUtcTimeFromCookie: jest.fn(),
-  }
-})
-
-jest.mock('dayjs', () => {
+vi.mock('dayjs', () => {
   const mockDayjsObject = {
-    tz: jest.fn(),
-    format: jest.fn().mockReturnValue('mockResultDate'),
+    tz: vi.fn(),
+    format: vi.fn().mockReturnValue('mockResultDate'),
   }
   mockDayjsObject.tz.mockReturnValue(mockDayjsObject)
-  const mockDayjsInstance = jest
+  const mockDayjsInstance = vi
     .fn()
-    .mockReturnValue(mockDayjsObject) as unknown as jest.Mocked<typeof dayjs>
-  mockDayjsInstance.extend = jest.fn()
+    .mockReturnValue(mockDayjsObject) as unknown as Mocked<typeof dayjs>
+  // @ts-expect-error issue with generic on type of mocked object
+  mockDayjsInstance.extend = vi.fn()
   // @ts-expect-error tz is readonly but we need to mock it
-  mockDayjsInstance.tz = { guess: jest.fn().mockReturnValue('mockLocalTz') }
+  mockDayjsInstance.tz = { guess: vi.fn().mockReturnValue('mockLocalTz') }
 
   return {
     __esModule: true,
@@ -27,14 +23,17 @@ jest.mock('dayjs', () => {
   }
 })
 
-const mockGetUseUtcTimeFromCookie = jest.mocked(getUseUtcTimeFromCookie)
+const mockGetUseUtcTimeFromCookie = vi.spyOn(
+  SynapseClient,
+  'getUseUtcTimeFromCookie',
+)
 
 const mockDate = Symbol('mockDate') as unknown as Dayjs
-const mockDayjs = jest.mocked(dayjs)
+const mockDayjs = vi.mocked(dayjs)
 
 describe('DateFormatter', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   it('Shows local time', () => {
     mockGetUseUtcTimeFromCookie.mockReturnValue(false)

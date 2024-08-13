@@ -14,7 +14,7 @@ import useShowDesktop from '../../utils/hooks/useShowDesktop'
 import GoalsMobile from './Goals.Mobile'
 import GoalsDesktop from './Goals.Desktop'
 import { getFieldIndex } from '../../utils/functions/queryUtils'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 
 export type GoalsProps = {
   entityId: string

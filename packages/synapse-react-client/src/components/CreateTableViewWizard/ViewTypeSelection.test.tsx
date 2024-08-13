@@ -19,7 +19,7 @@ describe('ViewTypeSelection', () => {
   }
 
   test('View type selection menu is shown and callbacks work', async () => {
-    const onTypeSelected = jest.fn()
+    const onTypeSelected = vi.fn()
     renderComponent(
       {
         onTypeSelected,
@@ -57,7 +57,7 @@ describe('ViewTypeSelection', () => {
   })
 
   it('hides virtual table out of experimental mode', () => {
-    const onTypeSelected = jest.fn()
+    const onTypeSelected = vi.fn()
     renderComponent(
       {
         onTypeSelected,

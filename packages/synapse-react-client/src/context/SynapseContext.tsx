@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react'
-import { SynapseErrorBoundary } from '../../components/error/ErrorBanner'
-import { KeyFactory } from '../../synapse-queries/KeyFactory'
+// import { SynapseErrorBoundary } from '../components/error/ErrorBanner'
+import { KeyFactory } from '../synapse-queries/KeyFactory'
 
 export type SynapseContextType = {
   /** The user's access token. If undefined, the user is not logged in */
@@ -78,11 +78,7 @@ export function SynapseContextProvider(props: SynapseContextProviderProps) {
 
   return (
     <SynapseContext.Provider value={synapseContext}>
-      {synapseContext?.withErrorBoundary ? (
-        <SynapseErrorBoundary>{children}</SynapseErrorBoundary>
-      ) : (
-        children
-      )}
+      {synapseContext?.withErrorBoundary ? <>{children}</> : children}
     </SynapseContext.Provider>
   )
 }

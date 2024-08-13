@@ -42,7 +42,7 @@ import DocumentTemplate from '../DocumentTemplate'
 import ManagedACTAccessRequirementFormWikiWrapper from '../ManagedACTAccessRequirementFormWikiWrapper'
 import { SynapseErrorBoundary } from '../../../error/ErrorBanner'
 import { deepEquals } from '@rjsf/utils'
-import { useSynapseContext } from '../../../../utils'
+import { useSynapseContext } from '../../../../context'
 
 function AccessorRequirementHelpText(props: {
   managedACTAccessRequirement: ManagedACTAccessRequirement

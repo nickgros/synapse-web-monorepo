@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import {
   ColumnTypeEnum,
   QueryResultBundle,

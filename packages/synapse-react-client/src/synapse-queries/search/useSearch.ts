@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query'
 import SynapseClient from '../../synapse-client'
 import { SynapseClientError } from '../../utils/SynapseClientError'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { SearchQuery, SearchResults } from '@sage-bionetworks/synapse-types'
 
 export function useSearch(

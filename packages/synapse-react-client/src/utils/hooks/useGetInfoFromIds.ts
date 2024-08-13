@@ -7,7 +7,7 @@ import {
   getEvaluations,
   getGroupHeadersBatch,
 } from '../../synapse-client'
-import { useSynapseContext } from '../context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import {
   EntityHeader,
   Evaluation,

@@ -4,7 +4,7 @@ import {
   createPackageFromDownloadListV2,
   getFileHandleByIdURL,
 } from '../../synapse-client/SynapseClient'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { DownloadListPackageResponse } from '@sage-bionetworks/synapse-types'
 import FullWidthAlert, {
   FullWidthAlertVariant,

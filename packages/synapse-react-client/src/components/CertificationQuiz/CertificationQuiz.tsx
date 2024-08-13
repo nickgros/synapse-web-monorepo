@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import SynapseClient from '../../synapse-client'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import {
   QuizResponse,
   Quiz,

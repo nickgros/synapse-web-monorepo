@@ -1,6 +1,7 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query'
 import { MessageToUser } from '@sage-bionetworks/synapse-types'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 import SynapseClient from '../../synapse-client'
 
 type SendMessageRequest = {

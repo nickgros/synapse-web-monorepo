@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupProps } from './RadioGroup'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-const mockCallback = jest.fn()
+const mockCallback = vi.fn()
 
 function createTestProps(overrides?: RadioGroupProps): RadioGroupProps {
   return {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import {
   useAddQueryToDownloadList,
   useGetEntityChildren,

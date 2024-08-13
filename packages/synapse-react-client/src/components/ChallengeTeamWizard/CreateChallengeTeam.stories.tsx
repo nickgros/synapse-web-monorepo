@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react'
 import getAllChallengeHandlers from '../../mocks/msw/handlers/challengeHandlers'
 import { MOCK_REPO_ORIGIN } from '../../utils/functions/getEndpoint'
 import { getUserProfileHandlers } from '../../mocks/msw/handlers/userProfileHandlers'
-import { SynapseContextConsumer, SynapseContextProvider } from '../../utils'
+import { SynapseContextConsumer, SynapseContextProvider } from '../../context'
 import React, { useRef, useState } from 'react'
 import getAllTeamHandlers from '../../mocks/msw/handlers/teamHandlers'
 import {

@@ -21,7 +21,7 @@ import { mockFileHandle } from '../../../src/mocks/mock_file_handle'
 let onSaveCaptor: SynapseFormProps['onSave'] | undefined = undefined
 let onSubmitCaptor: SynapseFormProps['onSubmit'] | undefined = undefined
 
-const mockSynapseForm = jest
+const mockSynapseForm = vi
   .spyOn(SynapseFormModule, 'default')
   .mockImplementation((props: SynapseFormProps) => {
     onSaveCaptor = props.onSave
@@ -62,19 +62,19 @@ const props: SynapseFormWrapperProps = {
 
 describe('SynapseFormWrapper', () => {
   beforeEach(() => {
-    jest.spyOn(SynapseClient, 'getFileResult').mockResolvedValue(mockFileHandle)
-    jest
-      .spyOn(SynapseClient, 'getFileHandleContent')
-      .mockResolvedValue(JSON.stringify(formschemaJson))
+    vi.spyOn(SynapseClient, 'getFileResult').mockResolvedValue(mockFileHandle)
+    vi.spyOn(SynapseClient, 'getFileHandleContent').mockResolvedValue(
+      JSON.stringify(formschemaJson),
+    )
 
-    jest.spyOn(SynapseClient, 'uploadFile').mockResolvedValue(mockFileEntity)
-    jest.spyOn(SynapseClient, 'getEntity').mockResolvedValue(mockFileEntity)
-    jest.spyOn(SynapseClient, 'createEntity').mockResolvedValue('123444')
-    jest
-      .spyOn(SynapseClient, 'getFileHandleContentFromID')
-      .mockResolvedValue(mockFormData)
+    vi.spyOn(SynapseClient, 'uploadFile').mockResolvedValue(mockFileEntity)
+    vi.spyOn(SynapseClient, 'getEntity').mockResolvedValue(mockFileEntity)
+    vi.spyOn(SynapseClient, 'createEntity').mockResolvedValue('123444')
+    vi.spyOn(SynapseClient, 'getFileHandleContentFromID').mockResolvedValue(
+      mockFormData,
+    )
 
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   test('gets configuration data calls should be called with correct params', async () => {
@@ -109,11 +109,8 @@ describe('SynapseFormWrapper', () => {
 
   describe('if there is no datafile (no formDataId)', () => {
     test('should make 3 calls to getFileEntityData', async () => {
-      const getFileEntityData = jest.spyOn(
-        SynapseFormUtils,
-        'getFileEntityData',
-      )
-      const getFileHandleContentFromID = jest.spyOn(
+      const getFileEntityData = vi.spyOn(SynapseFormUtils, 'getFileEntityData')
+      const getFileHandleContentFromID = vi.spyOn(
         SynapseClient,
         'getFileHandleContentFromID',
       )
@@ -127,9 +124,9 @@ describe('SynapseFormWrapper', () => {
     })
 
     test('should populate formData with metadata', async () => {
-      jest
-        .spyOn(SynapseClient, 'getEntity')
-        .mockResolvedValue(mockFileEntityWithVersion)
+      vi.spyOn(SynapseClient, 'getEntity').mockResolvedValue(
+        mockFileEntityWithVersion,
+      )
 
       renderComponent(props)
 
@@ -144,15 +141,12 @@ describe('SynapseFormWrapper', () => {
         ...{ searchParams: { formGroupId, formDataId, dataFileHandleId } },
       }
 
-      const getFileEntityData = jest.spyOn(
-        SynapseFormUtils,
-        'getFileEntityData',
+      const getFileEntityData = vi.spyOn(SynapseFormUtils, 'getFileEntityData')
+      vi.spyOn(SynapseClient, 'getFileHandleContentFromID').mockResolvedValue(
+        JSON.stringify(mockFormData),
       )
-      jest
-        .spyOn(SynapseClient, 'getFileHandleContentFromID')
-        .mockResolvedValue(JSON.stringify(mockFormData))
 
-      const getFileHandleContentFromID = jest.spyOn(
+      const getFileHandleContentFromID = vi.spyOn(
         SynapseClient,
         'getFileHandleContentFromID',
       )
@@ -189,13 +183,10 @@ describe('SynapseFormWrapper', () => {
         },
       }
 
-      const getFileEntityData = jest.spyOn(
-        SynapseFormUtils,
-        'getFileEntityData',
+      const getFileEntityData = vi.spyOn(SynapseFormUtils, 'getFileEntityData')
+      vi.spyOn(SynapseClient, 'getFileHandleContentFromID').mockResolvedValue(
+        JSON.stringify(mockFormData),
       )
-      jest
-        .spyOn(SynapseClient, 'getFileHandleContentFromID')
-        .mockResolvedValue(JSON.stringify(mockFormData))
 
       renderComponent(_props)
 
@@ -256,15 +247,15 @@ describe('SynapseFormWrapper', () => {
 
   describe('saving data file', () => {
     test('should CREATE formData if there is not a formDataId', async () => {
-      jest
-        .spyOn(SynapseClient, 'uploadFile')
-        .mockResolvedValue({ fileHandleId: '123' })
+      vi.spyOn(SynapseClient, 'uploadFile').mockResolvedValue({
+        fileHandleId: '123',
+      })
 
-      const create = jest
+      const create = vi
         .spyOn(SynapseClient, 'createFormData')
         .mockResolvedValue(JSON.stringify(formschemaJson))
 
-      const update = jest
+      const update = vi
         .spyOn(SynapseClient, 'updateFormData')
         .mockResolvedValue(JSON.stringify(formschemaJson))
 
@@ -289,13 +280,13 @@ describe('SynapseFormWrapper', () => {
         ...props,
         ...{ searchParams: { formGroupId, formDataId } },
       }
-      jest
-        .spyOn(SynapseClient, 'uploadFile')
-        .mockResolvedValue({ fileHandleId: '123' })
-      const create = jest
+      vi.spyOn(SynapseClient, 'uploadFile').mockResolvedValue({
+        fileHandleId: '123',
+      })
+      const create = vi
         .spyOn(SynapseClient, 'createFormData')
         .mockResolvedValue(JSON.stringify(formschemaJson))
-      const update = jest
+      const update = vi
         .spyOn(SynapseClient, 'updateFormData')
         .mockResolvedValue(JSON.stringify(formschemaJson))
 
@@ -318,11 +309,11 @@ describe('SynapseFormWrapper', () => {
 
   describe('submitting data file', () => {
     test('should create formData if there is not and ID', async () => {
-      jest
-        .spyOn(SynapseClient, 'uploadFile')
-        .mockResolvedValue({ fileHandleId: '123' })
+      vi.spyOn(SynapseClient, 'uploadFile').mockResolvedValue({
+        fileHandleId: '123',
+      })
 
-      const submit = jest
+      const submit = vi
         .spyOn(SynapseClient, 'submitFormData')
         .mockResolvedValue(JSON.stringify(formschemaJson))
 

@@ -8,18 +8,18 @@ import {
   EXPIRED_PAT_WARNING,
 } from './AccessTokenCard'
 import { createWrapper } from '../../../testutils/TestingLibraryUtils'
-import * as SynapseContext from '../../../utils/context/SynapseContext'
+import * as SynapseContext from '../../../context/SynapseContext'
 import {
   MOCK_ACCESS_TOKEN,
   MOCK_CONTEXT_VALUE,
 } from '../../../mocks/MockSynapseContext'
 import { MOCK_USER_ID } from '../../../mocks/user/mock_user_profile'
 
-const mockOnDelete = jest.fn(() => null)
+const mockOnDelete = vi.fn(() => null)
 
-jest
-  .spyOn(SynapseClient, 'deletePersonalAccessToken')
-  .mockImplementation(() => Promise.resolve())
+vi.spyOn(SynapseClient, 'deletePersonalAccessToken').mockImplementation(() =>
+  Promise.resolve(),
+)
 
 const activeTokenProps: AccessTokenCardProps = {
   accessToken: {
@@ -57,10 +57,10 @@ function renderComponent(props: AccessTokenCardProps) {
 
 describe('AccessTokenCard', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest
-      .spyOn(SynapseContext, 'useSynapseContext')
-      .mockImplementation(() => MOCK_CONTEXT_VALUE)
+    vi.clearAllMocks()
+    vi.spyOn(SynapseContext, 'useSynapseContext').mockImplementation(
+      () => MOCK_CONTEXT_VALUE,
+    )
   })
 
   test('does not show a warning when active', () => {

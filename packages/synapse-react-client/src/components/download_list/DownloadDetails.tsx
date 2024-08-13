@@ -3,7 +3,7 @@ import { testDownloadSpeed } from '../../utils/functions/testDownloadSpeed'
 import { calculateFriendlyFileSize } from '../../utils/functions/calculateFriendlyFileSize'
 import dayjs from 'dayjs'
 import { TOOLTIP_DELAY_SHOW } from '../SynapseTable/SynapseTableConstants'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { SkeletonInlineBlock } from '../Skeleton/SkeletonInlineBlock'
 import {
   InsertDriveFileTwoTone,

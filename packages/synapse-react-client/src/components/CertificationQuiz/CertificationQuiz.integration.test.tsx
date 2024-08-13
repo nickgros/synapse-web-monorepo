@@ -9,10 +9,7 @@ import {
   mockPassingRecordPassed,
   mockQuiz,
 } from '../../mocks/mockCertificationQuiz'
-import {
-  useGetPassingRecord,
-  usePostCertifiedUserTestResponse,
-} from '../../synapse-queries/user/useCertificationQuiz'
+import * as UseCertificationQuizModule from '../../synapse-queries/user/useCertificationQuiz'
 import {
   getUseMutationMock,
   getUseQuerySuccessMock,
@@ -21,33 +18,34 @@ import { PassingRecord, QuizResponse } from '@sage-bionetworks/synapse-types'
 import { SynapseClientError } from '../../utils'
 import { BackendDestinationEnum, getEndpoint } from '../../utils/functions'
 import { rest, server } from '../../mocks/msw/server'
-import { useGetCurrentUserBundle } from '../../synapse-queries'
+import * as UseUserBundleModule from '../../synapse-queries'
 import { mockUserBundle } from '../../mocks/user/mock_user_profile'
 import { formatDate } from '../../utils/functions/DateFormatter'
 import dayjs from 'dayjs'
 import { noop } from 'lodash-es'
 
-window.open = jest.fn()
-jest.mock('../../synapse-queries/user/useCertificationQuiz', () => {
-  return {
-    usePostCertifiedUserTestResponse: jest.fn(),
-    useGetPassingRecord: jest.fn(),
-  }
-})
+window.open = vi.fn()
 
-const mockUsePostCertifiedUserTestResponse = jest.mocked(
-  usePostCertifiedUserTestResponse,
+const mockUsePostCertifiedUserTestResponse = vi.spyOn(
+  UseCertificationQuizModule,
+  'usePostCertifiedUserTestResponse',
 )
-const mockUseGetPassingRecord = jest.mocked(useGetPassingRecord)
+const mockUseGetPassingRecord = vi.spyOn(
+  UseCertificationQuizModule,
+  'useGetPassingRecord',
+)
 
-jest.mock('../../synapse-queries/user/useUserBundle', () => {
+vi.mock('../../synapse-queries/user/useUserBundle', () => {
   return {
-    useGetCurrentUserBundle: jest.fn(),
+    useGetCurrentUserBundle: vi.fn(),
   }
 })
-const mockUseGetCurrentUserBundle = jest.mocked(useGetCurrentUserBundle)
+const mockUseGetCurrentUserBundle = vi.spyOn(
+  UseUserBundleModule,
+  'useGetCurrentUserBundle',
+)
 
-const mockToastFn = jest
+const mockToastFn = vi
   .spyOn(ToastMessage, 'displayToast')
   .mockImplementation(() => noop)
 const gettingStartedUrl =
@@ -88,7 +86,7 @@ describe('CertificationQuiz tests', () => {
 
   afterEach(() => {
     server.resetHandlers()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterAll(() => server.close())
 

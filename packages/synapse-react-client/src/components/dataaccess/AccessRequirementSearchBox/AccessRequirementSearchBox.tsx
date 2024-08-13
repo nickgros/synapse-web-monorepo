@@ -4,7 +4,7 @@ import { components, GroupBase, SelectComponentsConfig } from 'react-select'
 import AsyncSelect from 'react-select/async'
 import SynapseClient from '../../../synapse-client'
 import { useGetAccessRequirements } from '../../../synapse-queries/dataaccess/useAccessRequirements'
-import { useSynapseContext } from '../../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../../context/SynapseContext'
 
 export type AccessRequirementSearchBoxProps = {
   /* id for the input tag */

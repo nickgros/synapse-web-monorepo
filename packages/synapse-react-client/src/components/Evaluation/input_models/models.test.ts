@@ -1,13 +1,14 @@
 import { EvaluationRound } from '@sage-bionetworks/synapse-types'
 import { convertEvaluationRoundToInput, EvaluationRoundInput } from './models'
 import shortid from 'shortid'
+import { MockInstance } from 'vitest'
 
 describe('test conversion from EvaluaitonRound to EvaluationRoundInput', () => {
   let evaluationRound!: EvaluationRound
   let expectedInput!: EvaluationRoundInput
 
   const fakeShortId = 'Q8DBYmVW1'
-  let spyOnShortIdGenerate!: jest.SpyInstance
+  let spyOnShortIdGenerate!: MockInstance<typeof shortid.generate>
 
   beforeEach(() => {
     evaluationRound = {
@@ -37,12 +38,12 @@ describe('test conversion from EvaluaitonRound to EvaluationRoundInput', () => {
       totalSubmissionLimit: '67',
     }
 
-    spyOnShortIdGenerate = jest.spyOn(shortid, 'generate')
+    spyOnShortIdGenerate = vi.spyOn(shortid, 'generate')
     spyOnShortIdGenerate.mockReturnValue(fakeShortId)
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   test('general case', () => {

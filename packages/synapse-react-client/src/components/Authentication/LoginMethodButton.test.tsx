@@ -12,10 +12,10 @@ import {
   LOGIN_METHOD_EMAIL,
   LOGIN_METHOD_OAUTH2_GOOGLE,
 } from '../../utils/SynapseConstants'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 
-const onClick = jest.fn()
+const onClick = vi.fn()
 
 const defaultProps: LoginMethodButtonProps = {
   loginMethod: LOGIN_METHOD_OAUTH2_GOOGLE,
@@ -78,7 +78,7 @@ function setUp(
 
 describe('LoginMethodButton tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   afterEach(() => {

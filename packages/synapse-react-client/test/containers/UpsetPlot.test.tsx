@@ -23,13 +23,11 @@ describe('UpsetPlot', () => {
 
   beforeEach(() => {
     // Getting an OOM error when rendering the plot component, so let's just mock it.
-    jest
-      .spyOn(UpSetJsModule.default, 'render')
-      .mockImplementation(() => <div role="figure" />)
+    vi.spyOn(UpSetJsModule.default, 'render').mockImplementation(() => (
+      <div role="figure" />
+    ))
 
-    jest
-      .spyOn(SynapseClient, 'getFullQueryTableResults')
-      .mockResolvedValue(data)
+    vi.spyOn(SynapseClient, 'getFullQueryTableResults').mockResolvedValue(data)
   })
 
   it('displays plot', async () => {

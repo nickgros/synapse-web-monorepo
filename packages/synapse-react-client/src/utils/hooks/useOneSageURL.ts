@@ -1,9 +1,9 @@
-import { useSynapseContext } from '../context'
 import { useMemo } from 'react'
 import {
   ONE_SAGE_APPID_QUERY_PARAM_KEY,
   ONE_SAGE_PRODUCTION_URL,
 } from '../SynapseConstants'
+import { useSynapseContext } from '../../context/SynapseContext'
 
 /**
  * Create a URL to OneSage that includes the current app's ID using SynapseContext

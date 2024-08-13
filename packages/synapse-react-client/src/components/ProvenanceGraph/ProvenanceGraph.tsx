@@ -23,7 +23,7 @@ import {
   USED_ENTITY_CONCRETE_TYPE_VALUE,
 } from '@sage-bionetworks/synapse-types'
 import { EntityHeader, ReferenceList } from '@sage-bionetworks/synapse-types'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import SynapseClient from '../../synapse-client'
 import { ExpandGraphNodeDataProps } from './ExpandGraphNodeLabel'
 import { useGetEntityHeaders } from '../../synapse-queries'

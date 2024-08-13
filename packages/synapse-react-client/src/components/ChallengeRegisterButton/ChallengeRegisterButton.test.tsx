@@ -15,19 +15,17 @@ import {
 import { MOCK_TEAM_ID } from '../../mocks/team/mockTeam'
 import { SynapseClientError } from '../../utils'
 
-const mockOnError = jest.fn()
-const mockOnJoinClick = jest.fn()
-const mockOnLeaveClick = jest.fn()
+const mockOnError = vi.fn()
+const mockOnJoinClick = vi.fn()
+const mockOnLeaveClick = vi.fn()
 
-jest
-  .spyOn(SynapseClient, 'getUserProfile')
-  .mockResolvedValue(mockUserProfileData)
-jest.spyOn(SynapseClient, 'getEntityChallenge').mockResolvedValue(mockChallenge)
-const mockGetIsUserMemberOfTeam = jest.spyOn(
+vi.spyOn(SynapseClient, 'getUserProfile').mockResolvedValue(mockUserProfileData)
+vi.spyOn(SynapseClient, 'getEntityChallenge').mockResolvedValue(mockChallenge)
+const mockGetIsUserMemberOfTeam = vi.spyOn(
   SynapseClient,
   'getIsUserMemberOfTeam',
 )
-const mockGetSubmissionTeams = jest.spyOn(SynapseClient, 'getSubmissionTeams')
+const mockGetSubmissionTeams = vi.spyOn(SynapseClient, 'getSubmissionTeams')
 
 function renderComponent() {
   const props: ChallengeRegisterButtonProps = {
@@ -47,7 +45,7 @@ function renderComponent() {
 
 describe('ChallengeRegisterButton', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('Prompts to register when not a member of the participant team or any submission teams', async () => {

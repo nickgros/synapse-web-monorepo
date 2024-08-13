@@ -11,7 +11,7 @@ import { SynapseClientError } from '../../utils/SynapseClientError'
 import shortid from 'shortid'
 import { EvaluationRoundListResponse } from '@sage-bionetworks/synapse-types'
 import { ErrorBanner } from '../error/ErrorBanner'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 
 export type EvaluationRoundEditorListProps = {
   /** id of the Evaluation containing EvaluationRounds to edit*/

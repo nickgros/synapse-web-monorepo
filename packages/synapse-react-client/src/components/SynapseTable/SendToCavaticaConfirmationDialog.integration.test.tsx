@@ -28,15 +28,15 @@ import {
 import { getEntityHandlers } from '../../mocks/msw/handlers/entityHandlers'
 import { MOCK_REPO_ORIGIN } from '../../utils/functions/getEndpoint'
 
-const onExportToCavatica = jest.fn().mockImplementation(() => Promise.resolve())
+const onExportToCavatica = vi.fn().mockImplementation(() => Promise.resolve())
 
-const mockUseExportToCavatica = jest
+const mockUseExportToCavatica = vi
   .spyOn(UseExportToCavaticaModule, 'useExportToCavatica')
   .mockImplementation(() => {
     return onExportToCavatica
   })
 
-const mockUseGetActionsRequiredForTableQuery = jest
+const mockUseGetActionsRequiredForTableQuery = vi
   .spyOn(
     UseActionsRequiredForTableQueryModule,
     'useGetActionsRequiredForTableQuery',
@@ -103,7 +103,7 @@ async function setUp() {
 describe('Send to CAVATICA Confirmation Dialog', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     server.use(...getHandlersForTableQuery(mockQueryResultBundle))
     server.use(...getEntityHandlers(MOCK_REPO_ORIGIN))
   })

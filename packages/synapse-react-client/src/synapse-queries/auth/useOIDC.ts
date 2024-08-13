@@ -5,7 +5,8 @@ import {
   UseQueryOptions,
   useQueryClient,
 } from '@tanstack/react-query'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 import SynapseClient from '../../synapse-client'
 import {
   AccessCodeResponse,

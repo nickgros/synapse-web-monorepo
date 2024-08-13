@@ -24,8 +24,8 @@ import TeamSubjectsSelector, {
 } from './TeamSubjectsSelector'
 import { MOCK_USER_ID } from '../../mocks/user/mock_user_profile'
 
-const onUpdate = jest.fn()
-const onUpdateTeamIDsTextbox = jest.fn()
+const onUpdate = vi.fn()
+const onUpdateTeamIDsTextbox = vi.fn()
 
 const teamSubject: RestrictableObjectDescriptor = {
   id: MOCK_TEAM_ID.toString(),
@@ -82,7 +82,9 @@ async function addTeams(
 }
 
 describe('TeamSubjectsSelector', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeAll(() => server.listen())
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())

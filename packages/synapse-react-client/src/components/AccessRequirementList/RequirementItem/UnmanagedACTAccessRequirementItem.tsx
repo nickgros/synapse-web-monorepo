@@ -4,7 +4,7 @@ import {
   ACTAccessRequirement,
   RestrictableObjectType,
 } from '@sage-bionetworks/synapse-types'
-import { useSynapseContext } from '../../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../../context/SynapseContext'
 import { PRODUCTION_ENDPOINT_CONFIG } from '../../../utils/functions/getEndpoint'
 import { Box, ButtonProps, Link, Typography } from '@mui/material'
 import {

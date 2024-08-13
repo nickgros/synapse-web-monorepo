@@ -20,8 +20,8 @@ import {
 } from '../../../mocks/accessRequirement/mockAccessRequirements'
 import { rest, server } from '../../../mocks/msw/server'
 
-const mockOnChange = jest.fn()
-const onServiceRecievedRequest = jest.fn()
+const mockOnChange = vi.fn()
+const onServiceRecievedRequest = vi.fn()
 
 function renderComponent(initialId?: string | number) {
   render(
@@ -67,7 +67,7 @@ describe('Access Requirement Search Box tests', () => {
   })
   afterEach(() => {
     server.restoreHandlers()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterAll(() => server.close())
 

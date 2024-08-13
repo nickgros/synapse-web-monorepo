@@ -9,12 +9,12 @@ import { ACCESS_TYPE } from '@sage-bionetworks/synapse-types'
 import SynapseClient from '../../synapse-client'
 import userEvent from '@testing-library/user-event'
 
-jest.mock('../EvaluationFinder/EvaluationFinder', () => ({
+vi.mock('../EvaluationFinder/EvaluationFinder', () => ({
   __esModule: true,
-  default: jest.fn(() => <div data-testid={'EvaluationFinderMocked'} />),
+  default: vi.fn(() => <div data-testid={'EvaluationFinderMocked'} />),
 }))
 
-const mockEvaluationFinder = jest.mocked(EvaluationFinder)
+const mockEvaluationFinder = vi.mocked(EvaluationFinder)
 
 function renderComponent(props: SubmissionViewScopeEditorProps) {
   return render(<SubmissionViewScopeEditor {...props} />, {
@@ -25,7 +25,7 @@ function renderComponent(props: SubmissionViewScopeEditorProps) {
 describe('SubmissionViewScopeEditor tests', () => {
   it('Renders an EvaluationFinder which can modify the selection', async () => {
     const evaluationIds: string[] = []
-    const onChange = jest.fn()
+    const onChange = vi.fn()
     renderComponent({ evaluationIds, onChange })
 
     await screen.findByTestId('EvaluationFinderMocked')
@@ -53,7 +53,7 @@ describe('SubmissionViewScopeEditor tests', () => {
   })
 
   it('Shows the currently selected submissions and allows removing them', async () => {
-    jest.spyOn(SynapseClient, 'getEvaluation').mockImplementation(id => {
+    vi.spyOn(SynapseClient, 'getEvaluation').mockImplementation(id => {
       return Promise.resolve({
         id: id,
         name: `Evaluation ${id}`,
@@ -61,7 +61,7 @@ describe('SubmissionViewScopeEditor tests', () => {
     })
 
     const evaluationIds: string[] = ['123', '456']
-    const onChange = jest.fn()
+    const onChange = vi.fn()
     renderComponent({ evaluationIds, onChange })
 
     await screen.findByText('Evaluation 123')

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import DownloadListTable, { DownloadListTableProps } from './DownloadListTable'
 import { SynapseErrorBoundary } from '../error/ErrorBanner'
 

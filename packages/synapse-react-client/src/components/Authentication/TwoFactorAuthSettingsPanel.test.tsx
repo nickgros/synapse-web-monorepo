@@ -16,17 +16,17 @@ const disabledStatus: TwoFactorAuthStatus = {
   status: 'DISABLED',
 }
 
-const mockGetCurrentEnrollmentStatus = jest.spyOn(
+const mockGetCurrentEnrollmentStatus = vi.spyOn(
   SynapseClient,
   'getCurrentUserTwoFactorEnrollmentStatus',
 )
 
-const mockDisableTwoFactorAuth = jest
+const mockDisableTwoFactorAuth = vi
   .spyOn(SynapseClient, 'disableTwoFactorAuthForCurrentUser')
   .mockReturnValue(Promise.resolve())
 
-const mockOnRegenerateBackupCodes = jest.fn()
-const mockOnBeginTwoFactorEnrollment = jest.fn()
+const mockOnRegenerateBackupCodes = vi.fn()
+const mockOnBeginTwoFactorEnrollment = vi.fn()
 
 function renderComponent(props: TwoFactorAuthSettingsPanelProps) {
   return render(<TwoFactorAuthSettingsPanel {...props} />, {
@@ -35,7 +35,9 @@ function renderComponent(props: TwoFactorAuthSettingsPanelProps) {
 }
 
 describe('TwoFactorAuthSettingsPanel', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
   it('Shows a title if hideTitle is not provided', async () => {
     mockGetCurrentEnrollmentStatus.mockResolvedValue(disabledStatus)

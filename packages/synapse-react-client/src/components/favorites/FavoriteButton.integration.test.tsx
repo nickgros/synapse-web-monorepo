@@ -11,7 +11,7 @@ import {
 } from '../../utils/functions/getEndpoint'
 import { EntityHeader, PaginatedResults } from '@sage-bionetworks/synapse-types'
 import userEvent from '@testing-library/user-event'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import { MOCK_CONTEXT_VALUE } from '../../mocks/MockSynapseContext'
 import { DeferredPromise } from '@open-draft/deferred-promise'
 
@@ -21,8 +21,8 @@ function renderComponent(wrapperProps?: SynapseContextType) {
   })
 }
 
-const onAddFavoriteCalled = jest.fn()
-const onDeleteFavoriteCalled = jest.fn()
+const onAddFavoriteCalled = vi.fn()
+const onDeleteFavoriteCalled = vi.fn()
 
 function useIsInFavorites() {
   server.use(

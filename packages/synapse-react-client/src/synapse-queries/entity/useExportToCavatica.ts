@@ -1,7 +1,7 @@
 import SynapseClient from '../../synapse-client'
 import { displayToast } from '../../components/ToastMessage/ToastMessage'
 import { parseEntityIdFromSqlStatement } from '../../utils/functions/SqlFunctions'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import {
   DownloadFromTableRequest,
   QueryBundleRequest,

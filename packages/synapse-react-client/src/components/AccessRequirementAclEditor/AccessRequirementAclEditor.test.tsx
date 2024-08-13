@@ -35,16 +35,16 @@ import {
 } from '../AclEditor/AclEditorTestUtils'
 import { PRINCIPAL_ALREADY_ADDED_ERROR_MESSAGE } from '../AclEditor/useUpdateAcl'
 
-const onSaveComplete = jest.fn()
-const deleteAccessRequirementAclSpy = jest.spyOn(
+const onSaveComplete = vi.fn()
+const deleteAccessRequirementAclSpy = vi.spyOn(
   SynapseClient,
   'deleteAccessRequirementAcl',
 )
-const createAccessRequirementAclSpy = jest.spyOn(
+const createAccessRequirementAclSpy = vi.spyOn(
   SynapseClient,
   'createAccessRequirementAcl',
 )
-const updateAccessRequirementAclSpy = jest.spyOn(
+const updateAccessRequirementAclSpy = vi.spyOn(
   SynapseClient,
   'updateAccessRequirementAcl',
 )
@@ -92,7 +92,9 @@ async function setUp(
 }
 
 describe('AccessRequirementAclEditor', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeAll(() => server.listen())
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())

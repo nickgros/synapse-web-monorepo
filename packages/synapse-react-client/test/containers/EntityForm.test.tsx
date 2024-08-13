@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import React from 'react'
 import EntityForm, {
   EntityFormProps,
@@ -6,29 +6,27 @@ import EntityForm, {
 import { createWrapper } from '../../src/testutils/TestingLibraryUtils'
 import { mockFileEntity } from '../../src/mocks/entity/mockEntity'
 import { mockUserProfileData } from '../../src/mocks/user/mock_user_profile'
+import SynapseClient from '../../src/synapse-client'
 
 describe('EntityForm', () => {
-  // Test setup
-  const SynapseClient = require('../../src/synapse-client/SynapseClient')
-  SynapseClient.getUserProfile = jest.fn(() =>
-    Promise.resolve(mockUserProfileData),
+  vi.spyOn(SynapseClient, 'getUserProfile').mockResolvedValue(
+    mockUserProfileData,
   )
   const targetFolderId = 'syn9988882982'
-  SynapseClient.lookupChildEntity = jest.fn(() =>
-    Promise.resolve({ id: targetFolderId }),
-  )
-  SynapseClient.getFileResult = jest.fn(() =>
-    Promise.resolve({ presignedUrl: 'presigned-url' }),
-  )
+  vi.spyOn(SynapseClient, 'lookupChildEntity').mockResolvedValue({
+    id: targetFolderId,
+  })
+  vi.spyOn(SynapseClient, 'getFileResult').mockResolvedValue({
+    presignedUrl: 'presigned-url',
+  })
+  vi.spyOn(SynapseClient, 'getFileHandleContent').mockResolvedValue('{}')
+  vi.spyOn(SynapseClient, 'getEntity').mockResolvedValue(mockFileEntity)
 
-  SynapseClient.getFileHandleContent = jest.fn(() => Promise.resolve('{}'))
-
-  SynapseClient.getEntity = jest.fn(() => Promise.resolve(mockFileEntity))
   const parentContainerId: string = 'syn20355732'
   const formSchemaEntityId: string = 'syn20184776'
   const formUiSchemaEntityId: string = 'syn20184771'
   const initFormData: boolean = false
-  const synIdCallback = jest.fn()
+  const synIdCallback = vi.fn()
   const props: EntityFormProps = {
     parentContainerId,
     formSchemaEntityId,

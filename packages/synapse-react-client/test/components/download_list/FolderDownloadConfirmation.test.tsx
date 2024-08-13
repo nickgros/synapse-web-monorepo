@@ -21,22 +21,22 @@ import {
   getUseQuerySuccessMock,
 } from '../../../src/testutils/ReactQueryMockUtils'
 
-jest.mock('../../../src/synapse-queries', () => ({
-  useGetEntityChildren: jest.fn(),
-  useAddQueryToDownloadList: jest.fn(),
+vi.mock('../../../src/synapse-queries', () => ({
+  useGetEntityChildren: vi.fn(),
+  useAddQueryToDownloadList: vi.fn(),
 }))
 
-const mockUseGetEntityChildren = jest.mocked(useGetEntityChildren)
-const mockUseAddQueryToDownloadList = jest.mocked(useAddQueryToDownloadList)
+const mockUseGetEntityChildren = vi.mocked(useGetEntityChildren)
+const mockUseAddQueryToDownloadList = vi.mocked(useAddQueryToDownloadList)
 
 const DOWNLOAD_CONFIRMATION_UI_TEST_ID = 'DownloadConfirmationUI'
-const mockDownloadConfirmationUi = jest
+const mockDownloadConfirmationUi = vi
   .spyOn(DownloadConfirmationUIModule, 'DownloadConfirmationUI')
   .mockImplementation(() => (
     <div data-testid={DOWNLOAD_CONFIRMATION_UI_TEST_ID}></div>
   ))
 
-const mockToastFn = jest
+const mockToastFn = vi
   .spyOn(ToastMessage, 'displayToast')
   .mockImplementation(() => {})
 
@@ -47,7 +47,7 @@ const addFilesToDownloadListResponse: AddToDownloadListResponse = {
 }
 
 const FOLDER_ID = 'syn123'
-const mockOnClose = jest.fn()
+const mockOnClose = vi.fn()
 
 async function setUp() {
   const user = userEvent.setup()
@@ -71,7 +71,7 @@ describe('FolderDownloadConfirmation', () => {
     >
   >
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     mockUseGetEntityChildren.mockReturnValue(
       getUseQuerySuccessMock<EntityChildrenResponse>({

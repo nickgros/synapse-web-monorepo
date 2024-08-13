@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import React from 'react'
 import { Range, RangeProps } from './Range'
 
-const mockCallback = jest.fn()
+const mockCallback = vi.fn()
 
 const defaultProps: RangeProps = {
   type: 'number',

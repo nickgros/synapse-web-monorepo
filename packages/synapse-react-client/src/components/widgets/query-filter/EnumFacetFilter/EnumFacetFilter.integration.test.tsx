@@ -136,7 +136,7 @@ describe('EnumFacetFilter', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
     currentQueryContext = undefined
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     server.use(
       ...getHandlersForTableQuery({
         ...mockQueryResponseData,

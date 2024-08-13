@@ -32,13 +32,13 @@ import {
   SetBasicAccessRequirementFieldsProps,
 } from './SetBasicAccessRequirementFields'
 
-const onSave = jest.fn()
-const onError = jest.fn()
-const getAccessRequirementByIdSpy = jest.spyOn(
+const onSave = vi.fn()
+const onError = vi.fn()
+const getAccessRequirementByIdSpy = vi.spyOn(
   SynapseClient,
   'getAccessRequirementById',
 )
-const updateAccessRequirementSpy = jest.spyOn(
+const updateAccessRequirementSpy = vi.spyOn(
   SynapseClient,
   'updateAccessRequirement',
 )
@@ -107,7 +107,9 @@ async function setUp(props: SetBasicAccessRequirementFieldsProps) {
 }
 
 describe('SetBasicAccessRequirementFields', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeAll(() => server.listen())
   afterEach(() => server.resetHandlers())
   afterAll(() => server.close())

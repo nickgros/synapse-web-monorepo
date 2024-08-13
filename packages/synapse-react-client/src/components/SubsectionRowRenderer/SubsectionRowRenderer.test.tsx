@@ -7,11 +7,13 @@ import mockMultiValueColumnResultsJson from '../../mocks/query/mockMultiValueCol
 import SubsectionRowRenderer, {
   SubsectionRowRendererProps,
 } from './SubsectionRowRenderer'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import SynapseClient from '../../synapse-client'
 
-jest.mock('../../synapse-client', () => ({
-  getQueryTableResults: jest.fn(),
+vi.mock('../../synapse-client', () => ({
+  default: {
+    getQueryTableResults: vi.fn(),
+  },
 }))
 
 const defaultProps: SubsectionRowRendererProps = {
@@ -29,7 +31,7 @@ function renderComponent(
     },
   )
 }
-const mockGetQueryTableResults = jest.mocked(SynapseClient.getQueryTableResults)
+const mockGetQueryTableResults = vi.mocked(SynapseClient.getQueryTableResults)
 
 describe('SubsectionRowRenderer rendering tests', () => {
   it('renders multi-row response, using a link column and a friendly values map', async () => {

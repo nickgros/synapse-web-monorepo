@@ -9,7 +9,7 @@ import { ChallengeEntityChildrenDetails } from './ChallengeEntityChildrenDetails
 import { Box, Button } from '@mui/material'
 import { useAddFileBatchToDownloadList } from '../../synapse-queries'
 import { displayToast } from '../ToastMessage'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 
 export type ChallengeDataDownloadProps = {
   parentContainerId: string

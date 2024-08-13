@@ -6,7 +6,7 @@ import {
   CreateProjectModalProps,
 } from './CreateProjectModal'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import { MOCK_INVALID_PROJECT_NAME } from '../../mocks/entity/mockEntity'
 import mockProjectEntityData from '../../mocks/entity/mockProject'
 import { server } from '../../mocks/msw/server'
@@ -17,7 +17,7 @@ const MOCK_PROJECT_NAME = mockProjectEntityData.name
 
 const defaultProps: CreateProjectModalProps = {
   isShowingModal: true,
-  onClose: jest.fn(),
+  onClose: vi.fn(),
 }
 
 function renderComponent(wrapperProps?: SynapseContextType) {

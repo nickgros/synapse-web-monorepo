@@ -17,16 +17,10 @@ import userEvent from '@testing-library/user-event'
 
 const USER_ID = '345424'
 
-jest.mock('../../synapse-client', () => ({
-  getMyUserBundle: jest.fn(),
-  getUserBundle: jest.fn(),
-  revokeCertification: jest.fn(),
-}))
-
-const mockGetMyUserBundle = jest.mocked(SynapseClient.getMyUserBundle)
-const mockGetUserBundle = jest.mocked(SynapseClient.getUserBundle)
-const mockRevokeCertification = jest
-  .mocked(SynapseClient.revokeCertification)
+const mockGetMyUserBundle = vi.spyOn(SynapseClient, 'getMyUserBundle')
+const mockGetUserBundle = vi.spyOn(SynapseClient, 'getUserBundle')
+const mockRevokeCertification = vi
+  .spyOn(SynapseClient, 'revokeCertification')
   .mockResolvedValue({
     userId: USER_ID,
     quizId: 1,
@@ -76,7 +70,7 @@ function renderComponent() {
 
 describe('AccountLevelBadges', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     mockGetMyUserBundle.mockResolvedValue(mockUserBundle)
   })
 

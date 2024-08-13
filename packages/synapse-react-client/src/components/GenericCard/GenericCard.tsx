@@ -1,5 +1,5 @@
 import React from 'react'
-import { SynapseConstants, SynapseContext } from '../../utils'
+import { SynapseConstants } from '../../utils'
 import {
   isDatasetCollection,
   isTableEntity,
@@ -45,6 +45,7 @@ import {
   CHAR_COUNT_CUTOFF,
   CollapsibleDescription,
 } from './CollapsibleDescription'
+import { SynapseContext } from '../../context'
 
 export type KeyToAlias = {
   key: string

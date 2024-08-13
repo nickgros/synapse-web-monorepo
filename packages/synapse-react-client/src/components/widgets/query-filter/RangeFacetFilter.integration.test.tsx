@@ -26,21 +26,21 @@ import { createWrapper } from '../../../testutils/TestingLibraryUtils'
 
 let capturedOnApplyClicked: ((values: RangeValues) => void) | undefined
 
-jest.mock('../RangeSlider/RangeSlider', () => ({
+vi.mock('../RangeSlider/RangeSlider', () => ({
   __esModule: true,
-  default: jest.fn((props: any) => {
+  default: vi.fn((props: any) => {
     capturedOnApplyClicked = props.onApplyClicked
     return <div data-testid="RangeSlider"></div>
   }),
 }))
 
-const mockedRangeSlider = jest.mocked(RangeSlider)
+const mockedRangeSlider = vi.mocked(RangeSlider)
 
-jest.mock('@mui/material', () => {
-  const actual = jest.requireActual('@mui/material')
+vi.mock('@mui/material', async importOriginal => {
+  const actual = await importOriginal<typeof import('@mui/material')>()
   return {
     ...actual,
-    Collapse: jest.fn(props => (
+    Collapse: vi.fn(props => (
       <div data-testid="Collapse">{props.children}</div>
     )),
   }

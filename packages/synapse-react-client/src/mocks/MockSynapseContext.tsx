@@ -1,6 +1,6 @@
 import React from 'react'
-import { SynapseContextType } from '../utils/context/SynapseContext'
-import FullContextProvider from '../utils/context/FullContextProvider'
+import { SynapseContextType } from '../context/SynapseContext'
+import FullContextProvider from '../context/FullContextProvider'
 import { KeyFactory } from '../synapse-queries'
 
 export const MOCK_ACCESS_TOKEN = 'mock-access-token'
@@ -21,12 +21,10 @@ export const MOCK_CONTEXT = React.createContext(MOCK_CONTEXT_VALUE)
  *
  * If using @testing-library/react, see {@link TestingLibraryUtils#createWrapper}
  */
-export const SynapseTestContext = jest
-  .fn()
-  .mockImplementation(({ children }) => {
-    return (
-      <FullContextProvider synapseContext={MOCK_CONTEXT_VALUE}>
-        {children}
-      </FullContextProvider>
-    )
-  })
+export const SynapseTestContext = vi.fn().mockImplementation(({ children }) => {
+  return (
+    <FullContextProvider synapseContext={MOCK_CONTEXT_VALUE}>
+      {children}
+    </FullContextProvider>
+  )
+})

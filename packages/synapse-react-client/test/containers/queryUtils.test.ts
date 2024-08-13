@@ -41,11 +41,7 @@ import SynapseClient from '../../src/synapse-client'
 import { mockFileViewEntity } from '../../src/mocks/entity/mockFileView'
 import mockDatasetCollection from '../../src/mocks/entity/mockDatasetCollection'
 
-jest.mock('../../src/synapse-client/SynapseClient', () => ({
-  getQueryTableResults: jest.fn(),
-}))
-
-const mockGetQueryTableResults = jest.mocked(SynapseClient.getQueryTableResults)
+const mockGetQueryTableResults = vi.spyOn(SynapseClient, 'getQueryTableResults')
 
 describe('get next page of data', () => {
   const sql = 'SELECT * FROM syn16787123'

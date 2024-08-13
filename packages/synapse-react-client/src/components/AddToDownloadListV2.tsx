@@ -1,6 +1,6 @@
 import React from 'react'
 import IconSvg from './IconSvg/IconSvg'
-import { useSynapseContext } from '../utils/context/SynapseContext'
+import { useSynapseContext } from '../context/SynapseContext'
 import { displayToast } from './ToastMessage/ToastMessage'
 import { Link, Tooltip } from '@mui/material'
 import { useAddFileToDownloadList } from '../synapse-queries/download/useDownloadList'

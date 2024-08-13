@@ -123,7 +123,7 @@ function renderComponent(props: JsonColumnFacetFiltersProps) {
 describe('FacetFilterControls tests', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     server.use(...getHandlersForTableQuery(queryResponseDataWithJsonFacet))
   })
   afterEach(() => server.restoreHandlers())

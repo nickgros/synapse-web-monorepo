@@ -25,7 +25,7 @@ import { getFileHandlers } from '../../mocks/msw/handlers/fileHandlers'
 describe('SynapseHomepageV2 Snapshot test', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     server.use(
       ...[
         ...getFileHandlers(MOCK_REPO_ORIGIN),

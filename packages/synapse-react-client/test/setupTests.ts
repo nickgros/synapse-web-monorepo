@@ -1,11 +1,16 @@
 import 'whatwg-fetch'
 import 'raf/polyfill' // polyfill for requestAnimationFrame
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 import crypto from 'crypto'
 import { ResizeObserver } from '@juggle/resize-observer'
 import { setupIntersectionMocking } from 'react-intersection-observer/test-utils'
 import { faker } from '@faker-js/faker'
 import { configure } from '@testing-library/dom'
+import { vi } from 'vitest'
+
+// Replace 'jest' global with 'vi'
+// This allows us to use @googlemaps/jest-mocks. See https://github.com/googlemaps/js-jest-mocks/issues/294
+vi.stubGlobal('jest', vi)
 
 // Set a constant seed for faker so the generated data doesn't change
 beforeAll(() => {
@@ -18,7 +23,7 @@ beforeAll(() => {
 // import it below. This also means that these dependencies are required in package.json
 global.ResizeObserver = ResizeObserver
 
-setupIntersectionMocking(jest.fn)
+setupIntersectionMocking(vi.fn)
 
 const oldWindowLocation = window.location
 const oldWindowOpen = window.open
@@ -38,17 +43,17 @@ beforeAll(() => {
       // Each method must be manually mocked
       assign: {
         configurable: true,
-        value: jest.fn(),
+        value: vi.fn(),
       },
       replace: {
         configurable: true,
-        value: jest.fn(),
+        value: vi.fn(),
       },
     },
   ) as Location
 
   delete window.open
-  window.open = jest.fn()
+  window.open = vi.fn()
 })
 afterAll(() => {
   // restore `window.location` to the original `jsdom`
@@ -57,20 +62,18 @@ afterAll(() => {
   window.open = oldWindowOpen
 })
 
-// Synapse API calls may take longer than 5s (typically if a dependent call is taking much longer than normal)
-jest.setTimeout(30000)
 // Bump `waitFor` timout from 1000ms to 5000ms in CI
 configure({ asyncUtilTimeout: process.env.CI ? 5000 : 1000 })
 
 // JSDOM doesn't support createObjectURL and revokeObjectURL, so we shim them
 // https://github.com/jsdom/jsdom/issues/1721
-window.URL.createObjectURL = jest
+window.URL.createObjectURL = vi
   .fn()
   .mockReturnValue('blob:mockBlobUrlConfiguredInTestSetup')
-window.URL.revokeObjectURL = jest.fn()
-window.scrollTo = jest.fn()
+window.URL.revokeObjectURL = vi.fn()
+window.scrollTo = vi.fn()
 
-Element.prototype.scrollTo = jest.fn()
+Element.prototype.scrollTo = vi.fn()
 
 // crypto.getRandomValues polyfill for JSDOM
 Object.defineProperty(global.self, 'crypto', {

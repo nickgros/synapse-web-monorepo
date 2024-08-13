@@ -42,8 +42,8 @@ function renderComponent(props: AccessRequestSubmissionTableProps) {
   )
 }
 
-const onServiceReceivedRequest = jest.fn()
-const onServiceReceivedRequestForNextPage = jest.fn()
+const onServiceReceivedRequest = vi.fn()
+const onServiceReceivedRequestForNextPage = vi.fn()
 
 const nextPageToken = 'mock-npt'
 
@@ -103,7 +103,7 @@ describe('Access Request Submission Table tests', () => {
 
   afterEach(() => {
     server.restoreHandlers()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   afterAll(() => server.close())

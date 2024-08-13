@@ -12,7 +12,7 @@ import {
   QueryBundleRequest,
   RowSet,
 } from '@sage-bionetworks/synapse-types'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import MarkdownSynapse from '../Markdown/MarkdownSynapse'
 import { SkeletonTable } from '../Skeleton/SkeletonTable'
 import { ColumnSpecifiedLink } from '../CardContainerLogic'

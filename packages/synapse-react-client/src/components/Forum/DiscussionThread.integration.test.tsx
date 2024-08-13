@@ -31,12 +31,21 @@ import SynapseClient from '../../synapse-client'
 const MOCK_THREAD_ID = '123'
 const MOCK_SUBSCRIPTION_ID = '999'
 
-jest.mock('../../synapse-client', () => ({
-  postSubscription: jest.fn(),
-  deleteSubscription: jest.fn(),
-}))
+vi.mock('../../synapse-client', async importOriginal => {
+  const synapseClient = await importOriginal<
+    typeof import('../../synapse-client')
+  >()
+  return {
+    ...synapseClient,
+    default: {
+      ...synapseClient.default,
+      postSubscription: vi.fn(),
+      deleteSubscription: vi.fn(),
+    },
+  }
+})
 
-const mockDeleteSubscription = jest.mocked(SynapseClient.deleteSubscription)
+const mockDeleteSubscription = vi.mocked(SynapseClient.deleteSubscription)
 
 mockDeleteSubscription.mockImplementation(() => {
   // When the subscription is deleted, update the server to return nothing.
@@ -147,7 +156,7 @@ describe.skip('Discussion Thread test', () => {
         },
       ),
       rest.get(
-        `http://localhost/${mockMessageUrl.messageUrl}`,
+        `http://localhost:3000/${mockMessageUrl.messageUrl}`,
         async (req, res, ctx) => {
           return res(ctx.status(200), ctx.json('message'))
         },
@@ -164,7 +173,7 @@ describe.skip('Discussion Thread test', () => {
   })
   afterEach(() => {
     server.resetHandlers()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterAll(() => server.close())
 

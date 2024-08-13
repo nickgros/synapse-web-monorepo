@@ -7,12 +7,16 @@ import { act } from 'react-dom/test-utils'
 import SynapseClient from '../../synapse-client'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 
-jest.mock('../../synapse-client', () => ({
-  getQueryTableResults: jest.fn(),
-  getUseUtcTimeFromCookie: jest.fn(() => false),
-}))
+vi.mock('../../synapse-client', () => {
+  return {
+    default: {
+      getQueryTableResults: vi.fn(),
+      getUseUtcTimeFromCookie: vi.fn(() => false),
+    },
+  }
+})
 
-const mockGetQueryTableResults = jest.mocked(SynapseClient.getQueryTableResults)
+const mockGetQueryTableResults = vi.mocked(SynapseClient.getQueryTableResults)
 
 const data = syn26344826Json as QueryResultBundle
 

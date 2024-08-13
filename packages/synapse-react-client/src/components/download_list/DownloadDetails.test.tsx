@@ -3,8 +3,8 @@ import DownloadDetails, { DownloadDetailsProps } from './DownloadDetails'
 import { act, render, screen } from '@testing-library/react'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 
-jest.mock('../../../src/utils/functions/testDownloadSpeed', () => ({
-  testDownloadSpeed: jest.fn().mockResolvedValue(20),
+vi.mock('../../../src/utils/functions/testDownloadSpeed', () => ({
+  testDownloadSpeed: vi.fn().mockResolvedValue(20),
 }))
 
 const renderComponent = async (props: DownloadDetailsProps) => {

@@ -43,7 +43,7 @@ const renderComponent = (
 }
 
 describe('QuerySortSelector tests', () => {
-  const executeQueryRequest = jest.fn(() => {})
+  const executeQueryRequest = vi.fn(() => {})
   const sql = 'SELECT * FROM syn16787123'
   const lastQueryRequest: QueryBundleRequest = {
     concreteType: 'org.sagebionetworks.repo.model.table.QueryBundleRequest',
@@ -59,7 +59,7 @@ describe('QuerySortSelector tests', () => {
       offset: 0,
     },
   }
-  const getLastQueryRequest = jest.fn(() => lastQueryRequest)
+  const getLastQueryRequest = vi.fn(() => lastQueryRequest)
 
   // cast the data to ignore ts warning
   const data = syn16787123Json as QueryResultBundle
@@ -79,7 +79,7 @@ describe('QuerySortSelector tests', () => {
   }
 
   const queryVisualizationContext: Partial<QueryVisualizationContextType> = {
-    getColumnDisplayName: jest.fn(() => 'Open Access Journals'),
+    getColumnDisplayName: vi.fn(() => 'Open Access Journals'),
   }
 
   const sortByOpenAccessJournals = async () => {

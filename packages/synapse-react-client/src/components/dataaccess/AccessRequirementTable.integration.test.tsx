@@ -35,9 +35,9 @@ import { MOCK_ACCESS_TOKEN } from '../../mocks/MockSynapseContext'
 
 const MOCK_PROJECT_NAME = mockProjectData.name
 
-const mockOnCreateNewAR = jest.fn()
+const mockOnCreateNewAR = vi.fn()
 let queryClient: QueryClient
-const searchAccessRequirementsSpy = jest.spyOn(
+const searchAccessRequirementsSpy = vi.spyOn(
   SynapseClient,
   'searchAccessRequirements',
 )
@@ -64,7 +64,7 @@ describe('Access Requirement Table tests', () => {
 
   afterEach(() => {
     server.restoreHandlers()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   afterAll(() => server.close())

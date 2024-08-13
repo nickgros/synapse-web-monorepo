@@ -5,11 +5,11 @@ import { createWrapper } from '../../testutils/TestingLibraryUtils'
 import mockFileEntityData from '../../mocks/entity/mockFileEntity'
 import { server } from '../../mocks/msw/server'
 import mockDatasetData from '../../mocks/entity/mockDataset'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import { MOCK_CONTEXT_VALUE } from '../../mocks/MockSynapseContext'
 import EntityPreview, { EntityPreviewProps } from './EntityPreview'
 
-jest.spyOn(FileEntityPreviewModule, 'default').mockImplementation(() => {
+vi.spyOn(FileEntityPreviewModule, 'default').mockImplementation(() => {
   return <div data-testid="FileEntityPreview"></div>
 })
 
@@ -49,7 +49,7 @@ describe('EntityPreview tests', () => {
   })
 
   it('Throws an error if the entity is not a FileEntity', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     renderComponent({
       entityId: mockDatasetData.id,
     })

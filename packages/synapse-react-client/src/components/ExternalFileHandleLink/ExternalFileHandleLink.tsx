@@ -7,7 +7,7 @@ import {
 } from '@sage-bionetworks/synapse-types'
 import SynapseClient from '../../synapse-client'
 import { OpenInNewTwoTone } from '@mui/icons-material'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { isFileEntity, isExternalFileHandle } from '../../utils/types/IsType'
 
 export type ExternalFileHandleLinkProps = {

@@ -33,23 +33,20 @@ import { rest, server } from '../../../../src/mocks/msw/server'
 import { MOCK_USER_ID } from '../../../../src/mocks/user/mock_user_profile'
 import * as EntityBadgeModule from '../../../../src/components/EntityBadgeIcons/EntityBadgeIcons'
 
-const mockEntityBadgeIcons = jest
+const mockEntityBadgeIcons = vi
   .spyOn(EntityBadgeModule, 'EntityBadgeIcons')
   .mockImplementation(() => <></>)
 
 const mockFileEntityHeader = mockFileEntityData.entityHeader
 
 // Having trouble mocking the AutoResizer in react-base-table. It just uses this under the hood:
-jest.mock(
-  'react-virtualized-auto-sizer',
-  () =>
-    ({ children }) =>
-      children({ height: 600, width: 1200 }),
-)
+vi.mock('react-virtualized-auto-sizer', () => ({
+  default: ({ children }) => children({ height: 600, width: 1200 }),
+}))
 
-const mockToggleSelection = jest.fn()
-const mockFetchNextPage = jest.fn()
-const mockSetSort = jest.fn()
+const mockToggleSelection = vi.fn()
+const mockFetchNextPage = vi.fn()
+const mockSetSort = vi.fn()
 
 function generateFileHeader(id: number): EntityHeader {
   return {
@@ -106,7 +103,7 @@ const versionResult: PaginatedResults<VersionInfo> = {
 const FILE_INDEX = 0
 const PROJECT_INDEX = 1
 
-const mockSetCurrentContainer = jest.fn()
+const mockSetCurrentContainer = vi.fn()
 
 const defaultProps: DetailsViewProps = {
   versionSelection: VersionSelectionType.TRACKED,
@@ -142,7 +139,7 @@ describe('DetailsView tests', () => {
   afterAll(() => server.close())
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     server.use(
       rest.get(

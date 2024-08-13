@@ -4,7 +4,7 @@ import {
   DownloadConfirmationUI,
   DownloadConfirmationUIProps,
 } from './DownloadConfirmationUI'
-import { SynapseContextConsumer, SynapseContextProvider } from '../../index'
+import { SynapseContextConsumer, SynapseContextProvider } from '../../context'
 import { fn } from '@storybook/test'
 
 const meta: Meta<DownloadConfirmationUIProps & { isAuthenticated: boolean }> = {

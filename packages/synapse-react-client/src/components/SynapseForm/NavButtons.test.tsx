@@ -21,7 +21,7 @@ const renderNextStepLinkComponent = (props: NextStepLinkProps) => {
 }
 
 const mock = {
-  onNavActionFn: jest.fn(() => 'ok'),
+  onNavActionFn: vi.fn(() => 'ok'),
 }
 
 describe('NavButtons tests', () => {
@@ -71,7 +71,7 @@ describe('NavButtons tests', () => {
     })
 
     it('should callback with correct params', async () => {
-      const spy = jest.spyOn(mock, 'onNavActionFn')
+      const spy = vi.spyOn(mock, 'onNavActionFn')
       renderNavButtonsComponent(props)
       const buttons = screen.getAllByRole('button')
       const prevButton = buttons.find(button =>
@@ -104,7 +104,7 @@ describe('NavButtons tests', () => {
     })
 
     test('should callback with correct params', async () => {
-      const spy = jest.spyOn(mock, 'onNavActionFn')
+      const spy = vi.spyOn(mock, 'onNavActionFn')
       renderNavButtonsComponent(props)
       const buttons = screen.getAllByRole('button')
       const nextButton = buttons.find(button =>
@@ -133,7 +133,7 @@ describe('NextLink tests', () => {
   })
 
   test('should call calback function with appropriate params', async () => {
-    const spy = jest.spyOn(mock, 'onNavActionFn')
+    const spy = vi.spyOn(mock, 'onNavActionFn')
     const { container } = renderNextStepLinkComponent(props)
     const link = container.querySelector('span.nav-link a')!
 

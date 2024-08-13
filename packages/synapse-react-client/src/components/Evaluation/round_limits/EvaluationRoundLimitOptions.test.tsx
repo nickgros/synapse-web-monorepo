@@ -9,7 +9,7 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import { createWrapper } from '../../../testutils/TestingLibraryUtils'
 import userEvent from '@testing-library/user-event'
 
-const onChangeSpy = jest.fn()
+const onChangeSpy = vi.fn()
 
 function renderComponent(
   props: Omit<EvaluationRoundLimitOptionsProps, 'onChange'>,

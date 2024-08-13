@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { MarkdownPopover, MarkdownPopoverProps } from './MarkdownPopover'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 
 const markdownText = 'This is markdown text.'
 

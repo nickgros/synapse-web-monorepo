@@ -18,8 +18,8 @@ const renderComponent = (props: ModalDownloadProps) => {
 }
 
 describe('it performs the expected functionality', () => {
-  const mockClose = jest.fn()
-  const mockGetDownloadFromTableRequest = jest
+  const mockClose = vi.fn()
+  const mockGetDownloadFromTableRequest = vi
     .spyOn(SynapseClient, 'getDownloadFromTableRequest')
     .mockResolvedValue({
       tableId: 'syn123',
@@ -28,7 +28,7 @@ describe('it performs the expected functionality', () => {
       concreteType: '',
       headers: [],
     })
-  const mockGetFile = jest
+  const mockGetFile = vi
     .spyOn(SynapseClient, 'getFileHandleByIdURL')
     .mockResolvedValue('testurl')
   const props: ModalDownloadProps = {

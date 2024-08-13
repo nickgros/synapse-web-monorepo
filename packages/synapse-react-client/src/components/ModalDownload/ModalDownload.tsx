@@ -18,7 +18,7 @@ import {
   writeHeaderOption,
 } from './ModalDownload.FormSchema'
 import { parseEntityIdFromSqlStatement } from '../../utils/functions/SqlFunctions'
-import { SynapseContext } from '../../utils/context/SynapseContext'
+import { SynapseContext } from '../../context/SynapseContext'
 import { DialogBase } from '../DialogBase'
 
 type ModalDownloadState = {

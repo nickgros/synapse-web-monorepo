@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react'
 import {
   SynapseContextConsumer,
   SynapseContextProvider,
-} from '../../../utils/context/SynapseContext'
+} from '../../../context/SynapseContext'
 import {
   mockACTAccessRequirement,
   mockACTAccessRequirementWithWiki,

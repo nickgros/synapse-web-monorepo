@@ -13,7 +13,7 @@ import mockFileEntity from '../../mocks/entity/mockFileEntity'
 import {
   SynapseContextConsumer,
   SynapseContextProvider,
-} from '../../utils/context/SynapseContext'
+} from '../../context/SynapseContext'
 import {
   AccessApproval,
   ApprovalState,

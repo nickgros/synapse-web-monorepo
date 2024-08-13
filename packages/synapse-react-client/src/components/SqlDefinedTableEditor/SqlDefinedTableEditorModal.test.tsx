@@ -26,17 +26,17 @@ function renderComponent(props: SqlDefinedTableEditorModalProps) {
 
 const originalSql = 'SELECT * FROM syn123'
 
-jest.spyOn(SynapseClient, 'getEntity').mockResolvedValue({
+vi.spyOn(SynapseClient, 'getEntity').mockResolvedValue({
   ...mockTableEntity,
   definingSQL: originalSql,
   concreteType: MATERIALIZED_VIEW_CONCRETE_TYPE_VALUE,
 } as Entity)
 
-const mockUpdateEntity = jest.spyOn(SynapseClient, 'updateEntity')
+const mockUpdateEntity = vi.spyOn(SynapseClient, 'updateEntity')
 
 describe('SqlDefinedTableEditorModal tests', () => {
-  const mockOnCancel = jest.fn()
-  const mockOnUpdate = jest.fn()
+  const mockOnCancel = vi.fn()
+  const mockOnUpdate = vi.fn()
 
   beforeEach(() => {
     renderComponent({
@@ -47,7 +47,7 @@ describe('SqlDefinedTableEditorModal tests', () => {
     })
   })
 
-  it('displays dialog and its neccessary componenets when SqlDefinedTableEditorModal is rendered', () => {
+  it('displays dialog and its necessary components when SqlDefinedTableEditorModal is rendered', () => {
     const dialog = screen.getByRole('dialog')
     expect(
       within(dialog).getByRole('heading', { name: 'Update SQL' }),

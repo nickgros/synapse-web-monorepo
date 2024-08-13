@@ -26,11 +26,11 @@ describe('SubscriptionPage', () => {
   afterAll(() => server.close())
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('Fetches forum subscriptions', async () => {
-    const getSubscriptionsSpy = jest.spyOn(SynapseClient, 'getAllSubscriptions')
+    const getSubscriptionsSpy = vi.spyOn(SynapseClient, 'getAllSubscriptions')
 
     const { forumsTab, threadsTab } = setUp()
 
@@ -52,7 +52,7 @@ describe('SubscriptionPage', () => {
   })
 
   it('Fetches thread subscriptions', async () => {
-    const getSubscriptionsSpy = jest.spyOn(SynapseClient, 'getAllSubscriptions')
+    const getSubscriptionsSpy = vi.spyOn(SynapseClient, 'getAllSubscriptions')
 
     const { user, forumsTab, threadsTab } = setUp()
 
@@ -76,7 +76,7 @@ describe('SubscriptionPage', () => {
   })
 
   it('Loads more on click', async () => {
-    const getSubscriptionsSpy = jest.spyOn(SynapseClient, 'getAllSubscriptions')
+    const getSubscriptionsSpy = vi.spyOn(SynapseClient, 'getAllSubscriptions')
 
     const { user, forumsTab, threadsTab } = setUp()
 
@@ -123,7 +123,7 @@ describe('SubscriptionPage', () => {
   })
 
   it('Handles changing the sort', async () => {
-    const getSubscriptionsSpy = jest.spyOn(SynapseClient, 'getAllSubscriptions')
+    const getSubscriptionsSpy = vi.spyOn(SynapseClient, 'getAllSubscriptions')
 
     const { user, sortMenuButton } = setUp()
 
@@ -164,10 +164,7 @@ describe('SubscriptionPage', () => {
   })
 
   it('Handles unsubscribing from a thread', async () => {
-    const deleteSubscriptionSpy = jest.spyOn(
-      SynapseClient,
-      'deleteSubscription',
-    )
+    const deleteSubscriptionSpy = vi.spyOn(SynapseClient, 'deleteSubscription')
 
     const { user } = setUp()
 

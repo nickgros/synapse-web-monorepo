@@ -6,22 +6,20 @@ import {
   CreateAccessTokenModalProps,
 } from './CreateAccessTokenModal'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
-import * as SynapseContext from '../../utils/context/SynapseContext'
+import * as SynapseContext from '../../context/SynapseContext'
 import { MOCK_CONTEXT_VALUE } from '../../mocks/MockSynapseContext'
 import { CLOSE_BUTTON_LABEL } from '../DialogBase'
 import { CANCEL_BUTTON_TEXT } from '../ConfirmationDialog/ConfirmationDialog'
 import SynapseClient from '../../synapse-client'
 
 const EXAMPLE_PAT = 'abcdefghiklmnop'
-jest.mock('../../synapse-client', () => ({
-  createPersonalAccessToken: jest.fn(),
-}))
 
-const mockOnClose = jest.fn(() => null)
-const mockOnCreate = jest.fn(() => null)
+const mockOnClose = vi.fn(() => null)
+const mockOnCreate = vi.fn(() => null)
 
-const mockCreatePersonalAccessToken = jest.mocked(
-  SynapseClient.createPersonalAccessToken,
+const mockCreatePersonalAccessToken = vi.spyOn(
+  SynapseClient,
+  'createPersonalAccessToken',
 )
 
 mockCreatePersonalAccessToken.mockResolvedValue({
@@ -60,10 +58,10 @@ describe('CreateAccessTokenModal tests', () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest
-      .spyOn(SynapseContext, 'useSynapseContext')
-      .mockImplementation(() => MOCK_CONTEXT_VALUE)
+    vi.clearAllMocks()
+    vi.spyOn(SynapseContext, 'useSynapseContext').mockImplementation(
+      () => MOCK_CONTEXT_VALUE,
+    )
   })
 
   it('displays the token after successful creation', async () => {

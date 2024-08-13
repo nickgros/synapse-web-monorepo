@@ -4,7 +4,7 @@ import { Redirect, Link as RouterLink } from 'react-router-dom'
 import { useGetCurrentUserProfile } from '../../synapse-queries'
 import { displayToast } from '../ToastMessage'
 import useChangePasswordFormState from './useChangePasswordFormState'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 
 export const PASSWORD_CHANGED_SUCCESS_MESSAGE =
   'Your password was successfully changed.'

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import React from 'react'
 import LastLoginInfo, { LastLoginInfoProps } from './LastLoginInfo'
 import { LOGIN_METHOD_OAUTH2_GOOGLE } from '../../utils/SynapseConstants'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 
 const defaultProps = {
@@ -39,7 +39,7 @@ function setUp(
 
 describe('LastLoginInfo tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('displays sentence and tooltip', async () => {

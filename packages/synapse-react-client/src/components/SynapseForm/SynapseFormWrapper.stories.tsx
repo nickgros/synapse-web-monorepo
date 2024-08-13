@@ -1,6 +1,6 @@
 import React from 'react'
 import { Meta, StoryObj } from '@storybook/react'
-import { SynapseContextConsumer } from '../../utils/context/SynapseContext'
+import { SynapseContextConsumer } from '../../context/SynapseContext'
 import SynapseFormWrapper, {
   SynapseFormWrapperProps,
 } from './SynapseFormWrapper'

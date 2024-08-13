@@ -2,7 +2,7 @@ import { FileHandleAssociation } from '@sage-bionetworks/synapse-types'
 import React, { useEffect, useState } from 'react'
 import SynapseClient from '../../synapse-client'
 import { useInView } from 'react-intersection-observer'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 
 type ImageFileHandleProps = {
   fileHandleAssociation: FileHandleAssociation

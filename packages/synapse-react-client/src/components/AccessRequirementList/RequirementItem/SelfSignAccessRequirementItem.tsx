@@ -6,7 +6,7 @@ import {
   SelfSignAccessRequirement,
   TermsOfUseAccessRequirement,
 } from '@sage-bionetworks/synapse-types'
-import { useSynapseContext } from '../../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../../context/SynapseContext'
 import { Alert, Box, ButtonProps, Link, Typography } from '@mui/material'
 import {
   useCreateAccessApproval,

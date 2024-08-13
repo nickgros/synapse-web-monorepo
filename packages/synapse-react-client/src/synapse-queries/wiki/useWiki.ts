@@ -16,7 +16,8 @@ import {
   getWikiPage,
   updateWikiPage,
 } from '../../synapse-client'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context/SynapseContext'
 
 export const useGetRootWikiPageKey = (
   ownerObjectType: ObjectType,

@@ -18,10 +18,7 @@ import {
   QueryVisualizationWrapper,
 } from '../QueryVisualizationWrapper/QueryVisualizationWrapper'
 import { mockQueryBundleRequest } from '../../mocks/mockFileViewQuery'
-import {
-  useAddQueryToDownloadList,
-  useGetQueryResultBundleWithAsyncStatus,
-} from '../../synapse-queries'
+
 import {
   getUseMutationMock,
   getUseQuerySuccessMock,
@@ -30,24 +27,20 @@ import QueryWrapper from '../QueryWrapper'
 import { MOCK_USER_ID } from '../../mocks/user/mock_user_profile'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 import { noop } from 'lodash-es'
+import * as SynapseQueries from '../../synapse-queries'
 
-jest.mock('../../../src/synapse-queries', () => {
-  const actual = jest.requireActual('../../../src/synapse-queries')
-  return {
-    ...actual,
-    useGetQueryResultBundleWithAsyncStatus: jest.fn(),
-    useAddQueryToDownloadList: jest.fn(),
-  }
-})
-
-const mockUseGetQueryResultBundle = jest.mocked(
-  useGetQueryResultBundleWithAsyncStatus,
+const mockUseGetQueryResultBundle = vi.spyOn(
+  SynapseQueries,
+  'useGetQueryResultBundleWithAsyncStatus',
 )
-const mockUseAddQueryToDownloadList = jest.mocked(useAddQueryToDownloadList)
+const mockUseAddQueryToDownloadList = vi.spyOn(
+  SynapseQueries,
+  'useAddQueryToDownloadList',
+)
 const ID_COLUMN_ID = 11112
 const CURRENT_VERSION_COLUMN_ID = 11113
 const DOWNLOAD_CONFIRMATION_UI_TEST_ID = 'DownloadConfirmationUI'
-const mockDownloadConfirmationUi = jest
+const mockDownloadConfirmationUi = vi
   .spyOn(DownloadConfirmationUIModule, 'DownloadConfirmationUI')
   .mockImplementation(() => (
     <div data-testid={DOWNLOAD_CONFIRMATION_UI_TEST_ID}></div>
@@ -62,7 +55,7 @@ const mockQueryWithSelectFileAndVersionColumn = {
   selectFileColumn: ID_COLUMN_ID,
   selectFileVersionColumn: CURRENT_VERSION_COLUMN_ID,
 }
-const mockToastFn = jest
+const mockToastFn = vi
   .spyOn(ToastMessage, 'displayToast')
   .mockImplementation(() => noop)
 
@@ -126,7 +119,7 @@ describe('TableQueryDownloadConfirmation', () => {
     >
   >
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     mockUseGetQueryResultBundle.mockReturnValue(
       getUseQuerySuccessMock<

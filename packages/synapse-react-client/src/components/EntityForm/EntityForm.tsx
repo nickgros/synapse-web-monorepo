@@ -12,7 +12,7 @@ import {
   UserProfile,
 } from '@sage-bionetworks/synapse-types'
 import { getFileHandleContent } from '../../synapse-client/SynapseClient'
-import { SynapseContext } from '../../utils/context/SynapseContext'
+import { SynapseContext } from '../../context/SynapseContext'
 import validator from '@rjsf/validator-ajv8'
 
 export type EntityFormProps = {

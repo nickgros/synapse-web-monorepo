@@ -12,7 +12,7 @@ import { CreatedOnByUserDiv } from './CreatedOnByUserDiv'
 import { UserEvaluationPermissions } from '@sage-bionetworks/synapse-types'
 import { RequiredProperties } from '../../utils'
 import WarningDialog from '../SynapseForm/WarningDialog'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import IconSvg from '../IconSvg/IconSvg'
 
 export type ExistingEvaluation = RequiredProperties<

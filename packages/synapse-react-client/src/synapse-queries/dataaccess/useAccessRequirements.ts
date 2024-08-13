@@ -17,7 +17,8 @@ import SynapseClient, {
   updateAccessRequirement,
   updateAccessRequirementAcl,
 } from '../../synapse-client'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context/SynapseContext'
 import {
   AccessApproval,
   AccessControlList,

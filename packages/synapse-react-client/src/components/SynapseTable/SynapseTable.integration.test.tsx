@@ -133,18 +133,18 @@ function renderTable(
   )
 }
 
-jest.spyOn(HasAccessModule, 'HasAccessV2').mockImplementation(() => {
+vi.spyOn(HasAccessModule, 'HasAccessV2').mockImplementation(() => {
   return <div data-testid="HasAccess"></div>
 })
 
-jest.spyOn(UserCardModule, 'default').mockImplementation(() => {
+vi.spyOn(UserCardModule, 'default').mockImplementation(() => {
   return <div data-testid="UserCard"></div>
 })
 
-jest.spyOn(AddToDownloadListV2Module, 'default').mockImplementation(() => {
+vi.spyOn(AddToDownloadListV2Module, 'default').mockImplementation(() => {
   return <div data-testid="AddToDownloadListV2" />
 })
-jest.spyOn(NoContentPlaceholderModule, 'default').mockImplementation(() => {
+vi.spyOn(NoContentPlaceholderModule, 'default').mockImplementation(() => {
   return <div data-testid="NoContentPlaceholder" />
 })
 

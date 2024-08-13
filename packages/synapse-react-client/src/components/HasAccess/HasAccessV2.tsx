@@ -6,7 +6,7 @@ import {
   useGetRestrictionInformation,
 } from '../../synapse-queries'
 import { SRC_SIGN_IN_CLASS } from '../../utils/SynapseConstants'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import {
   AccessRequirement,
   RestrictableObjectType,

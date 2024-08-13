@@ -4,7 +4,7 @@ import { createWrapper } from '../../../testutils/TestingLibraryUtils'
 import UnmanagedACTAccessRequirementItem, {
   UnmanagedACTAccessRequirementItemProps,
 } from './UnmanagedACTAccessRequirementItem'
-import { SynapseClient, SynapseContextType } from '../../../index'
+import SynapseClient from '../../../synapse-client'
 import {
   AccessRequirementStatus,
   RestrictableObjectType,
@@ -15,6 +15,7 @@ import {
 } from '../../../mocks/accessRequirement/mockAccessRequirements'
 import { MOCK_FILE_ENTITY_ID } from '../../../mocks/entity/mockFileEntity'
 import userEvent from '@testing-library/user-event'
+import { SynapseContextType } from '../../../context'
 
 function renderComponent(
   props: UnmanagedACTAccessRequirementItemProps,
@@ -29,7 +30,7 @@ function renderComponent(
   return renderReturn
 }
 
-const mockOnHide = jest.fn()
+const mockOnHide = vi.fn()
 
 const defaultProps: UnmanagedACTAccessRequirementItemProps = {
   accessRequirement: mockACTAccessRequirement,
@@ -38,7 +39,7 @@ const defaultProps: UnmanagedACTAccessRequirementItemProps = {
   onHide: mockOnHide,
 }
 
-const mockGetAccessRequirementStatus = jest.spyOn(
+const mockGetAccessRequirementStatus = vi.spyOn(
   SynapseClient,
   'getAccessRequirementStatus',
 )

@@ -26,10 +26,11 @@ import SynapseClient from '../../synapse-client'
 const tableId = 'syn16787123'
 const sql = `SELECT * FROM ${tableId}`
 
-jest
-  .spyOn(SynapseClient, 'getEntity')
-  .mockResolvedValue({ ...mockTableEntity, id: tableId })
-const getQueryTableAsyncJobResultsSpy = jest.spyOn(
+vi.spyOn(SynapseClient, 'getEntity').mockResolvedValue({
+  ...mockTableEntity,
+  id: tableId,
+})
+const getQueryTableAsyncJobResultsSpy = vi.spyOn(
   SynapseClient,
   'getQueryTableAsyncJobResults',
 )
@@ -118,7 +119,7 @@ const waitForCardCount = async (cardText: string, nCards: number) => {
 describe('CardContainer tests', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     server.use(...getHandlersForTableQuery(dataWithMultiplePagesFirstPage))
   })
   afterEach(() => server.restoreHandlers())
@@ -157,7 +158,7 @@ describe('CardContainer tests', () => {
     await waitForCardCount(STUDY, DEFAULT_PAGE_SIZE)
     expect(getQueryTableAsyncJobResultsSpy).toHaveBeenCalledTimes(1)
 
-    const appendNextPageSpy = jest.spyOn(
+    const appendNextPageSpy = vi.spyOn(
       capturedQueryContext!,
       'appendNextPageToResults',
     )

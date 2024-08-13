@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { act, render, screen } from '@testing-library/react'
 import React from 'react'
 import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils'
@@ -13,18 +12,18 @@ import {
 import { SynapseTestContext } from '../../mocks/MockSynapseContext'
 import SynapseClient from '../../synapse-client'
 
-jest.spyOn(SynapseClient, 'removeItemFromDownloadListV2').mockResolvedValue({
+vi.spyOn(SynapseClient, 'removeItemFromDownloadListV2').mockResolvedValue({
   numberOfFilesRemoved: 2,
 })
 
-jest
-  .spyOn(SynapseClient, 'getUserProfileById')
-  .mockResolvedValue(mockUserProfileData)
-jest
-  .spyOn(SynapseClient, 'getProfilePicPreviewPresignedUrl')
-  .mockResolvedValue(null)
+vi.spyOn(SynapseClient, 'getUserProfileById').mockResolvedValue(
+  mockUserProfileData,
+)
+vi.spyOn(SynapseClient, 'getProfilePicPreviewPresignedUrl').mockResolvedValue(
+  null,
+)
 
-const mockRefetchStatistics = jest.fn()
+const mockRefetchStatistics = vi.fn()
 
 const page1: DownloadListItemResult[] = [
   {
@@ -55,9 +54,8 @@ const page2: DownloadListItemResult[] = [
     isEligibleForPackaging: true,
   },
 ]
-jest
-  .spyOn(SynapseClient, 'getAvailableFilesToDownload')
-  .mockImplementation(request => {
+vi.spyOn(SynapseClient, 'getAvailableFilesToDownload').mockImplementation(
+  request => {
     let response: AvailableFilesResponse = {
       page: page1,
       nextPageToken: '50a0',
@@ -73,7 +71,8 @@ jest
       }
     }
     return Promise.resolve(response)
-  })
+  },
+)
 
 function renderComponent() {
   return render(
@@ -88,7 +87,7 @@ function renderComponent() {
 
 describe('DownloadListTable tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   it('loads more available download files when inView', async () => {
     renderComponent()
@@ -113,7 +112,7 @@ describe('DownloadListTable tests', () => {
     })
 
     it('should call clipboard.writeText with the expected Synapse IDs', async () => {
-      const mockWriteText = jest.fn()
+      const mockWriteText = vi.fn()
       mockWriteText.mockResolvedValue('copied')
       const mockClipboard = {
         writeText: mockWriteText,

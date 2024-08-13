@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { SynapseConstants, useSynapseContext } from '../../utils'
+import { SynapseConstants } from '../../utils'
 import {
   useAddQueryToDownloadList,
   useGetQueryResultBundleWithAsyncStatus,
@@ -22,6 +22,7 @@ import {
   rowSelectionPrimaryKeyAtom,
   selectedRowsAtom,
 } from '../QueryWrapper/TableRowSelectionState'
+import { useSynapseContext } from '../../context'
 
 export function TableQueryDownloadConfirmation() {
   const { getCurrentQueryRequest } = useQueryContext()

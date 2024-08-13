@@ -5,29 +5,8 @@ import React from 'react'
 import { OAuthManagement } from './OAuthManagement'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 import { formatDate } from '../../utils/functions/DateFormatter'
-import {
-  useCreateOAuthClient,
-  useDeleteOAuthClient,
-  useGetOAuthClientInfinite,
-  useUpdateOAuthClient,
-} from '../../synapse-queries'
 import { server } from '../../mocks/msw/server'
 import { mockClientList1, mockClientList2 } from '../../mocks/oauth/MockClient'
-
-jest.mock('../../../src/synapse-queries/oauth/useOAuthClient', () => {
-  return {
-    useGetOAuthClientInfinite: jest.fn(),
-    useCreateOAuthClient: jest.fn(),
-    useUpdateOAuthClient: jest.fn(),
-    useDeleteOAuthClient: jest.fn(),
-  }
-})
-
-const mockFetchNextPage = jest.fn()
-const mockGetOAuthClientInfinite = useGetOAuthClientInfinite as jest.Mock
-const mockUseCreateOAuthClient = useCreateOAuthClient as jest.Mock
-const mockUseUpdateOAuthClient = useUpdateOAuthClient as jest.Mock
-const mockUseDeleteOAuthClient = useDeleteOAuthClient as jest.Mock
 
 const renderComponent = () => {
   render(<OAuthManagement />, {
@@ -35,41 +14,13 @@ const renderComponent = () => {
   })
 }
 
-const mockReturnHooks = {
-  data: {
-    pages: [mockClientList1.results[0]],
-  },
-}
-
-describe('oAuthManagement tests', () => {
+describe('OAuth Client Management tests', () => {
   beforeAll(() => {
     server.listen()
-    mockGetOAuthClientInfinite.mockReturnValue({
-      data: {
-        pages: [
-          {
-            results: mockClientList1.results,
-            nextTokenPage: mockClientList1.nextPageToken,
-          },
-          {
-            results: mockClientList2.results,
-            nextTokenPage: mockClientList2.nextPageToken,
-          },
-        ],
-        pageParams: [],
-      },
-      fetchNextPage: mockFetchNextPage,
-      hasNextPage: true,
-      isLoading: false,
-      isSuccess: true,
-    })
-    mockUseCreateOAuthClient.mockReturnValue({ mockReturnHooks })
-    mockUseUpdateOAuthClient.mockReturnValue({ mockReturnHooks })
-    mockUseDeleteOAuthClient.mockReturnValue({ mockReturnHooks })
   })
   afterEach(() => {
     server.restoreHandlers()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterAll(() => server.close())
 
@@ -101,12 +52,9 @@ describe('oAuthManagement tests', () => {
   it('Handles pagination', async () => {
     renderComponent()
 
-    const loadButton = screen.queryByRole('button', { name: 'Load more' })
-    expect(
-      screen.getByRole('button', { name: 'Load more' }),
-    ).toBeInTheDocument()
+    const loadButton = await screen.findByRole('button', { name: 'Load more' })
 
-    await userEvent.click(loadButton!)
+    await userEvent.click(loadButton)
 
     await waitFor(() =>
       expect(screen.getAllByRole('row')).toHaveLength(

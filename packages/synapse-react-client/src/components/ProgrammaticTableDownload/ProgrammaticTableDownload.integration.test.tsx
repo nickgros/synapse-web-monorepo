@@ -9,7 +9,7 @@ import { QueryBundleRequest } from '@sage-bionetworks/synapse-types'
 import { TABLE_QUERY_ASYNC_START } from '../../utils/APIConstants'
 
 import { rest, server } from '../../mocks/msw/server'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import { MOCK_CONTEXT_VALUE } from '../../mocks/MockSynapseContext'
 import ProgrammaticTableDownload, {
   ProgrammaticTableDownloadProps,
@@ -18,7 +18,7 @@ import { getHandlersForTableQuery } from '../../mocks/msw/handlers/tableQueryHan
 import { SynapseConstants } from '../../index'
 import { DEFAULT_PAGE_SIZE } from '../../utils/SynapseConstants'
 
-const onHide = jest.fn()
+const onHide = vi.fn()
 
 const queryBundleRequest: QueryBundleRequest = {
   concreteType: 'org.sagebionetworks.repo.model.table.QueryBundleRequest',
@@ -70,7 +70,7 @@ describe('ProgrammaticOptions tests', () => {
   afterAll(() => server.close())
 
   it('Query errors are thrown to error boundary', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     server.use(...getErrorMSWHandler())
     renderComponent({
       onHide,
@@ -84,7 +84,7 @@ describe('ProgrammaticOptions tests', () => {
   })
 
   it('Successfully transform sql', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     server.use(
       ...getHandlersForTableQuery({
         concreteType: 'org.sagebionetworks.repo.model.table.QueryResultBundle',

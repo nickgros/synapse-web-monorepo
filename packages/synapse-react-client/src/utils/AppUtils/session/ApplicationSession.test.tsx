@@ -37,7 +37,7 @@ function render(props?: ApplicationSessionManagerProps) {
   })
 }
 
-const mockUseDetectSSOCode = jest
+const mockUseDetectSSOCode = vi
   .spyOn(UseDetectSSOCodeModule, 'default')
   .mockReturnValue({ isLoading: false })
 
@@ -62,16 +62,13 @@ const EXPECTED_AUTH_STATE_TERMS_NOT_ACCEPTED: Partial<ApplicationSessionContextT
 
 describe('ApplicationSessionManager tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
-  const mockGetAccessToken = jest.spyOn(
-    SynapseClient,
-    'getAccessTokenFromCookie',
-  )
-  const signOutSpy = jest.spyOn(SynapseClient, 'signOut')
-  const mockGetUserProfile = jest.spyOn(SynapseClient, 'getUserProfile')
-  const mockAuthenticatedOn = jest.spyOn(SynapseClient, 'getAuthenticatedOn')
+  const mockGetAccessToken = vi.spyOn(SynapseClient, 'getAccessTokenFromCookie')
+  const signOutSpy = vi.spyOn(SynapseClient, 'signOut')
+  const mockGetUserProfile = vi.spyOn(SynapseClient, 'getUserProfile')
+  const mockAuthenticatedOn = vi.spyOn(SynapseClient, 'getAuthenticatedOn')
 
   it('Bootstraps when not signed in', async () => {
     mockGetAccessToken.mockResolvedValue(undefined)
@@ -190,7 +187,7 @@ describe('ApplicationSessionManager tests', () => {
     mockUseDetectSSOCode.mockReturnValue({ isLoading: true })
     mockGetAccessToken.mockResolvedValue(undefined)
 
-    const mockOnTwoFactorAuthResetThroughSSO = jest.fn()
+    const mockOnTwoFactorAuthResetThroughSSO = vi.fn()
 
     const context = render({
       onTwoFactorAuthResetThroughSSO: mockOnTwoFactorAuthResetThroughSSO,
@@ -339,7 +336,7 @@ describe('ApplicationSessionManager tests', () => {
   })
 
   it('Calls onNoAccessTokenFound prop on error', async () => {
-    const onNoAccessTokenFound = jest.fn()
+    const onNoAccessTokenFound = vi.fn()
     const error = new SynapseClientError(
       500,
       'some error',
@@ -359,7 +356,7 @@ describe('ApplicationSessionManager tests', () => {
 
   it('Calls onNoAccessTokenFound prop when undefined token', async () => {
     mockGetAccessToken.mockResolvedValue(undefined)
-    const onNoAccessTokenFound = jest.fn()
+    const onNoAccessTokenFound = vi.fn()
 
     const context = render({ onNoAccessTokenFound })
 

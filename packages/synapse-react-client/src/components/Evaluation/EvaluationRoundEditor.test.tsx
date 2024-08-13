@@ -5,7 +5,6 @@ import {
   within,
 } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import JestMockPromise from 'jest-mock-promise'
 import dayjs, { Dayjs } from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import React from 'react'
@@ -27,12 +26,12 @@ dayjs.extend(duration)
 
 describe('test EvaluationRoundEditor', () => {
   let props: EvaluationRoundEditorProps
-  let mockOnDelete: jest.Mock
-  let mockOnSave: jest.Mock
+  let mockOnDelete = vi.fn()
+  let mockOnSave = vi.fn()
 
-  let mockCreateEvaluationRound: jest.Mock
-  let mockUpdateEvaluationRound: jest.Mock
-  let mockDeleteEvaluationRound: jest.Mock
+  let mockCreateEvaluationRound = vi.fn()
+  let mockUpdateEvaluationRound = vi.fn()
+  let mockDeleteEvaluationRound = vi.fn()
 
   const fakeEvaluationRoundInput: EvaluationRoundInput = {
     otherLimits: [],
@@ -44,29 +43,28 @@ describe('test EvaluationRoundEditor', () => {
   }
 
   beforeEach(() => {
-    mockOnDelete = jest.fn()
-    mockOnSave = jest.fn()
+    mockOnDelete = vi.fn()
+    mockOnSave = vi.fn()
 
-    mockCreateEvaluationRound = jest.fn(
-      () => new JestMockPromise(resolve => resolve(fakeEvaluationRoundInput)),
+    mockCreateEvaluationRound = vi
+      .fn()
+      .mockResolvedValue(fakeEvaluationRoundInput)
+    mockUpdateEvaluationRound = vi
+      .fn()
+      .mockResolvedValue(fakeEvaluationRoundInput)
+
+    mockDeleteEvaluationRound = vi.fn().mockResolvedValue(undefined)
+
+    vi.spyOn(SynapseClient, 'createEvaluationRound').mockImplementation(
+      mockCreateEvaluationRound,
     )
-    mockUpdateEvaluationRound = jest.fn(
-      () => new JestMockPromise(resolve => resolve(fakeEvaluationRoundInput)),
-    )
-    mockDeleteEvaluationRound = jest.fn(
-      () => new JestMockPromise(resolve => resolve()),
+    vi.spyOn(SynapseClient, 'updateEvaluationRound').mockImplementation(
+      mockUpdateEvaluationRound,
     )
 
-    jest
-      .spyOn(SynapseClient, 'createEvaluationRound')
-      .mockImplementation(mockCreateEvaluationRound)
-    jest
-      .spyOn(SynapseClient, 'updateEvaluationRound')
-      .mockImplementation(mockUpdateEvaluationRound)
-
-    jest
-      .spyOn(SynapseClient, 'deleteEvaluationRound')
-      .mockImplementation(mockDeleteEvaluationRound)
+    vi.spyOn(SynapseClient, 'deleteEvaluationRound').mockImplementation(
+      mockDeleteEvaluationRound,
+    )
 
     props = {
       evaluationRoundInput: {
@@ -83,7 +81,7 @@ describe('test EvaluationRoundEditor', () => {
   })
 
   afterEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('test clicking advanced limits link', async () => {
@@ -236,11 +234,8 @@ describe('test EvaluationRoundEditor', () => {
 
   it('test save: Error occur', async () => {
     //make the SynapseClient call throw an error
-    mockUpdateEvaluationRound.mockImplementation(
-      () =>
-        new JestMockPromise((resolve, reject) => {
-          reject(new Error('oops! you got a fake error'))
-        }),
+    mockUpdateEvaluationRound.mockRejectedValue(
+      new Error('oops! you got a fake error'),
     )
 
     const id = '1234'
@@ -328,11 +323,8 @@ describe('test EvaluationRoundEditor', () => {
     props.evaluationRoundInput.id = id
     props.evaluationRoundInput.etag = etag
 
-    mockDeleteEvaluationRound.mockImplementation(
-      () =>
-        new JestMockPromise((resolve, reject) =>
-          reject(new Error('oops! you got a fake error')),
-        ),
+    mockDeleteEvaluationRound.mockRejectedValue(
+      new Error('oops! you got a fake error'),
     )
 
     render(<EvaluationRoundEditor {...props} />, {

@@ -4,7 +4,7 @@ import {
   uploadFile,
   ProgressCallback,
 } from '../../synapse-client/SynapseClient'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import {
   FileUploadComplete,
   UploadCallbackResp,

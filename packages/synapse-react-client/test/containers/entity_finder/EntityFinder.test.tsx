@@ -28,21 +28,21 @@ import { Map } from 'immutable'
 import * as useEntityBundleModule from '../../../src/synapse-queries/entity/useEntityBundle'
 import SynapseClient from '../../../src/synapse-client'
 
-jest.mock('react-reflex', () => {
+vi.mock('react-reflex', () => {
   return {
-    ReflexContainer: jest
+    ReflexContainer: vi
       .fn()
       .mockImplementation(({ children }) => <div>{children}</div>),
-    ReflexElement: jest
+    ReflexElement: vi
       .fn()
       .mockImplementation(({ children }) => <div>{children}</div>),
-    ReflexSplitter: jest.fn().mockImplementation(() => <div></div>),
+    ReflexSplitter: vi.fn().mockImplementation(() => <div></div>),
   }
 })
 
-const mockUseGetEntityBundle = jest.spyOn(useEntityBundleModule, 'default')
+const mockUseGetEntityBundle = vi.spyOn(useEntityBundleModule, 'default')
 
-const mockEntityTree = jest
+const mockEntityTree = vi
   .spyOn(EntityTreeModule, 'EntityTree')
   .mockImplementation(({ toggleSelection, setDetailsViewConfiguration }) => {
     invokeToggleSelectionViaTree = reference => {
@@ -54,7 +54,7 @@ const mockEntityTree = jest
     return <div role="tree"></div>
   })
 
-const mockDetailsList = jest
+const mockDetailsList = vi
   .spyOn(DetailsListModule, 'EntityDetailsList')
   .mockImplementation(({ toggleSelection }) => {
     invokeToggleSelectionViaTable = (reference: Reference) => {
@@ -69,11 +69,11 @@ let invokeSetConfigViaTree: (
   configuration: EntityDetailsListDataConfiguration,
 ) => void
 
-jest.spyOn(SynapseClient, 'getEntityPath')
-jest.spyOn(SynapseClient, 'getEntityHeader')
-const mockGetEntityHeaders = jest.spyOn(SynapseClient, 'getEntityHeaders')
+vi.spyOn(SynapseClient, 'getEntityPath')
+vi.spyOn(SynapseClient, 'getEntityHeader')
+const mockGetEntityHeaders = vi.spyOn(SynapseClient, 'getEntityHeaders')
 
-const mockOnSelectionChange = jest.fn()
+const mockOnSelectionChange = vi.fn()
 
 const defaultProps: EntityFinderProps = {
   initialScope: FinderScope.CURRENT_PROJECT,
@@ -98,7 +98,7 @@ function renderComponent(propOverrides?: Partial<EntityFinderProps>) {
 
 describe('EntityFinder tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     mockUseGetEntityBundle.mockReturnValue({
       data: {

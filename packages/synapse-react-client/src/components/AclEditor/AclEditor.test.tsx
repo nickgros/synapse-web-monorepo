@@ -50,9 +50,9 @@ const DEFAULT_AVAILABLE_PERMISSION_LEVELS: PermissionLevel[] = [
 
 const DEFAULT_EMPTY_TEXT = 'Empty'
 
-const mockAddResourceAccessItem = jest.fn()
-const mockUpdateResourceAccessItem = jest.fn()
-const mockRemoveResourceAccessItem = jest.fn()
+const mockAddResourceAccessItem = vi.fn()
+const mockUpdateResourceAccessItem = vi.fn()
+const mockRemoveResourceAccessItem = vi.fn()
 
 const defaultProps: AclEditorProps = {
   resourceAccessList: DEFAULT_RESOURCE_ACCESS,
@@ -94,7 +94,9 @@ async function setUp(
 }
 
 describe('AclEditor', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeAll(() => server.listen())
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())

@@ -44,21 +44,19 @@ import MarkdownSynapse from '../../../Markdown/MarkdownSynapse'
 import * as AccessRequirementListUtils from '../../AccessRequirementListUtils'
 
 const MARKDOWN_SYNAPSE_TEST_ID = 'MarkdownSynapseContent'
-jest.mock('../../../Markdown/MarkdownSynapse', () => ({
+vi.mock('../../../Markdown/MarkdownSynapse', () => ({
   __esModule: true,
-  default: jest.fn(),
+  default: vi.fn(),
 }))
 
-const mockMarkdownSynapse = jest.mocked(MarkdownSynapse)
+const mockMarkdownSynapse = vi.mocked(MarkdownSynapse)
 mockMarkdownSynapse.mockImplementation(
   () => (<div data-testid={MARKDOWN_SYNAPSE_TEST_ID} />) as any,
 )
 
-jest
-  .spyOn(SynapseClient, 'getUserProfile')
-  .mockResolvedValue(mockUserProfileData)
+vi.spyOn(SynapseClient, 'getUserProfile').mockResolvedValue(mockUserProfileData)
 
-jest.spyOn(SynapseClient, 'getGroupHeadersBatch').mockImplementation(ids => {
+vi.spyOn(SynapseClient, 'getGroupHeadersBatch').mockImplementation(ids => {
   const headers = []
   if (ids.includes(mockUserGroupHeader.ownerId)) {
     headers.push(mockUserGroupHeader)
@@ -77,30 +75,30 @@ jest.spyOn(SynapseClient, 'getGroupHeadersBatch').mockImplementation(ids => {
   })
 })
 
-jest.spyOn(SynapseClient, 'getUserProfileById').mockImplementation((_, id) => {
+vi.spyOn(SynapseClient, 'getUserProfileById').mockImplementation((_, id) => {
   return Promise.resolve(
     mockUserData.find(user => String(user.id) === String(id))!.userProfile!,
   )
 })
 
-jest.spyOn(SynapseClient, 'getUserBundle').mockImplementation(id => {
+vi.spyOn(SynapseClient, 'getUserBundle').mockImplementation(id => {
   return Promise.resolve(
     mockUserData.find(user => String(user.id) === String(id))!.userBundle!,
   )
 })
 
-const mockedUserSearchBox = jest
+const mockedUserSearchBox = vi
   .spyOn(UserSearchBoxV2Module, 'default')
   .mockImplementation(props => {
     return <div data-testid={'UserSearchBoxV2-MOCK'}></div>
   })
 
-const mockGetDataRequestForUpdate = jest.spyOn(
+const mockGetDataRequestForUpdate = vi.spyOn(
   SynapseClient,
   'getDataAccessRequestForUpdate',
 )
 
-const mockUpdateDataAccessRequest = jest
+const mockUpdateDataAccessRequest = vi
   .spyOn(SynapseClient, 'updateDataAccessRequest')
   .mockImplementation(req => {
     // Update the 'GET' mock to return the updated object
@@ -108,17 +106,18 @@ const mockUpdateDataAccessRequest = jest
     return Promise.resolve(req)
   })
 
-jest.spyOn(SynapseClient, 'getFiles').mockResolvedValue({ requestedFiles: [] })
+vi.spyOn(SynapseClient, 'getFiles').mockResolvedValue({ requestedFiles: [] })
 
-jest
-  .spyOn(SynapseClient, 'getWikiPageKeyForAccessRequirement')
-  .mockResolvedValue(mockManagedACTAccessRequirementWikiPageKey)
+vi.spyOn(SynapseClient, 'getWikiPageKeyForAccessRequirement').mockResolvedValue(
+  mockManagedACTAccessRequirementWikiPageKey,
+)
 
-jest
-  .spyOn(AccessRequirementListUtils, 'useCanShowManagedACTWikiInWizard')
-  .mockReturnValue(true)
+vi.spyOn(
+  AccessRequirementListUtils,
+  'useCanShowManagedACTWikiInWizard',
+).mockReturnValue(true)
 
-const mockCreateSubmission = jest
+const mockCreateSubmission = vi
   .spyOn(SynapseClient, 'submitDataAccessRequest')
   .mockResolvedValue({
     submissionId: mockSubmittedSubmission.id,
@@ -127,9 +126,9 @@ const mockCreateSubmission = jest
     modifiedOn: mockSubmittedSubmission.modifiedOn,
   })
 
-const mockOnHide = jest.fn()
-const mockOnCancel = jest.fn()
-const mockOnSubmissionCreated = jest.fn()
+const mockOnHide = vi.fn()
+const mockOnCancel = vi.fn()
+const mockOnSubmissionCreated = vi.fn()
 
 const defaultProps: DataAccessRequestAccessorsFilesFormProps = {
   researchProjectId: MOCK_RESEARCH_PROJECT_ID,
@@ -158,7 +157,7 @@ const PUBLICATIONS_FIELD_LABEL_TEXT = 'Publication(s)'
 const SUMMARY_OF_USE_FIELD_LABEL_TEXT = 'Summary of use'
 describe('DataAccessRequestAccessorsFilesForm tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('Allows adding and removing an accessor on a request', async () => {
@@ -329,7 +328,7 @@ describe('DataAccessRequestAccessorsFilesForm tests', () => {
   })
 
   it('Shows an error if the data access request cannot be fetched', async () => {
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(console, 'error')
       .mockImplementation(() => {})
 

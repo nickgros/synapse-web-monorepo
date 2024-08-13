@@ -7,7 +7,7 @@ import {
   ProjectFilesStatisticsResponse,
   FilesCountStatistics,
 } from '@sage-bionetworks/synapse-types'
-import { SynapseContext } from '../utils/context/SynapseContext'
+import { SynapseContext } from '../context/SynapseContext'
 const Plot = createPlotlyComponent(Plotly)
 
 const months = [

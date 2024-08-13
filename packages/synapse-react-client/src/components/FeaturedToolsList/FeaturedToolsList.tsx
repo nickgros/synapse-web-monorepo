@@ -5,7 +5,7 @@ import { QueryBundleRequest } from '@sage-bionetworks/synapse-types'
 import React, { useState, useEffect } from 'react'
 import { FeaturedToolCard } from './FeaturedToolCard'
 import { ErrorBanner } from '../error/ErrorBanner'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 
 export type FeaturedToolsListProps = {
   entityId: string

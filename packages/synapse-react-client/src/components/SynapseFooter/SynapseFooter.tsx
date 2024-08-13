@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import { useOneSageURL } from '../../utils/hooks/useOneSageURL'
 import { Box, Button, Typography } from '@mui/material'
 import SynapseFullLogo from '../../assets/icons/SynapseFullLogo'

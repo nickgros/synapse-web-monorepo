@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../context/SynapseContext'
 import CookiesNotification, { alertConfig } from './CookiesNotification'
 import UniversalCookies from 'universal-cookie'
 import {
@@ -11,7 +11,7 @@ import {
 } from '../../utils/hooks/useCookiePreferences'
 
 const cookies = new UniversalCookies()
-const mockOnCloseFn = jest.fn()
+const mockOnCloseFn = vi.fn()
 function renderComponent(wrapperProps?: SynapseContextType) {
   const component = render(<CookiesNotification onClose={mockOnCloseFn} />, {
     wrapper: createWrapper(wrapperProps),
@@ -22,7 +22,7 @@ function renderComponent(wrapperProps?: SynapseContextType) {
 
 describe('CookiesNotification', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   afterEach(() => {
     cookies.remove(COOKIES_AGREEMENT_COOKIE_KEY)

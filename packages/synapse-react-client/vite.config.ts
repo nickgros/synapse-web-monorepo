@@ -1,13 +1,13 @@
 import { resolve } from 'path'
 import { mergeConfig } from 'vite'
-import viteConfig from 'vite-config'
+import { vitestConfig } from 'vite-config'
 import { externalizeDeps } from 'vite-plugin-externalize-deps'
 import dts from 'vite-plugin-dts'
 
 /**
  * Vite config to generate the ESM & CJS bundles for Synapse React Client.
  */
-export default mergeConfig(viteConfig, {
+export default mergeConfig(vitestConfig, {
   root: '.',
   build: {
     emptyOutDir: false,
@@ -27,4 +27,9 @@ export default mergeConfig(viteConfig, {
       rollupTypes: true,
     }),
   ],
+  test: {
+    globals: true,
+    setupFiles: 'test/setupTests.ts',
+    testTimeout: 15_000,
+  },
 })

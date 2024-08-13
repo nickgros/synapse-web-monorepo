@@ -12,13 +12,11 @@ import { mockCompleteAsyncJob } from '../../mocks/mockFileViewQuery'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 import { SynapseClientError } from '../../index'
 
-jest.mock('../../../src/synapse-client', () => ({
-  getQueryTableAsyncJobResults: jest.fn(),
+vi.mock('../../../src/synapse-client', () => ({
+  getQueryTableAsyncJobResults: vi.fn(),
 }))
 
-const mockGetQueryTableAsyncJobResults = jest.mocked(
-  getQueryTableAsyncJobResults,
-)
+const mockGetQueryTableAsyncJobResults = vi.mocked(getQueryTableAsyncJobResults)
 
 const query: QueryBundleRequest = {
   concreteType: 'org.sagebionetworks.repo.model.table.QueryBundleRequest',
@@ -31,7 +29,7 @@ const query: QueryBundleRequest = {
 
 describe('useQueryWrapperData tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     mockGetQueryTableAsyncJobResults.mockImplementation(
       (_req, _token, setCurrentAsyncJobStatus) => {
@@ -71,7 +69,7 @@ describe('useQueryWrapperData tests', () => {
     })
 
     it('returns error', async () => {
-      const consoleErrorSpy = jest
+      const consoleErrorSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(noop)
 
@@ -170,7 +168,7 @@ describe('useQueryWrapperData tests', () => {
     })
 
     it('returns error', async () => {
-      const consoleErrorSpy = jest
+      const consoleErrorSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(noop)
 

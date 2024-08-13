@@ -20,8 +20,8 @@ import EntitySubjectsSelector, {
   REMOVE_BUTTON_TEXT,
 } from './EntitySubjectsSelector'
 
-const onUpdate = jest.fn()
-const onUpdateEntityIDsTextbox = jest.fn()
+const onUpdate = vi.fn()
+const onUpdateEntityIDsTextbox = vi.fn()
 
 const teamSubject: RestrictableObjectDescriptor = {
   id: MOCK_TEAM_ID.toString(),
@@ -62,7 +62,9 @@ async function setUp(
 }
 
 describe('EntitySubjectsSelector', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeAll(() => server.listen())
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())

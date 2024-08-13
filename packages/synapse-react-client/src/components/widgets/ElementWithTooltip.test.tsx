@@ -6,7 +6,7 @@ import Columns from '../../assets/icons/columns'
 import { IconSvgProps } from '../IconSvg/IconSvg'
 import { ElementWithTooltip } from './ElementWithTooltip'
 
-const mockCallback = jest.fn()
+const mockCallback = vi.fn()
 type ElementWithTooltipProps = React.ComponentProps<typeof ElementWithTooltip>
 
 afterEach(cleanup)
@@ -36,11 +36,11 @@ function init(overrides?: ElementWithTooltipProps) {
 describe('ElementWithTooltip', () => {
   beforeEach(() => init())
   afterEach(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
   it('should render with correct tooltip properties', async () => {
-    jest.useFakeTimers()
-    const user = userEvent.setup({ advanceTimers: jest.runAllTimers })
+    vi.useFakeTimers()
+    const user = userEvent.setup({ advanceTimers: vi.runAllTimers })
     await user.hover(imageButton)
 
     await screen.findByText(props.tooltipText)
@@ -80,8 +80,8 @@ describe('ElementWithTooltip', () => {
     expect(mockCallback).toHaveBeenCalled()
   })
   it('should create correctly without image as a text tooltip', async () => {
-    jest.useFakeTimers()
-    const user = userEvent.setup({ advanceTimers: jest.runAllTimers })
+    vi.useFakeTimers()
+    const user = userEvent.setup({ advanceTimers: vi.runAllTimers })
     const child = <span className="my_class">hello world</span>
     init({
       ...props,
@@ -96,7 +96,7 @@ describe('ElementWithTooltip', () => {
     await user.hover(tooltipTrigger!)
 
     act(() => {
-      jest.runAllTimers()
+      vi.runAllTimers()
     })
     await screen.findByText(props.tooltipText)
   })

@@ -17,7 +17,7 @@ import { WikiPage } from '@sage-bionetworks/synapse-types'
 import { rest, server } from '../../../src/mocks/msw/server'
 import * as MarkdownProvenanceModule from '../../../src/components/Markdown/widget/MarkdownProvenanceGraph'
 
-jest.mock('../../../src/components/Plot/SynapsePlot', () => {
+vi.mock('../../../src/components/Plot/SynapsePlot', () => {
   return {
     __esModule: true,
     default: function MockSynapsePlot() {
@@ -26,7 +26,7 @@ jest.mock('../../../src/components/Plot/SynapsePlot', () => {
   }
 })
 
-jest.mock('../../../src/components/widgets/SynapseImage', () => {
+vi.mock('../../../src/components/widgets/SynapseImage', () => {
   return {
     __esModule: true,
     default: function MockSynapseImage() {
@@ -35,7 +35,7 @@ jest.mock('../../../src/components/widgets/SynapseImage', () => {
   }
 })
 
-jest.mock('../../../src/components/ProvenanceGraph/ProvenanceGraph', () => {
+vi.mock('../../../src/components/ProvenanceGraph/ProvenanceGraph', () => {
   return {
     __esModule: true,
     default: function MockSynapseProvenanceGraph() {
@@ -79,7 +79,7 @@ describe('MarkdownSynapse tests', () => {
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())
 
-  const mockGetWikiAttachments = jest.spyOn(
+  const mockGetWikiAttachments = vi.spyOn(
     SynapseClient,
     'getWikiAttachmentsFromEntity',
   )
@@ -93,7 +93,7 @@ describe('MarkdownSynapse tests', () => {
     //  - initial render
     //  - componentDidMount
     //  - componentDidUpdate
-    const spyOnMath = jest.spyOn(MarkdownSynapse.prototype, 'processMath')
+    const spyOnMath = vi.spyOn(MarkdownSynapse.prototype, 'processMath')
     beforeEach(() => {
       spyOnMath.mockReset()
       mockGetWikiAttachments.mockClear()
@@ -122,7 +122,7 @@ describe('MarkdownSynapse tests', () => {
       mockGetEntityWiki(markdownPlaceholder)
       // we only care to mock these functions and ensure they're called
       // Full functionality will get tested in the specific widget tests
-      const getEntityWiki = jest.spyOn(SynapseClient, 'getEntityWiki')
+      const getEntityWiki = vi.spyOn(SynapseClient, 'getEntityWiki')
       // mount the component
       renderComponent(props)
       // verify functions were called
@@ -219,11 +219,11 @@ describe('MarkdownSynapse tests', () => {
   })
 
   describe('it renders an image widget', () => {
-    jest.spyOn(SynapseClient, 'getEntity').mockResolvedValue({})
-    jest.spyOn(SynapseClient, 'getFiles').mockResolvedValue({})
-    jest
-      .spyOn(SynapseClient, 'getWikiAttachmentsFromEntity')
-      .mockResolvedValue({})
+    vi.spyOn(SynapseClient, 'getEntity').mockResolvedValue({})
+    vi.spyOn(SynapseClient, 'getFiles').mockResolvedValue({})
+    vi.spyOn(SynapseClient, 'getWikiAttachmentsFromEntity').mockResolvedValue(
+      {},
+    )
 
     it('renders an image from a synapseId', async () => {
       mockGetEntityWiki(
@@ -243,7 +243,7 @@ describe('MarkdownSynapse tests', () => {
         '${image?fileName=joy%2Esvg&align=None&scale=100&responsive=true&altText=}',
       )
 
-      const spyOnRenderImage = jest.spyOn(MarkdownSynapseImageModule, 'default')
+      const spyOnRenderImage = vi.spyOn(MarkdownSynapseImageModule, 'default')
       const props: MarkdownSynapseProps = {
         ownerId: '_',
         wikiId: '_',
@@ -259,7 +259,7 @@ describe('MarkdownSynapse tests', () => {
       '${plot?query=select "Age"%2C "Insol" from syn9872596&title=&type=BAR&barmode=GROUP&horizontal=false&showlegend=true}',
     )
 
-    const spyOnRenderPlot = jest.spyOn(MarkdownPlotModule, 'default')
+    const spyOnRenderPlot = vi.spyOn(MarkdownPlotModule, 'default')
     const props: MarkdownSynapseProps = {
       ownerId: '_',
       wikiId: '_',
@@ -274,7 +274,7 @@ describe('MarkdownSynapse tests', () => {
       '${provenance?entityList=syn12548902%2Csyn33344762&depth=3&displayHeightPx=800&showExpand=false}',
     )
 
-    const spyOnRender = jest.spyOn(MarkdownProvenanceModule, 'default')
+    const spyOnRender = vi.spyOn(MarkdownProvenanceModule, 'default')
     const props: MarkdownSynapseProps = {
       ownerId: '_',
       wikiId: '_',
@@ -288,7 +288,7 @@ describe('MarkdownSynapse tests', () => {
       '${provenance?entityList=syn12548902%2Fversion%2F34&depth=1&displayHeightPx=500&showExpand=true}',
     )
 
-    const spyOnRender = jest.spyOn(MarkdownProvenanceModule, 'default')
+    const spyOnRender = vi.spyOn(MarkdownProvenanceModule, 'default')
     const props: MarkdownSynapseProps = {
       ownerId: '_',
       wikiId: '_',

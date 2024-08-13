@@ -20,23 +20,23 @@ import * as AccessRequirementListUtils from '../../AccessRequirementListUtils'
 import MarkdownSynapse from '../../../Markdown/MarkdownSynapse'
 
 const MARKDOWN_SYNAPSE_TEST_ID = 'MarkdownSynapseContent'
-jest.mock('../../../Markdown/MarkdownSynapse', () => ({
+vi.mock('../../../Markdown/MarkdownSynapse', () => ({
   __esModule: true,
-  default: jest.fn(),
+  default: vi.fn(),
 }))
 
-const mockMarkdownSynapse = jest.mocked(MarkdownSynapse)
+const mockMarkdownSynapse = vi.mocked(MarkdownSynapse)
 mockMarkdownSynapse.mockImplementation(
   () => (<div data-testid={MARKDOWN_SYNAPSE_TEST_ID} />) as any,
 )
 
 const CREATED_RESEARCH_PROJECT_ID = MOCK_RESEARCH_PROJECT.id
 
-jest
-  .spyOn(SynapseClient, 'getResearchProject')
-  .mockImplementation(() => Promise.resolve(MOCK_EMPTY_RESEARCH_PROJECT))
+vi.spyOn(SynapseClient, 'getResearchProject').mockImplementation(() =>
+  Promise.resolve(MOCK_EMPTY_RESEARCH_PROJECT),
+)
 
-const mockSaveResearchProject = jest
+const mockSaveResearchProject = vi
   .spyOn(SynapseClient, 'updateResearchProject')
   .mockImplementation(submitted =>
     Promise.resolve({
@@ -45,16 +45,17 @@ const mockSaveResearchProject = jest
     }),
   )
 
-jest
-  .spyOn(SynapseClient, 'getWikiPageKeyForAccessRequirement')
-  .mockResolvedValue(mockManagedACTAccessRequirementWikiPageKey)
+vi.spyOn(SynapseClient, 'getWikiPageKeyForAccessRequirement').mockResolvedValue(
+  mockManagedACTAccessRequirementWikiPageKey,
+)
 
-jest
-  .spyOn(AccessRequirementListUtils, 'useCanShowManagedACTWikiInWizard')
-  .mockReturnValue(true)
+vi.spyOn(
+  AccessRequirementListUtils,
+  'useCanShowManagedACTWikiInWizard',
+).mockReturnValue(true)
 
-const mockOnSave = jest.fn()
-const mockOnHide = jest.fn()
+const mockOnSave = vi.fn()
+const mockOnHide = vi.fn()
 
 const defaultProps: ResearchProjectFormProps = {
   managedACTAccessRequirement: mockManagedACTAccessRequirement,
@@ -103,7 +104,7 @@ async function setUp(props: ResearchProjectFormProps) {
 
 describe('ResearchProjectForm', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('Prompts for a project lead and institution', async () => {
@@ -246,7 +247,7 @@ describe('ResearchProjectForm', () => {
   })
 
   it('Shows an error if saving fails', async () => {
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(console, 'error')
       .mockImplementation(() => {})
     const errorReason = 'Something went wrong'

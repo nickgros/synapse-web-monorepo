@@ -3,7 +3,8 @@ import MarkdownIt from 'markdown-it'
 import xss from 'xss'
 import SynapseClient from '../../synapse-client'
 import { xssOptions } from '../../utils/functions/SanitizeHtmlUtils'
-import { SynapseClientError, SynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { SynapseContext } from '../../context'
 import {
   FileHandleResults,
   ObjectType,

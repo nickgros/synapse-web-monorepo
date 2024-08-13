@@ -5,8 +5,8 @@ import { MOCK_REPO_ORIGIN } from '../../utils/functions/getEndpoint'
 import SynapseFormSubmissionGrid, {
   SynapseFormSubmissionGridProps,
 } from './SynapseFormSubmissionGrid'
-import { SynapseContextConsumer } from '../../utils'
-import FullContextProvider from '../../utils/context/FullContextProvider'
+import { SynapseContextConsumer } from '../../context'
+import FullContextProvider from '../../context/FullContextProvider'
 import { ListRequest, StatusEnum } from '@sage-bionetworks/synapse-types'
 import {
   formListDataInProgress,

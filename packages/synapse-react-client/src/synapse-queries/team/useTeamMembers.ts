@@ -6,7 +6,8 @@ import {
   UseQueryOptions,
 } from '@tanstack/react-query'
 import SynapseClient, { deleteMemberFromTeam } from '../../synapse-client'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 import {
   CreateMembershipInvitationRequest,
   CreateMembershipRequestRequest,

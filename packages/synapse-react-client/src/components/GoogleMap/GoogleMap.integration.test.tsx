@@ -21,7 +21,7 @@ import {
 import { MOCK_TEAM_ID } from '../../mocks/team/mockTeam'
 
 /** Mock the Google Maps library */
-jest.mock('@react-google-maps/api', () => ({
+vi.mock('@react-google-maps/api', () => ({
   LoadScript: ({ children }: React.ComponentProps<typeof LoadScript>) => (
     <div data-testid="LoadScript">{children}</div>
   ),

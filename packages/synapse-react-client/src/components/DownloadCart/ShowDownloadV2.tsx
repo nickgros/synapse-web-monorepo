@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { TOOLTIP_DELAY_SHOW } from '../SynapseTable/SynapseTableConstants'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { useErrorHandler } from 'react-error-boundary'
 import { useGetDownloadListStatistics } from '../../synapse-queries/download/useDownloadList'
 import IconSvg from '../IconSvg/IconSvg'

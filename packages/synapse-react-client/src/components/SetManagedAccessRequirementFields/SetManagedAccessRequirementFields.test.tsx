@@ -41,17 +41,17 @@ import {
 const NEGATIVE_EXPIRATION_PERIOD_ERROR =
   'Please enter a valid expiration period (in days): If expiration period is set, then it must be greater than 0.'
 
-const onSave = jest.fn()
-const onError = jest.fn()
-const getAccessRequirementByIdSpy = jest.spyOn(
+const onSave = vi.fn()
+const onError = vi.fn()
+const getAccessRequirementByIdSpy = vi.spyOn(
   SynapseClient,
   'getAccessRequirementById',
 )
-const updateAccessRequirementSpy = jest.spyOn(
+const updateAccessRequirementSpy = vi.spyOn(
   SynapseClient,
   'updateAccessRequirement',
 )
-const getFilesSpy = jest.spyOn(SynapseClient, 'getFiles')
+const getFilesSpy = vi.spyOn(SynapseClient, 'getFiles')
 
 const defaultProps: SetManagedAccessRequirementFieldsProps = {
   accessRequirementId: mockManagedACTAccessRequirement.id.toString(),
@@ -164,7 +164,9 @@ const findDucTemplateButton = async (fileName: string) => {
 }
 
 describe('SetManagedAccessRequirementFields', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeAll(() => server.listen())
   afterEach(() => server.resetHandlers())
   afterAll(() => server.close())
@@ -325,7 +327,7 @@ describe('SetManagedAccessRequirementFields', () => {
       fileHandleId: newFileHandleId,
       fileName: newFileName,
     }
-    const mockUploadFile = jest
+    const mockUploadFile = vi
       .spyOn(SynapseClient, 'uploadFile')
       .mockResolvedValue(fileUploadComplete)
 
@@ -360,7 +362,7 @@ describe('SetManagedAccessRequirementFields', () => {
       type: 'text/plain',
     })
     const errorReason = 'Some upload error'
-    const mockUploadFile = jest
+    const mockUploadFile = vi
       .spyOn(SynapseClient, 'uploadFile')
       .mockImplementation(() => {
         throw new SynapseClientError(
@@ -374,7 +376,7 @@ describe('SetManagedAccessRequirementFields', () => {
     await findDucTemplateButton(mockDucTemplateFileHandle.fileName)
 
     // hide console.log output by FileUpload on error
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(noop)
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(noop)
     const fileInput = screen.getByTestId('file-input')
     await user.upload(fileInput, newFile)
     consoleLogSpy.mockRestore()

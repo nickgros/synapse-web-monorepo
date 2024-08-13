@@ -31,19 +31,19 @@ import { UserBundle } from '@sage-bionetworks/synapse-types'
 const APPROVAL_TABLE_TEST_ID = 'AccessApprovalTableTestId'
 const SUBMISSION_TABLE_TEST_ID = 'AccessSubmissionTableTestId'
 
-const mockAccessApprovalsTable = jest
+const mockAccessApprovalsTable = vi
   .spyOn(AccessApprovalsTableModule, 'AccessApprovalsTable')
   .mockImplementation(() => {
     return <div data-testid={APPROVAL_TABLE_TEST_ID}></div>
   })
 
-const mockAccessRequestSubmissionTable = jest
+const mockAccessRequestSubmissionTable = vi
   .spyOn(AccessRequestSubmissionTableModule, 'AccessRequestSubmissionTable')
   .mockImplementation(() => {
     return <div data-testid={SUBMISSION_TABLE_TEST_ID}></div>
   })
 
-const onServiceReceivedRequest = jest.fn()
+const onServiceReceivedRequest = vi.fn()
 
 function getUserBundleHandler(isACTMember: boolean, isARReviewer: boolean) {
   return rest.get(
@@ -78,7 +78,7 @@ function renderComponent(modifyHistory?: (history: MemoryHistory) => void) {
 describe('AccessHistoryDashboard tests', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
     const isACTMember = true
     const isARReviewer = true

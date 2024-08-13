@@ -62,15 +62,15 @@ const renderComponent = (
 }
 
 mockAllIsIntersecting(true)
-const mockIconSvg = jest
+const mockIconSvg = vi
   .spyOn(IconSvg, 'default')
   .mockImplementation(() => <div data-testid="IconSvg" />)
 
-const mockFileHandleLink = jest
+const mockFileHandleLink = vi
   .spyOn(FileHandleLinkModule, 'FileHandleLink')
   .mockImplementation(() => <div data-testid="FileHandleLink" />)
 
-const mockImageFileHandle = jest
+const mockImageFileHandle = vi
   .spyOn(ImageFileHandleModule, 'ImageFileHandle')
   .mockImplementation(() => <div data-testid="ImageFileHandle" />)
 
@@ -236,7 +236,7 @@ describe('GenericCard tests', () => {
     ]
 
     test('Renders a FileHandleLink with an EntityView associate type', async () => {
-      const mockFileHandleLink = jest
+      const mockFileHandleLink = vi
         .spyOn(FileHandleLinkModule, 'FileHandleLink')
         .mockImplementation(() => <div data-testid="FileHandleLink" />)
       renderComponent(
@@ -505,7 +505,7 @@ describe('GenericCard tests', () => {
           hasClickedShowMore={false}
           descriptionSubTitle={''}
           descriptionConfig={descriptionLinkConfig}
-          toggleShowMore={jest.fn()}
+          toggleShowMore={vi.fn()}
         />,
         { wrapper: createWrapper() },
       )
@@ -518,7 +518,7 @@ describe('GenericCard tests', () => {
           hasClickedShowMore={false}
           descriptionSubTitle={''}
           descriptionConfig={undefined}
-          toggleShowMore={jest.fn()}
+          toggleShowMore={vi.fn()}
         />,
         { wrapper: createWrapper() },
       )

@@ -7,7 +7,7 @@ import { SizeMe } from 'react-sizeme'
 import { getContrastColorPalette } from '../../ColorGradient/ColorGradient'
 import { SynapseConstants } from '../../../utils'
 import SynapseClient from '../../../synapse-client'
-import { useSynapseContext } from '../../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../../context/SynapseContext'
 import {
   ColumnTypeEnum,
   FacetColumnRequest,

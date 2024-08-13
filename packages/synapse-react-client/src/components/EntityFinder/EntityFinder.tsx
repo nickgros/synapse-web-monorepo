@@ -20,7 +20,7 @@ import {
   getEntityTypeFromHeader,
 } from '../../utils/functions/EntityTypeUtils'
 import { parseSynId } from '../../utils/functions/RegularExpressions'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import { Reference } from '@sage-bionetworks/synapse-types'
 import { EntityType } from '@sage-bionetworks/synapse-types'
 import { KeyValue } from '@sage-bionetworks/synapse-types'

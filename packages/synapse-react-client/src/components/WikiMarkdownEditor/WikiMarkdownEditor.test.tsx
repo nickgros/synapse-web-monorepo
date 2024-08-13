@@ -24,9 +24,9 @@ import {
   WikiMarkdownEditorProps,
 } from './WikiMarkdownEditor'
 
-const onCancel = jest.fn()
-const onSave = jest.fn()
-const updateWikiPageSpy = jest.spyOn(SynapseClient, 'updateWikiPage')
+const onCancel = vi.fn()
+const onSave = vi.fn()
+const updateWikiPageSpy = vi.spyOn(SynapseClient, 'updateWikiPage')
 
 const defaultRootWikiPageProps: WikiMarkdownEditorProps = {
   onSave,
@@ -86,7 +86,9 @@ async function waitForTitleSet(title: string) {
 }
 
 describe('WikiMarkdownEditor', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
   beforeAll(() => server.listen())
   afterEach(() => server.resetHandlers())
   afterAll(() => server.close())

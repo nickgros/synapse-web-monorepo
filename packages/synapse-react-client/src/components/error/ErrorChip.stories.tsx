@@ -1,8 +1,9 @@
 import React from 'react'
 import { Meta, StoryObj } from '@storybook/react'
 import ErrorChip, { ErrorChipProps } from './ErrorChip'
-import { SynapseClientError, SynapseContextConsumer } from '../../utils'
-import FullContextProvider from '../../utils/context/FullContextProvider'
+import { SynapseClientError } from '../../utils'
+import FullContextProvider from '../../context/FullContextProvider'
+import { SynapseContextConsumer } from '../../context'
 
 const meta: Meta<ErrorChipProps & { isAuthenticated: boolean }> = {
   title: 'Components/ErrorChip',

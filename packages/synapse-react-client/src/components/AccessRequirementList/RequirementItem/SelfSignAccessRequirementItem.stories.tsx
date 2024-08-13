@@ -4,7 +4,7 @@ import SelfSignAccessRequirementItem from './SelfSignAccessRequirementItem'
 import {
   SynapseContextConsumer,
   SynapseContextProvider,
-} from '../../../utils/context/SynapseContext'
+} from '../../../context/SynapseContext'
 import {
   mockSelfSignAccessRequirement,
   mockToUAccessRequirement,

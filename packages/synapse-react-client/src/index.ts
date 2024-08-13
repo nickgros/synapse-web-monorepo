@@ -5,14 +5,16 @@ import Palettes from './theme/palette/Palettes'
 import {
   SynapseClientError,
   SynapseConstants,
+  SynapseUtilityFunctions,
+} from './utils'
+import {
   SynapseContextConsumer,
   SynapseContextProvider,
-  SynapseUtilityFunctions,
   useSynapseContext,
-} from './utils'
+} from './context'
 import FullContextProvider, {
   defaultQueryClientConfig,
-} from './utils/context/FullContextProvider'
+} from './context/FullContextProvider'
 import * as AppUtils from './utils/AppUtils'
 import * as RegularExpressions from './utils/functions/RegularExpressions'
 import SynapseClient, { HttpClient } from './synapse-client'

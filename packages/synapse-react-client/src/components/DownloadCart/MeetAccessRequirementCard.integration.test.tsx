@@ -9,7 +9,7 @@ import {
   TERMS_OF_USE_TITLE,
 } from './MeetAccessRequirementCard'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../utils'
+import { SynapseContextType } from '../../context'
 import { rest, server } from '../../mocks/msw/server'
 import {
   mockLockAccessRequirement,

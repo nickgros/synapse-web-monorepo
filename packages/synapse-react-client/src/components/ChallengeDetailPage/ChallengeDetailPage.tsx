@@ -9,7 +9,7 @@ import {
 } from '../../synapse-queries'
 import ConfirmationDialog from '../ConfirmationDialog'
 import ChallengeRequirementsModal from '../ChallengeRequirementsModal/ChallengeRequirementsModal'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import { displayToast } from '../ToastMessage'
 
 export type ChallengeDetailPageProps = {

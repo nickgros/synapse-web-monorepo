@@ -92,10 +92,7 @@ async function renderComponent(props: StatisticsPlotProps) {
   return renderReturn
 }
 
-const mockGetProjectStatistics = jest.spyOn(
-  SynapseClient,
-  'getProjectStatistics',
-)
+const mockGetProjectStatistics = vi.spyOn(SynapseClient, 'getProjectStatistics')
 
 describe('StatisticsPlot', () => {
   const props: StatisticsPlotProps = {

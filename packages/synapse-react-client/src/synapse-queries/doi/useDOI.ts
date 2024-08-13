@@ -1,7 +1,7 @@
 import { DoiAssociation } from '@sage-bionetworks/synapse-types'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { SynapseClientError } from '../../utils/SynapseClientError'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import SynapseClient from '../../synapse-client'
 
 export function useGetDOIAssociation(

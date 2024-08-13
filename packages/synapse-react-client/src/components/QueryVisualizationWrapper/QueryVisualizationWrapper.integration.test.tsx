@@ -23,11 +23,12 @@ import { server } from '../../mocks/msw/server'
 import { MOCK_TABLE_ENTITY_ID } from '../../mocks/entity/mockTableEntity'
 import { DEFAULT_PAGE_SIZE } from '../../utils/SynapseConstants'
 import { cloneDeep } from 'lodash-es'
+import { Mock } from 'vitest'
 
-const onQueryContextReceived = jest.fn<void, [PaginatedQueryContextType]>()
-const onContextReceived = jest.fn<void, [QueryVisualizationContextType]>()
+const onQueryContextReceived = vi.fn<(arg: PaginatedQueryContextType) => void>()
+const onContextReceived = vi.fn<(arg: QueryVisualizationContextType) => void>()
 
-function QueryVizWrapperConsumer(props: { mockFn?: jest.Mock }) {
+function QueryVizWrapperConsumer(props: { mockFn?: Mock }) {
   const queryContext = usePaginatedQueryContext()
   onQueryContextReceived(queryContext)
   const context = useQueryVisualizationContext()
@@ -37,7 +38,7 @@ function QueryVizWrapperConsumer(props: { mockFn?: jest.Mock }) {
 }
 
 function TestComponent(props: {
-  mockFn?: jest.Mock
+  mockFn?: Mock
   queryWrapperProps?: Partial<QueryWrapperProps>
   queryWrapperVisualizationProps?: Partial<QueryVisualizationWrapperProps>
 }) {
@@ -73,7 +74,7 @@ describe('QueryVisualizationWrapper', () => {
   beforeEach(() => server.use(...getHandlersForTableQuery(queryResponse)))
   afterEach(() => {
     server.restoreHandlers()
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
   afterAll(() => server.close())
 

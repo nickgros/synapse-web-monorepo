@@ -1,20 +1,12 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import React from 'react'
 import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils'
 import UserProjects from './UserProjects'
-import { useGetUserProjectsInfinite } from '../../synapse-queries/user/useGetUserProjects'
 import { ProjectHeader } from '@sage-bionetworks/synapse-types'
 import { SynapseTestContext } from '../../mocks/MockSynapseContext'
+import SynapseClient from '../../synapse-client'
 
-jest.mock('../../../src/synapse-queries/user/useGetUserProjects', () => {
-  return {
-    useGetUserProjectsInfinite: jest.fn(),
-  }
-})
-
-const mockFetchNextPage = jest.fn()
-const mockUseGetUserProjectsInfinite = useGetUserProjectsInfinite as jest.Mock
 const userId = '10000'
 const page1: Partial<ProjectHeader>[] = [
   {
@@ -36,6 +28,22 @@ const page2: Partial<ProjectHeader>[] = [
   },
 ]
 
+vi.spyOn(SynapseClient, 'getUserProjects').mockImplementation(
+  (_userId, params, _accessToken) => {
+    if (!params?.nextPageToken) {
+      return Promise.resolve({
+        results: page1 as ProjectHeader[],
+        nextPageToken: 'fake-npt',
+      })
+    } else {
+      return Promise.resolve({
+        results: page2 as ProjectHeader[],
+        nextPageToken: undefined,
+      })
+    }
+  },
+)
+
 function renderComponent() {
   return render(
     <SynapseTestContext>
@@ -46,33 +54,17 @@ function renderComponent() {
 
 describe('UserProjects tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
   it('loads more available projects when inView', async () => {
-    mockAllIsIntersecting(true)
-    mockUseGetUserProjectsInfinite.mockReturnValue({
-      data: {
-        pages: [
-          {
-            results: page1,
-            nextPageToken: '50a0',
-          },
-          {
-            results: page2,
-            nextPageToken: null,
-          },
-        ],
-        pageParams: [],
-      },
-      fetchNextPage: mockFetchNextPage,
-      hasNextPage: true,
-      isLoading: false,
-      isSuccess: true,
-    })
-
     renderComponent()
     const item1 = await screen.findAllByText('The first')
     expect(item1).toHaveLength(1)
+
+    act(() => {
+      mockAllIsIntersecting(true)
+    })
+
     const item2 = await screen.findAllByText('The second')
     expect(item2).toHaveLength(1)
   })

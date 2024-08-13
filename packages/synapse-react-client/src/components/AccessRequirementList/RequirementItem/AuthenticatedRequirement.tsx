@@ -1,10 +1,11 @@
 import React from 'react'
 import { useGetCurrentUserProfile } from '../../../synapse-queries'
 import { Link, Typography } from '@mui/material'
-import { SynapseConstants, useSynapseContext } from '../../../utils'
+import { SynapseConstants } from '../../../utils'
 import RequirementItem from './RequirementItem'
 import { RequirementItemStatus } from '../AccessApprovalCheckMark'
 import { useOneSageURL } from '../../../utils/hooks/useOneSageURL'
+import { useSynapseContext } from '../../../context'
 
 /**
  * Displays a data access request requirement prompts the user to authenticate if not already signed in.

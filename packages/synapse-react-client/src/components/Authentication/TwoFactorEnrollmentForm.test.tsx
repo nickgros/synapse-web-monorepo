@@ -20,26 +20,26 @@ const returnedSecret: TotpSecret = {
   period: 30,
 }
 
-jest.mock('qrcode', () => ({
+vi.mock('qrcode', () => ({
   // JSDOM doesn't fully support this, so mock it
-  toCanvas: jest.fn(),
+  toCanvas: vi.fn(),
 }))
 
-jest.spyOn(SynapseClient, 'getNotificationEmail').mockResolvedValue({
+vi.spyOn(SynapseClient, 'getNotificationEmail').mockResolvedValue({
   email: mockUserProfileData.email,
 })
 
-const mockStart2FAEnrollment = jest
+const mockStart2FAEnrollment = vi
   .spyOn(SynapseClient, 'start2FAEnrollment')
   .mockResolvedValue(returnedSecret)
 
-const mockComplete2FAEnrollment = jest.spyOn(
+const mockComplete2FAEnrollment = vi.spyOn(
   SynapseClient,
   'complete2FAEnrollment',
 )
 
-const onSuccessFn = jest.fn()
-const onBackClickedFn = jest.fn()
+const onSuccessFn = vi.fn()
+const onBackClickedFn = vi.fn()
 
 function renderComponent(props: TwoFactorEnrollmentFormProps) {
   return render(<TwoFactorEnrollmentForm {...props} />, {
@@ -95,7 +95,7 @@ describe('TwoFactorEnrollmentForm', () => {
     expect(submitButton).toBeDisabled()
     await userEvent.type(totpInput, '123456')
     expect(submitButton).not.toBeDisabled()
-    const consoleErrorSpy = jest
+    const consoleErrorSpy = vi
       .spyOn(console, 'error')
       .mockImplementation(() => {})
 

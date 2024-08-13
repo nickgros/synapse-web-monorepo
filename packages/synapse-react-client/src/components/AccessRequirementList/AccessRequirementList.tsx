@@ -37,7 +37,7 @@ import {
 } from '../../synapse-queries'
 import TwoFactorAuthEnabledRequirement from './RequirementItem/TwoFactorAuthEnabledRequirement'
 import { AccessRequirementListItem } from './AccessRequirementListItem'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import { useCanShowManagedACTWikiInWizard } from './AccessRequirementListUtils'
 import { noop } from 'lodash-es'
 import { DialogBaseTitle } from '../DialogBase'

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Alert, AlertProps, Box, Button, Typography } from '@mui/material'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import SignInButton from '../SignInButton'
 import DownloadDetails from './DownloadDetails'
 import { useGetDownloadListStatistics } from '../../synapse-queries'

@@ -38,9 +38,9 @@ const Wrapper: React.FC<Partial<PaginatedQueryContextType>> = queryContext => {
 
 describe('TablePagination component', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-    mockSetPageSize = jest.fn()
-    mockGoToPage = jest.fn()
+    vi.clearAllMocks()
+    mockSetPageSize = vi.fn()
+    mockGoToPage = vi.fn()
   })
 
   it('renders pagination and page size elements', async () => {

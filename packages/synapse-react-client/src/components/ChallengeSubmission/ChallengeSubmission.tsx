@@ -8,7 +8,7 @@ import {
   useGetUserSubmissionTeams,
   useUpdateEntityACL,
 } from '../../synapse-queries'
-import { useSynapseContext } from '../../utils'
+import { useSynapseContext } from '../../context'
 import {
   ACCESS_TYPE,
   Challenge,

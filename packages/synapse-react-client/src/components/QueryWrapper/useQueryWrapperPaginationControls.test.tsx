@@ -15,27 +15,27 @@ describe('useQueryWrapperPaginationControls tests', () => {
     entityId: 'syn123',
     currentQueryRequest: mockQueryBundleRequest,
     nextQueryRequest: mockQueryBundleRequest,
-    commitChanges: jest.fn(),
-    getInitQueryRequest: jest.fn(),
-    getCurrentQueryRequest: jest.fn(),
-    goToPage: jest.fn(),
+    commitChanges: vi.fn(),
+    getInitQueryRequest: vi.fn(),
+    getCurrentQueryRequest: vi.fn(),
+    goToPage: vi.fn(),
     isConfirmingChange: false,
-    onCancelChange: jest.fn(),
-    onConfirmChange: jest.fn(),
+    onCancelChange: vi.fn(),
+    onConfirmChange: vi.fn(),
     pageSize: 10,
-    removeQueryFilter: jest.fn(),
-    addValueToSelectedFacet: jest.fn(),
-    setRangeFacetValue: jest.fn(),
-    removeSelectedFacet: jest.fn(),
-    removeValueFromQueryFilter: jest.fn(),
-    removeValueFromSelectedFacet: jest.fn(),
-    resetQuery: jest.fn(),
-    setPageSize: jest.fn(),
-    setQuery: jest.fn(),
+    removeQueryFilter: vi.fn(),
+    addValueToSelectedFacet: vi.fn(),
+    setRangeFacetValue: vi.fn(),
+    removeSelectedFacet: vi.fn(),
+    removeValueFromQueryFilter: vi.fn(),
+    removeValueFromSelectedFacet: vi.fn(),
+    resetQuery: vi.fn(),
+    setPageSize: vi.fn(),
+    setQuery: vi.fn(),
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('paginated query', () => {
@@ -78,12 +78,12 @@ describe('useQueryWrapperPaginationControls tests', () => {
       error: null,
       isLoadingNewBundle: false,
       currentPage: 'ALL',
-      fetchNextPage: jest.fn().mockResolvedValue(undefined),
-      fetchPreviousPage: jest.fn(),
+      fetchNextPage: vi.fn().mockResolvedValue(undefined),
+      fetchPreviousPage: vi.fn(),
       hasNextPage: true,
       hasPreviousPage: false,
       isFetchingNextPage: false,
-      setCurrentPage: jest.fn(),
+      setCurrentPage: vi.fn(),
     }
 
     it('returns pagination controls', async () => {

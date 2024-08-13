@@ -16,9 +16,9 @@ import { server } from '../../../mocks/msw/server'
 import { getHandlersForTableQuery } from '../../../mocks/msw/handlers/tableQueryHandlers'
 import { mockTableEntity } from '../../../mocks/entity/mockTableEntity'
 
-const mockApplyCallback = jest.fn(() => null)
-const mockHideCallback = jest.fn(() => null)
-const mockSetPlotTypeCallback = jest.fn(() => null)
+const mockApplyCallback = vi.fn(() => null)
+const mockHideCallback = vi.fn(() => null)
+const mockSetPlotTypeCallback = vi.fn(() => null)
 
 const stringFacetValues: FacetColumnResultValues = {
   facetType: 'enumeration',

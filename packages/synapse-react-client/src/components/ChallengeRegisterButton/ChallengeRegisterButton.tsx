@@ -8,7 +8,8 @@ import {
   useGetIsUserMemberOfTeam,
   useGetUserSubmissionTeams,
 } from '../../synapse-queries'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 
 export interface ChallengeRegisterButtonProps {
   projectId: string

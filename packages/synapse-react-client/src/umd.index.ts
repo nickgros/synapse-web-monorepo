@@ -59,11 +59,11 @@ import {
   SynapseContextConsumer,
   SynapseContextProvider,
   useSynapseContext,
-} from './utils/context/SynapseContext'
+} from './context/SynapseContext'
 import TwoFactorBackupCodes from './components/Authentication/TwoFactorBackupCodes'
 import TwoFactorEnrollmentForm from './components/Authentication/TwoFactorEnrollmentForm'
 import TwoFactorAuthSettingsPanel from './components/Authentication/TwoFactorAuthSettingsPanel'
-import { FullContextProvider } from './utils/context/FullContextProvider'
+import { FullContextProvider } from './context/FullContextProvider'
 import SubscriptionPage from './components/SubscriptionPage'
 import OrientationBanner from './components/OrientationBanner/OrientationBanner'
 import AccessRequirementList from './components/AccessRequirementList/AccessRequirementList'

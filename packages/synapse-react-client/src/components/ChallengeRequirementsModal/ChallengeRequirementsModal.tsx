@@ -10,7 +10,8 @@ import {
   useAddMemberToTeam,
   useGetMembershipStatus,
 } from '../../synapse-queries/team/useTeamMembers'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 import AccessRequirementList from '../AccessRequirementList/AccessRequirementList'
 import { RestrictableObjectType } from '@sage-bionetworks/synapse-types'
 import { SynapseSpinner } from '../LoadingScreen/LoadingScreen'

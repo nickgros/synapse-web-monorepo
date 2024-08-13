@@ -12,7 +12,7 @@ import { mockExternalS3UploadDestination } from '../../../mocks/mock_upload_dest
 import { server } from '../../../mocks/msw/server'
 import { mockUserProfileData } from '../../../mocks/user/mock_user_profile'
 import { createWrapper } from '../../../testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../../utils/context/SynapseContext'
+import { SynapseContextType } from '../../../context/SynapseContext'
 import {
   BackendDestinationEnum,
   getEndpoint,

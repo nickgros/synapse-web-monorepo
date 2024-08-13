@@ -5,7 +5,7 @@ import { createWrapper } from '../../testutils/TestingLibraryUtils'
 import userEvent from '@testing-library/user-event'
 
 const DROPDOWN_BUTTON_TEXT = 'Open Dropdown Menu'
-const onClickFn = jest.fn()
+const onClickFn = vi.fn()
 function createDropdownItemConfig(
   text: string,
   tooltipText: string | undefined = undefined,
@@ -39,7 +39,9 @@ function renderComponent(props: DropdownMenuProps) {
 }
 
 describe('DropdownMenu Tests', function () {
-  afterEach(() => jest.clearAllMocks())
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
   it('Renders groups of items', async () => {
     renderComponent(defaultProps)
     const dropdownButton = await screen.findByRole('button', {

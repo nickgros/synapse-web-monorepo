@@ -7,7 +7,7 @@ import {
   DownloadListActionsRequired,
   DownloadListActionsRequiredProps,
 } from './DownloadListActionsRequired'
-import { useSynapseContext } from '../../utils/context/SynapseContext'
+import { useSynapseContext } from '../../context/SynapseContext'
 import SynapseClient from '../../synapse-client'
 import IconSvg from '../IconSvg/IconSvg'
 import { CreatePackageV2 } from './CreatePackageV2'

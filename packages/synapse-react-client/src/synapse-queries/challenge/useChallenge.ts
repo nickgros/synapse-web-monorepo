@@ -7,7 +7,8 @@ import {
   ChallengeTeam,
   CreateChallengeTeamRequest,
 } from '@sage-bionetworks/synapse-types'
-import { SynapseClientError, useSynapseContext } from '../../utils'
+import { SynapseClientError } from '../../utils'
+import { useSynapseContext } from '../../context'
 import SynapseClient from '../../synapse-client'
 
 export function useRegisterTeamForChallenge(

@@ -5,18 +5,19 @@ import React from 'react'
 import { mockAllIsIntersecting } from 'react-intersection-observer/test-utils'
 import EntityIDColumnCopyIcon from '../../../src/components/SynapseTable/EntityIDColumnCopyIcon'
 import { createWrapper } from '../../../src/testutils/TestingLibraryUtils'
-import { SynapseContextType } from '../../../src/utils/context/SynapseContext'
-import {
-  QueryBundleRequest,
-  QueryResultBundle,
-} from '@sage-bionetworks/synapse-types'
 import {
   QueryContextProvider,
   QueryContextType,
-} from '../../../src/components/QueryContext/QueryContext'
+  SynapseClient,
+  SynapseConstants,
+  SynapseContextType,
+} from '../../../src'
+import {
+  QueryBundleRequest,
+  QueryResultBundle,
+  TextMatchesQueryFilter,
+} from '@sage-bionetworks/synapse-types'
 import idsQueryResponse from '../../../src/mocks/mockIDListQueryResponseData.json'
-import { SynapseClient, SynapseConstants } from '../../../src'
-import { TextMatchesQueryFilter } from '@sage-bionetworks/synapse-types'
 
 const synID = 'syn55555'
 const version = '7'
@@ -60,17 +61,17 @@ function renderComponent(wrapperProps?: SynapseContextType) {
 
 describe('EntityIDColumnCopyIcon tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
 
-    SynapseClient.getFullQueryTableResults = jest
-      .fn()
-      .mockResolvedValue(idsQueryResponse as QueryResultBundle)
+    vi.spyOn(SynapseClient, 'getFullQueryTableResults').mockResolvedValue(
+      idsQueryResponse as QueryResultBundle,
+    )
     mockAllIsIntersecting(false)
   })
 
   describe('Do copy', () => {
     it('Copies IDs to the clipboard', async () => {
-      const mockWriteText = jest.fn()
+      const mockWriteText = vi.fn()
       mockWriteText.mockResolvedValue('copied')
       const mockClipboard = {
         writeText: mockWriteText,
