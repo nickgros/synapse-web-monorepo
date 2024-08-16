@@ -13,9 +13,8 @@ import { unCamelCase } from '../../utils/functions/unCamelCase'
 import { ColumnType } from '@sage-bionetworks/synapse-types'
 import { getDisplayValue } from '../../utils/functions/getDataFromFromStorage'
 import useMutuallyExclusiveState from '../../utils/hooks/useMutuallyExclusiveState'
-import { useAtomValue } from 'jotai'
-import { tableQueryDataAtom } from '../QueryWrapper/QueryWrapper'
 import NoContentPlaceholderComponent from './NoContentPlaceholder'
+import { useQuery } from '@tanstack/react-query'
 
 type ColumnOrFacetHelpConfig = {
   /** Text that describes the column or facet */
@@ -144,9 +143,13 @@ export function QueryVisualizationWrapper(
     [props.columnAliases],
   )
 
-  const { getCurrentQueryRequest, isFacetsAvailable, hasResettableFilters } =
-    useQueryContext()
-  const data = useAtomValue(tableQueryDataAtom)
+  const {
+    getCurrentQueryRequest,
+    hasFacetedSelectColumn,
+    hasResettableFilters,
+    queryMetadataQueryOptions,
+  } = useQueryContext()
+  const { data: queryMetadata } = useQuery(queryMetadataQueryOptions)
 
   const [showSqlEditor, setShowSqlEditor] = useState(false)
   const [showPlots, setShowPlots] = useState(defaultShowPlots)
@@ -172,7 +175,7 @@ export function QueryVisualizationWrapper(
   )
 
   // We deep-compare-memoize the selectColumns so we don't reset visible columns when the reference changes, but not the contents (e.g. on page change)
-  const selectColumns = useDeepCompareMemoize(data?.selectColumns)
+  const selectColumns = useDeepCompareMemoize(queryMetadata?.selectColumns)
 
   useEffect(() => {
     // SWC-6030: If sql changes, reset what columns are visible
@@ -196,7 +199,7 @@ export function QueryVisualizationWrapper(
         return columnAliases[columnName]
       }
       if (jsonPath) {
-        const columnModel = data?.columnModels?.find(
+        const columnModel = queryMetadata?.columnModels?.find(
           cm => cm.name === columnName,
         )
         if (columnModel?.jsonSubColumns) {
@@ -210,7 +213,7 @@ export function QueryVisualizationWrapper(
       }
       return unCamelCase(columnName)
     },
-    [columnAliases, data?.columnModels],
+    [columnAliases, queryMetadata?.columnModels],
   )
 
   const getHelpText = useCallback(
@@ -250,7 +253,7 @@ export function QueryVisualizationWrapper(
       NoContentPlaceholder,
       isShowingExportToCavaticaModal,
       setIsShowingExportToCavaticaModal,
-      showFacetFilter: isFacetsAvailable ? showFacetFilter : false,
+      showFacetFilter: hasFacetedSelectColumn ? showFacetFilter : false,
       setShowFacetFilter,
       showSearchBar,
       setShowSearchBar,
@@ -258,7 +261,7 @@ export function QueryVisualizationWrapper(
       setShowDownloadConfirmation,
       showSqlEditor,
       setShowSqlEditor,
-      showPlots: hasCustomPlots || isFacetsAvailable ? showPlots : false,
+      showPlots: hasCustomPlots || hasFacetedSelectColumn ? showPlots : false,
       setShowPlots,
       showCopyToClipboard,
       setShowCopyToClipboard,
@@ -267,7 +270,7 @@ export function QueryVisualizationWrapper(
       NoContentPlaceholder,
       getColumnDisplayName,
       getHelpText,
-      isFacetsAvailable,
+      hasFacetedSelectColumn,
       isShowingExportToCavaticaModal,
       props.rgbIndex,
       props.showLastUpdatedOn,

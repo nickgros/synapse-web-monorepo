@@ -193,7 +193,7 @@ describe('QueryVisualizationWrapper', () => {
 
     // e.g. navigate to the next page of data:
     act(() => {
-      onQueryContextReceived.mock.lastCall![0].goToPage(2)
+      onQueryContextReceived.mock.lastCall![0].goToPage(1)
     })
 
     let secondSetOfVisibleColumns

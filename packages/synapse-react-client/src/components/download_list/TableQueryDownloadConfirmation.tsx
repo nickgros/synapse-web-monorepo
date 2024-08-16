@@ -13,19 +13,20 @@ import { getPrimaryKeyINFilter } from '../../utils/functions/QueryFilterUtils'
 import { getFileColumnModelId } from '../SynapseTable/SynapseTableUtils'
 import { useAtomValue } from 'jotai'
 import {
-  fileIdColumnNameAtom,
-  fileVersionColumnNameAtom,
-  tableQueryDataAtom,
-} from '../QueryWrapper/QueryWrapper'
-import {
   hasSelectedRowsAtom,
   rowSelectionPrimaryKeyAtom,
   selectedRowsAtom,
 } from '../QueryWrapper/TableRowSelectionState'
+import {
+  fileIdColumnNameAtom,
+  fileVersionColumnNameAtom,
+} from '../QueryWrapper/QueryWrapperAtoms'
+import { useQuery } from '@tanstack/react-query'
 
 export function TableQueryDownloadConfirmation() {
-  const { getCurrentQueryRequest } = useQueryContext()
-  const data = useAtomValue(tableQueryDataAtom)
+  const { getCurrentQueryRequest, queryMetadataQueryOptions } =
+    useQueryContext()
+  const { data: queryMetadata } = useQuery(queryMetadataQueryOptions)
   const hasSelectedRows = useAtomValue(hasSelectedRowsAtom)
   const selectedRows = useAtomValue(selectedRowsAtom)
   const rowSelectionPrimaryKey = useAtomValue(rowSelectionPrimaryKeyAtom)
@@ -42,10 +43,10 @@ export function TableQueryDownloadConfirmation() {
     // set the query.selectFileColumn
     if (fileIdColumnName && fileVersionColumnName) {
       // find the column model ID and set the parameters
-      const fileIdColumnModel = data?.columnModels?.find(
+      const fileIdColumnModel = queryMetadata?.columnModels?.find(
         col => col.name == fileIdColumnName,
       )
-      const fileVersionColumnModel = data?.columnModels?.find(
+      const fileVersionColumnModel = queryMetadata?.columnModels?.find(
         col => col.name == fileVersionColumnName,
       )
 
@@ -56,17 +57,21 @@ export function TableQueryDownloadConfirmation() {
         ? Number(fileVersionColumnModel.id)
         : undefined
     } else {
-      const fileColumnId = getFileColumnModelId(data?.columnModels)
+      const fileColumnId = getFileColumnModelId(queryMetadata?.columnModels)
       if (fileColumnId) {
         requestCopy.query.selectFileColumn = Number(fileColumnId)
       }
     }
 
-    if (hasSelectedRows && rowSelectionPrimaryKey && data?.selectColumns) {
+    if (
+      hasSelectedRows &&
+      rowSelectionPrimaryKey &&
+      queryMetadata?.selectColumns
+    ) {
       const primaryKeyINFilter = getPrimaryKeyINFilter(
         rowSelectionPrimaryKey,
         selectedRows,
-        data.selectColumns,
+        queryMetadata.selectColumns,
       )
       requestCopy.query.additionalFilters = [
         ...(requestCopy.query.additionalFilters || []),
@@ -75,8 +80,8 @@ export function TableQueryDownloadConfirmation() {
     }
     return requestCopy
   }, [
-    data?.columnModels,
-    data?.selectColumns,
+    queryMetadata?.columnModels,
+    queryMetadata?.selectColumns,
     getCurrentQueryRequest,
     hasSelectedRows,
     rowSelectionPrimaryKey,

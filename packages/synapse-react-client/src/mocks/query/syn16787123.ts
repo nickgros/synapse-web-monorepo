@@ -1,6 +1,6 @@
 import { QueryResultBundle } from '@sage-bionetworks/synapse-types'
 
-const syn16787123: QueryResultBundle = {
+const syn16787123 = {
   concreteType: 'org.sagebionetworks.repo.model.table.QueryResultBundle',
   queryCount: 59,
   queryResult: {
@@ -864,6 +864,6 @@ const syn16787123: QueryResultBundle = {
       columnName: 'diseaseFocus',
     },
   ],
-}
+} satisfies QueryResultBundle
 
 export default syn16787123

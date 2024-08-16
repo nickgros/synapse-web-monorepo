@@ -55,6 +55,33 @@ function removeBundleFieldsUsingMask(
   return result
 }
 
+function applyLimitAndOffset(
+  queryResultBundle: QueryResultBundle,
+  limit: number = 25,
+  offset: number = 0,
+): QueryResultBundle {
+  const result = cloneDeep(queryResultBundle)
+  if (result.queryResult?.queryResults.rows) {
+    result.queryResult.queryResults.rows =
+      result.queryResult.queryResults.rows.slice(offset, offset + limit)
+  }
+  return result
+}
+
+function updateResponseUsingRequest(
+  request: QueryBundleRequest,
+  queryResultBundle: QueryResultBundle,
+): QueryResultBundle {
+  let result = queryResultBundle
+  result = removeBundleFieldsUsingMask(queryResultBundle, request.partMask)
+  result = applyLimitAndOffset(
+    result,
+    request.query.limit,
+    request.query.offset,
+  )
+  return result
+}
+
 export function getHandlersForTableQuery(
   response: QueryResultBundle,
   backendOrigin = getEndpoint(BackendDestinationEnum.REPO_ENDPOINT),
@@ -63,7 +90,7 @@ export function getHandlersForTableQuery(
   return generateAsyncJobHandlers<QueryBundleRequest, QueryResultBundle>(
     TABLE_QUERY_ASYNC_START(entityId),
     tokenParam => TABLE_QUERY_ASYNC_GET(entityId, tokenParam),
-    request => removeBundleFieldsUsingMask(response, request.partMask),
+    request => updateResponseUsingRequest(request, response),
     backendOrigin,
   )
 }

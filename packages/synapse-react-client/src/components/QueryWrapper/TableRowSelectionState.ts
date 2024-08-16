@@ -1,7 +1,6 @@
 import { ColumnModel, Row } from '@sage-bionetworks/synapse-types'
 import { isEqual } from 'lodash-es'
 import { atom } from 'jotai'
-import { tableQueryDataAtom } from './QueryWrapper'
 
 export function getRowSelectionEqualityComparator(
   row: Row,
@@ -58,14 +57,18 @@ export const selectedRowsAtom = atom<Row[]>([])
 /**
  * Can be used to determine if a row is selected. If a `rowSelectionPrimaryKey` is defined, then the row is selected if it has a matching PK.
  */
-export const isRowSelectedAtom = atom(get => (row: Row) => {
-  const comparator = getRowSelectionEqualityComparator(
-    row,
-    get(tableQueryDataAtom)?.columnModels ?? [],
-    get(rowSelectionPrimaryKeyAtom),
-  )
-  return get(selectedRowsAtom).some(selectedRow => comparator(selectedRow, row))
-})
+export const isRowSelectedAtom = atom(
+  get => (row: Row, columnModels: ColumnModel[]) => {
+    const comparator = getRowSelectionEqualityComparator(
+      row,
+      columnModels,
+      get(rowSelectionPrimaryKeyAtom),
+    )
+    return get(selectedRowsAtom).some(selectedRow =>
+      comparator(selectedRow, row),
+    )
+  },
+)
 
 /**
  * Whether rows are currently selected

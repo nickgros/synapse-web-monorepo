@@ -2,45 +2,51 @@ import {
   ColumnTypeEnum,
   FileHandleAssociateType,
   FileHandleAssociation,
+  QueryBundleRequest,
   ReferenceList,
   RestrictableObjectType,
+  RowSet,
+  Table,
 } from '@sage-bionetworks/synapse-types'
 import { isEntityViewOrDataset, isFileViewOrDataset } from './SynapseTableUtils'
 import {
+  useGetEntity,
   useGetEntityHeaders,
   useGetFileBatch,
   useGetRestrictionInformationBatch,
   useGetUserGroupHeaders,
 } from '../../synapse-queries'
-import { useAtomValue } from 'jotai'
-import {
-  tableQueryDataAtom,
-  tableQueryEntityAtom,
-} from '../QueryWrapper/QueryWrapper'
 import { getFieldIndex, getTypeIndices } from '../../utils/functions/queryUtils'
-import { useMemo } from 'react'
+import { usePaginatedQueryContext, useQueryContext } from '../QueryContext'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useMemo } from 'react'
+import { useSynapseContext } from '../../utils'
+import { goToPage as transformQueryToGoToPage } from '../../utils/hooks/useImmutableTableQuery/TableQueryReducerActions'
+import { cloneDeep } from 'lodash-es'
+import { getTableQueryUseQueryOptions } from '../QueryWrapper/TableQueryUseQueryOptions'
 
-function usePrefetchFileHandleData() {
-  const entity = useAtomValue(tableQueryEntityAtom)
-  const data = useAtomValue(tableQueryDataAtom)
+function usePrefetchFileHandleData(rowSet: RowSet) {
+  const { entityId, versionNumber, queryMetadataQueryOptions } =
+    useQueryContext()
+
+  const { data: entity } = useGetEntity<Table>(entityId, versionNumber)
+  const { data: queryMetadata } = useQuery(queryMetadataQueryOptions)
 
   const fileHandleIdColumnIndices = getTypeIndices(
     ColumnTypeEnum.FILEHANDLEID,
-    data,
+    queryMetadata?.selectColumns,
   )
 
   let fileHandlesToPrefetch: FileHandleAssociation[] = []
 
   // Now add all IDs from the entity ID columns
-  if (entity && data && data.selectColumns) {
-    fileHandlesToPrefetch = (
-      data?.queryResult?.queryResults?.rows ?? []
-    ).reduce(
+  if (entity && rowSet && queryMetadata && queryMetadata.selectColumns) {
+    fileHandlesToPrefetch = (rowSet.rows ?? []).reduce(
       (prev: FileHandleAssociation[], curr) => {
         fileHandleIdColumnIndices.forEach(index => {
           const value = curr.values[index]
           if (value) {
-            const selectColumn = data?.selectColumns![index]
+            const selectColumn = queryMetadata?.selectColumns![index]
             if (
               isFileViewOrDataset(entity) &&
               selectColumn.name === 'dataFileHandleId'
@@ -81,15 +87,17 @@ function usePrefetchFileHandleData() {
   )
 }
 
-function useGetEntitiesInTable() {
-  const entity = useAtomValue(tableQueryEntityAtom)
-  const data = useAtomValue(tableQueryDataAtom)
+function useGetEntitiesInTable(rowSet: RowSet) {
+  const { entityId, versionNumber, queryMetadataQueryOptions } =
+    useQueryContext()
+  const { data: entity } = useGetEntity<Table>(entityId, versionNumber)
+  const { data: queryMetadata } = useQuery(queryMetadataQueryOptions)
 
   let entitiesInTable: ReferenceList = []
 
   // If this is a file view/dataset, collect all the row IDs; they correspond to entities that we'll end up fetching
   if (entity && isEntityViewOrDataset(entity)) {
-    entitiesInTable = (data?.queryResult?.queryResults?.rows ?? []).reduce(
+    entitiesInTable = (rowSet.rows ?? []).reduce(
       (prev: ReferenceList, curr) => {
         const { rowId, versionNumber } = curr
         if (rowId) {
@@ -104,12 +112,15 @@ function useGetEntitiesInTable() {
     )
   }
 
-  let entityIdColumnIndices = getTypeIndices(ColumnTypeEnum.ENTITYID, data)
+  let entityIdColumnIndices = getTypeIndices(
+    ColumnTypeEnum.ENTITYID,
+    queryMetadata?.selectColumns,
+  )
 
   if (entity && isEntityViewOrDataset(entity)) {
     // If this is a view/dataset, we don't need to fetch the entities in the entity ID column
     // Collecting the row IDs in the last step was sufficient
-    const idColumnIndex = getFieldIndex('id', data)
+    const idColumnIndex = getFieldIndex('id', queryMetadata)
     entityIdColumnIndices = entityIdColumnIndices.filter(
       index => index !== idColumnIndex,
     )
@@ -117,43 +128,38 @@ function useGetEntitiesInTable() {
 
   const entityIdListColumnIndices = getTypeIndices(
     ColumnTypeEnum.ENTITYID_LIST,
-    data,
+    queryMetadata?.selectColumns,
   )
 
-  entitiesInTable = (data?.queryResult?.queryResults?.rows ?? []).reduce(
-    (prev: ReferenceList, curr) => {
-      // Get all IDs from the entity ID columns
-      entityIdColumnIndices.forEach(index => {
-        const value = curr.values[index]
-        if (
-          value &&
-          !prev.find(e => e.targetId === value && e.targetVersionNumber == null)
-        ) {
-          prev.push({ targetId: value })
-        }
-      })
-      // Get all IDs from the entity ID list columns
-      entityIdListColumnIndices.forEach(index => {
-        const value = curr.values[index]
-        if (value) {
-          const ids = JSON.parse(value) as string[]
-          ids.forEach(id => {
-            if (
-              id &&
-              !prev.find(
-                e => e.targetId === id && e.targetVersionNumber == null,
-              )
-            ) {
-              prev.push({ targetId: id })
-            }
-          })
-        }
-      })
+  entitiesInTable = (rowSet.rows ?? []).reduce((prev: ReferenceList, curr) => {
+    // Get all IDs from the entity ID columns
+    entityIdColumnIndices.forEach(index => {
+      const value = curr.values[index]
+      if (
+        value &&
+        !prev.find(e => e.targetId === value && e.targetVersionNumber == null)
+      ) {
+        prev.push({ targetId: value })
+      }
+    })
+    // Get all IDs from the entity ID list columns
+    entityIdListColumnIndices.forEach(index => {
+      const value = curr.values[index]
+      if (value) {
+        const ids = JSON.parse(value) as string[]
+        ids.forEach(id => {
+          if (
+            id &&
+            !prev.find(e => e.targetId === id && e.targetVersionNumber == null)
+          ) {
+            prev.push({ targetId: id })
+          }
+        })
+      }
+    })
 
-      return prev
-    },
-    entitiesInTable,
-  )
+    return prev
+  }, entitiesInTable)
 
   return entitiesInTable
 }
@@ -164,40 +170,45 @@ function usePrefetchEntityData(entitiesToPrefetch: ReferenceList) {
   })
 }
 
-function usePrefetchUserGroupHeaderData() {
-  const data = useAtomValue(tableQueryDataAtom)
+function usePrefetchUserGroupHeaderData(rowSet: RowSet) {
+  const { queryMetadataQueryOptions } = useQueryContext()
+  const { data: queryMetadata } = useQuery(queryMetadataQueryOptions)
 
-  const userIdColumnIndices = getTypeIndices(ColumnTypeEnum.USERID, data)
+  const userIdColumnIndices = getTypeIndices(
+    ColumnTypeEnum.USERID,
+    queryMetadata?.selectColumns,
+  )
 
   const userIdListColumnIndices = getTypeIndices(
     ColumnTypeEnum.USERID_LIST,
-    data,
+    queryMetadata?.selectColumns,
   )
 
-  const principalIdsToPrefetch: string[] = (
-    data?.queryResult?.queryResults?.rows ?? []
-  ).reduce((prev: string[], curr) => {
-    // Add all IDs from the USERID columns
-    userIdColumnIndices.forEach(index => {
-      const value = curr.values[index]
-      if (value && !prev.includes(value)) {
-        prev.push(value)
-      }
-    })
-    // Add all IDs from the USERID_LIST columns
-    userIdListColumnIndices.forEach(index => {
-      const value = curr.values[index]
-      if (value) {
-        const userIds = JSON.parse(value) as number[]
-        userIds.forEach(userId => {
-          if (!prev.includes(String(userId))) {
-            prev.push(String(userId))
-          }
-        })
-      }
-    })
-    return prev
-  }, [])
+  const principalIdsToPrefetch: string[] = (rowSet.rows ?? []).reduce(
+    (prev: string[], curr) => {
+      // Add all IDs from the USERID columns
+      userIdColumnIndices.forEach(index => {
+        const value = curr.values[index]
+        if (value && !prev.includes(value)) {
+          prev.push(value)
+        }
+      })
+      // Add all IDs from the USERID_LIST columns
+      userIdListColumnIndices.forEach(index => {
+        const value = curr.values[index]
+        if (value) {
+          const userIds = JSON.parse(value) as number[]
+          userIds.forEach(userId => {
+            if (!prev.includes(String(userId))) {
+              prev.push(String(userId))
+            }
+          })
+        }
+      })
+      return prev
+    },
+    [],
+  )
 
   return useGetUserGroupHeaders(principalIdsToPrefetch, {
     enabled: principalIdsToPrefetch.length > 0,
@@ -229,8 +240,10 @@ function usePrefetchEntityRestrictionData(entitiesToPrefetch: ReferenceList) {
  * fetch and de-normalize batch requests, so when the SynapseTableCell component renders, the data is already loaded
  * in the cache. In practice, this avoids Synapse backend throttling and 'waterfall' content rendering.
  */
-export function usePrefetchTableData(): { dataHasBeenPrefetched: boolean } {
-  const entitiesToPrefetch = useGetEntitiesInTable()
+export function usePrefetchResourcesInTable(rowSet: RowSet): {
+  dataHasBeenPrefetched: boolean
+} {
+  const entitiesToPrefetch = useGetEntitiesInTable(rowSet)
   const { isLoading: isLoadingEntityData } =
     usePrefetchEntityData(entitiesToPrefetch)
   const { isLoading: isLoadingEntityRestrictionData } =
@@ -245,4 +258,34 @@ export function usePrefetchTableData(): { dataHasBeenPrefetched: boolean } {
       !isLoadingFileHandleData &&
       !isLoadingUserGroupData,
   }
+}
+
+/**
+ * Uses react-query to prefetch an entire page of row data.
+ */
+export function usePrefetchTableRows(): (pageNumber: number) => Promise<void> {
+  const { keyFactory, accessToken } = useSynapseContext()
+  const { currentQueryRequest } = usePaginatedQueryContext()
+  const queryClient = useQueryClient()
+
+  // locked column does not matter for row data
+  const lockedColumn = undefined
+  return useCallback((pageNumber: number) => {
+    // Get the query for the next page
+    const queryWithUpdatedPage = transformQueryToGoToPage(
+      { type: 'goToPage', pageNumber },
+      cloneDeep(currentQueryRequest) as QueryBundleRequest,
+    )
+
+    // Transform the query into UseQueryOptions
+    const { rowDataQueryOptions } = getTableQueryUseQueryOptions(
+      queryWithUpdatedPage,
+      lockedColumn,
+      keyFactory,
+      accessToken,
+    )
+
+    // Finally, prefetch the data
+    return queryClient.prefetchQuery(rowDataQueryOptions)
+  }, [])
 }

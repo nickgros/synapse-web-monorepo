@@ -30,10 +30,11 @@ import {
   getCorrespondingSelectedFacet,
   getHeaderIndex,
   hasResettableFilters,
-  isFacetAvailable,
+  hasFacetedSelectColumn,
   isSingleNotSetValue,
   queryRequestsHaveSameTotalResults,
   removeEmptyQueryParams,
+  removeLockedColumnFromFacetData,
 } from '../../src/utils/functions/queryUtils'
 import { mockTableEntity } from '../../src/mocks/entity/mockTableEntity'
 import mockDataset from '../../src/mocks/entity/mockDataset'
@@ -109,17 +110,17 @@ describe('facet support', () => {
   ]
 
   it('Facets are available', () => {
-    expect(isFacetAvailable(facetColumns, selectColumns)).toEqual(true)
+    expect(hasFacetedSelectColumn(facetColumns, selectColumns)).toEqual(true)
   })
 
   it('Facets are not available - undefined facetColumns or select columns', () => {
-    expect(isFacetAvailable(undefined, selectColumns)).toEqual(false)
-    expect(isFacetAvailable(facetColumns, undefined)).toEqual(false)
+    expect(hasFacetedSelectColumn(undefined, selectColumns)).toEqual(false)
+    expect(hasFacetedSelectColumn(facetColumns, undefined)).toEqual(false)
   })
 
   it('Facets are not available - empty facetColumns or select columns', () => {
-    expect(isFacetAvailable([], selectColumns)).toEqual(false)
-    expect(isFacetAvailable(facetColumns, [])).toEqual(false)
+    expect(hasFacetedSelectColumn([], selectColumns)).toEqual(false)
+    expect(hasFacetedSelectColumn(facetColumns, [])).toEqual(false)
   })
 
   it('Facets are not available - facetColumn has no corresponding selectColumn', () => {
@@ -130,9 +131,9 @@ describe('facet support', () => {
         columnType: ColumnTypeEnum.INTEGER,
       },
     ]
-    expect(isFacetAvailable(facetColumns, differentSelectColumns)).toEqual(
-      false,
-    )
+    expect(
+      hasFacetedSelectColumn(facetColumns, differentSelectColumns),
+    ).toEqual(false)
   })
 
   it('Facets are not available - all facets are single NOT_SET value', () => {
@@ -151,7 +152,7 @@ describe('facet support', () => {
         ],
       },
     ]
-    expect(isFacetAvailable(notSetFacets, selectColumns)).toEqual(false)
+    expect(hasFacetedSelectColumn(notSetFacets, selectColumns)).toEqual(false)
   })
 
   it('facet has single NOT_SET value tests', () => {
@@ -725,5 +726,42 @@ describe('getCorrespondingSelectedFacet', () => {
         { columnName: 'foo', jsonPath: '$.baz' },
       ),
     ).toBe(false)
+  })
+
+  describe('removeLockedColumnFromFacetData', () => {
+    it('should remove locked facet data', async () => {
+      const lockedColumn: LockedColumn = {
+        columnName: 'tumorType',
+        value: 'Cutaneous Neurofibroma',
+      }
+
+      // call under test
+      const result = removeLockedColumnFromFacetData(
+        syn16787123Json,
+        lockedColumn,
+      )
+
+      // One facet should be removed
+      expect(result!.facets!.length).toEqual(syn16787123Json.facets!.length - 1)
+      // The removed facet should match the locked facet name
+      expect(
+        result!.facets!.find(facet => facet.columnName === 'tumorType'),
+      ).not.toBeDefined()
+    })
+
+    it('should not remove any data if locked facet value is not set', async () => {
+      const noLockedColumn: LockedColumn = {}
+
+      // call under test
+      const result = removeLockedColumnFromFacetData(
+        syn16787123Json,
+        noLockedColumn,
+      )
+      expect(result!.facets!.length).toEqual(syn16787123Json.facets!.length)
+
+      expect(
+        result!.facets!.find(facet => facet.columnName === 'tumorType'),
+      ).toBeDefined()
+    })
   })
 })

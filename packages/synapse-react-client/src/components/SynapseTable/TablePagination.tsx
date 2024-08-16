@@ -1,17 +1,33 @@
-import React from 'react'
-import { Pagination, Typography } from '@mui/material'
-import { usePaginatedQueryContext } from '../QueryContext/QueryContext'
-import { useAtomValue } from 'jotai'
-import { tableQueryDataAtom } from '../QueryWrapper/QueryWrapper'
+import React, { ComponentProps } from 'react'
+import {
+  MenuItem,
+  Pagination,
+  PaginationItem,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from '@mui/material'
+import { usePaginatedQueryContext } from '../QueryContext'
+import { useSuspenseQuery } from '@tanstack/react-query'
+
+import { usePrefetchTableRows } from './usePrefetchTableData'
 
 export const TablePagination = () => {
-  const { goToPage, pageSize, setPageSize, currentPage } =
-    usePaginatedQueryContext()
-  const data = useAtomValue(tableQueryDataAtom)
+  const {
+    queryMetadataQueryOptions,
+    goToPage,
+    pageSize,
+    setPageSize,
+    currentPage,
+  } = usePaginatedQueryContext()
 
-  const queryCount = data?.queryCount
+  const prefetchPage = usePrefetchTableRows()
 
-  const maxPageSize = data?.maxRowsPerPage ?? pageSize
+  const {
+    data: { queryCount, maxRowsPerPage },
+  } = useSuspenseQuery(queryMetadataQueryOptions)
+
+  const maxPageSize = maxRowsPerPage ?? pageSize
 
   const pageSizeOptions = [10, 25, 100, 500]
   const pageSizeOptionsBasedOnData = pageSizeOptions.filter(
@@ -19,15 +35,15 @@ export const TablePagination = () => {
   )
   if (pageSizeOptionsBasedOnData.length == 0) {
     pageSizeOptionsBasedOnData.push(maxPageSize)
-    if (data?.maxRowsPerPage && pageSize > data.maxRowsPerPage) {
-      setPageSize(data.maxRowsPerPage)
+    if (maxRowsPerPage && pageSize > maxRowsPerPage) {
+      setPageSize(maxRowsPerPage)
     }
   }
-  const handlePage = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePage = (_event: React.ChangeEvent<unknown>, value: number) => {
     goToPage(value)
   }
 
-  const handlePageSize = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handlePageSize = (event: SelectChangeEvent<number>) => {
     const value = event.target.value as number
     setPageSize(value)
   }
@@ -39,7 +55,7 @@ export const TablePagination = () => {
     (currentPage == 1 && queryCount == 1 && pageSize != 1) ||
     queryCount == undefined
   ) {
-    return <></>
+    return null
   }
 
   return (
@@ -55,40 +71,42 @@ export const TablePagination = () => {
           float: 'left',
           '.MuiPaginationItem-root': { fontSize: '14px' },
         }}
+        renderItem={item => {
+          return (
+            <PaginationItem
+              {...item}
+              component={(props: ComponentProps<'button'>) => (
+                <button
+                  {...props}
+                  onMouseOver={() => {
+                    if (item.page) {
+                      prefetchPage(item.page)
+                    }
+                  }}
+                />
+              )}
+            />
+          )
+        }}
       />
       <Typography variant="body1" style={{ display: 'inline-block' }}>
         {`${queryCount?.toLocaleString()} total rows /`}
       </Typography>
-      <select
+      <Select
         name="page size"
-        onChange={handlePageSize}
-        style={{ padding: '4px', marginLeft: '4px' }}
         value={pageSize}
+        size="small"
+        onChange={handlePageSize}
+        sx={{ ml: 0.5 }}
       >
         {pageSizeOptionsBasedOnData.map(pageSize => {
           return (
-            <option key={pageSize} value={pageSize}>
+            <MenuItem key={pageSize} value={pageSize}>
               {pageSize} per page
-            </option>
+            </MenuItem>
           )
         })}
-        {
-          //TODO: PORTALS-2546: convert to MUI?
-          /* <FormControl>
-        <Select
-          value={pageSize}
-          size="small"
-          onChange={handlePageSize}
-          sx={{border: 'solid 1px #e5e7eb'}}
-        >
-          <MenuItem value={10}>10 per page</MenuItem>
-          <MenuItem value={25}>25 per page</MenuItem>
-          <MenuItem value={100}>100 per page</MenuItem>
-          <MenuItem value={500}>500 per page</MenuItem>
-        </Select>
-        </FormControl> */
-        }
-      </select>
+      </Select>
     </div>
   )
 }
