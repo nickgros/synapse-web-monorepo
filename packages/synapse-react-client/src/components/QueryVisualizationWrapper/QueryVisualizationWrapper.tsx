@@ -87,7 +87,7 @@ export function useQueryVisualizationContext(): QueryVisualizationContextType {
   const context = useContext(QueryVisualizationContext)
   if (context === undefined) {
     throw new Error(
-      'useQueryVisualizationContext must be used within a QueryWrapper',
+      'useQueryVisualizationContext must be used within a QueryVisualizationWrapper',
     )
   }
   return context

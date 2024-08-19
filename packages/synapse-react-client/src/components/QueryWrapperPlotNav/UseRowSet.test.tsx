@@ -8,12 +8,16 @@ import {
   mockQueryBundleRequest,
   mockQueryResultBundle,
 } from '../../mocks/mockFileViewQuery'
-import { getHandlersForTableQuery } from '../../mocks/msw/handlers/tableQueryHandlers'
+
+import { registerTableQueryResult } from '../../mocks/msw/handlers/tableQueryService'
 
 describe('UseRowSet', () => {
   beforeAll(() => {
     server.listen()
-    server.use(...getHandlersForTableQuery(mockQueryResultBundle))
+    registerTableQueryResult(
+      mockQueryBundleRequest.query,
+      mockQueryResultBundle,
+    )
   })
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())
@@ -61,7 +65,8 @@ describe('UseRowSet', () => {
       })
 
       expect(hook.result.current.hasNextPageOfInfiniteData).toBe(false)
-      expect(hook.result.current.isFetchingNextPageOfInfiniteData).toBe(false)
+      expect(hook.result.current.isLoading).toBe(false)
+      expect(hook.result.current.isLoadingNewPage).toBe(false)
     })
   })
 
@@ -86,7 +91,8 @@ describe('UseRowSet', () => {
       })
 
       expect(hook.result.current.hasNextPageOfInfiniteData).toBe(true)
-      expect(hook.result.current.isFetchingNextPageOfInfiniteData).toBe(false)
+      expect(hook.result.current.isLoading).toBe(false)
+      expect(hook.result.current.isLoadingNewPage).toBe(false)
 
       // Fetch an additional page
       act(() => {
@@ -95,6 +101,8 @@ describe('UseRowSet', () => {
       await waitFor(() => {
         expect(hook.result.current.rowSet).toEqual(firstTenResults)
       })
+      expect(hook.result.current.isLoading).toBe(false)
+      expect(hook.result.current.isLoadingNewPage).toBe(false)
     })
 
     it('Can apply an initial limit to infinite data', async () => {
@@ -112,6 +120,7 @@ describe('UseRowSet', () => {
 
       await waitFor(() => {
         expect(hook.result.current.rowSet).toEqual(firstThreeResults)
+        expect(hook.result.current.isLoading).toBe(false)
         expect(hook.result.current.isLoadingNewPage).toBe(false)
       })
     })

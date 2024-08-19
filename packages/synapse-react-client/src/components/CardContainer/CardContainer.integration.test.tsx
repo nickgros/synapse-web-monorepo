@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import React from 'react'
-import CardContainer, { CardContainerProps } from './CardContainer'
+import { CardContainer, CardContainerProps } from './CardContainer'
 import { QueryVisualizationWrapper } from '../QueryVisualizationWrapper/QueryVisualizationWrapper'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 import { QueryBundleRequest } from '@sage-bionetworks/synapse-types'
@@ -16,9 +16,9 @@ import mockUserCardTableQueryResultBundle from '../../mocks/query/mockUserCardTa
 import { server } from '../../mocks/msw/server'
 import { mockUserProfileData } from '../../mocks/user/mock_user_profile'
 import { QueryWrapper } from '../QueryWrapper'
-import { getHandlersForTableQuery } from '../../mocks/msw/handlers/tableQueryHandlers'
 import { cloneDeep } from 'lodash-es'
 import SynapseClient from '../../synapse-client'
+import { registerTableQueryResult } from '../../mocks/msw/handlers/tableQueryService'
 
 const tableId = 'syn16787123'
 const sql = `SELECT * FROM ${tableId}`
@@ -75,7 +75,10 @@ describe('CardContainer tests', () => {
   beforeAll(() => server.listen())
   beforeEach(() => {
     jest.clearAllMocks()
-    server.use(...getHandlersForTableQuery(dataWithMultiplePagesFirstPage))
+    registerTableQueryResult(
+      lastQueryRequest.query,
+      dataWithMultiplePagesFirstPage,
+    )
   })
   afterEach(() => server.restoreHandlers())
   afterAll(() => server.close())
@@ -111,7 +114,10 @@ describe('CardContainer tests', () => {
   })
 
   it('Does not filter null IDs when rendering user cards (PORTALS-2430)', async () => {
-    server.use(...getHandlersForTableQuery(mockUserCardTableQueryResultBundle))
+    registerTableQueryResult(
+      lastQueryRequest.query,
+      mockUserCardTableQueryResultBundle,
+    )
     renderComponent({
       ...props,
       rowSet: mockUserCardTableQueryResultBundle.queryResult.queryResults,

@@ -67,7 +67,7 @@ function Card(props: { propsToPass: any; type: string }) {
   }
 }
 
-function CardContainer(props: CardContainerProps) {
+function _CardContainer(props: CardContainerProps) {
   const {
     isHeader = false,
     unitDescription,
@@ -181,7 +181,7 @@ function CardContainer(props: CardContainerProps) {
   )
 }
 
-export default function CardContainerWithSuspense(props: CardContainerProps) {
+export function CardContainer(props: CardContainerProps) {
   const fallback = (
     <div>
       {props.type === OBSERVATION_CARD && <LoadingObservationCard />}
@@ -190,7 +190,7 @@ export default function CardContainerWithSuspense(props: CardContainerProps) {
   )
   return (
     <Suspense fallback={fallback}>
-      <CardContainer {...props} />
+      <_CardContainer {...props} />
     </Suspense>
   )
 }

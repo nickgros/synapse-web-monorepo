@@ -262,6 +262,8 @@ export function usePrefetchResourcesInTable(rowSet: RowSet): {
 
 /**
  * Uses react-query to prefetch an entire page of row data.
+ *
+ * @returns A function that will prefetch the data for a given page number.
  */
 export function usePrefetchTableRows(): (pageNumber: number) => Promise<void> {
   const { keyFactory, accessToken } = useSynapseContext()
@@ -270,22 +272,25 @@ export function usePrefetchTableRows(): (pageNumber: number) => Promise<void> {
 
   // locked column does not matter for row data
   const lockedColumn = undefined
-  return useCallback((pageNumber: number) => {
-    // Get the query for the next page
-    const queryWithUpdatedPage = transformQueryToGoToPage(
-      { type: 'goToPage', pageNumber },
-      cloneDeep(currentQueryRequest) as QueryBundleRequest,
-    )
+  return useCallback(
+    (pageNumber: number) => {
+      // Get the query for the next page
+      const queryWithUpdatedPage = transformQueryToGoToPage(
+        { type: 'goToPage', pageNumber },
+        cloneDeep(currentQueryRequest) as QueryBundleRequest,
+      )
 
-    // Transform the query into UseQueryOptions
-    const { rowDataQueryOptions } = getTableQueryUseQueryOptions(
-      queryWithUpdatedPage,
-      lockedColumn,
-      keyFactory,
-      accessToken,
-    )
+      // Transform the query into UseQueryOptions
+      const { rowDataQueryOptions } = getTableQueryUseQueryOptions(
+        queryWithUpdatedPage,
+        lockedColumn,
+        keyFactory,
+        accessToken,
+      )
 
-    // Finally, prefetch the data
-    return queryClient.prefetchQuery(rowDataQueryOptions)
-  }, [])
+      // Finally, prefetch the data
+      return queryClient.prefetchQuery(rowDataQueryOptions)
+    },
+    [accessToken, currentQueryRequest, keyFactory, lockedColumn, queryClient],
+  )
 }

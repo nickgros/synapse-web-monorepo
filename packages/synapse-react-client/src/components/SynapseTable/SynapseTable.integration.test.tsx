@@ -42,7 +42,6 @@ import {
   QueryWrapper,
   QueryWrapperProps,
 } from '../../index'
-import { getHandlersForTableQuery } from '../../mocks/msw/handlers/tableQueryHandlers'
 import {
   MOCK_TABLE_ENTITY_ID,
   mockTableEntity,
@@ -55,6 +54,7 @@ import { mockDatasetEntity } from '../../mocks/entity/mockDataset'
 import { mockQueryResult } from '../../mocks/query/mockProjectViewQueryResults'
 import * as NoContentPlaceholderModule from '../QueryVisualizationWrapper/NoContentPlaceholder'
 import { normalizeNumericId } from '../../utils/functions/StringUtils'
+import { registerTableQueryResult } from '../../mocks/msw/handlers/tableQueryService'
 
 const synapseTableEntityId = 'syn16787123'
 
@@ -115,7 +115,7 @@ function renderTable(
   }
 
   // Set up the mock server handlers for the table query
-  server.use(...getHandlersForTableQuery(queryResultBundle))
+  registerTableQueryResult(initQueryRequest.query, queryResultBundle)
 
   return render(
     <QueryWrapper

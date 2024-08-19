@@ -86,16 +86,20 @@ export function useRowSet(initialLimit?: number) {
     ? infiniteQueryProgressMessage.data
     : paginatedQueryProgressMessage.data
 
-  const isLoadingNewPage = isInfinite
+  const isLoading = isInfinite
     ? infiniteQuery.isLoading
+    : paginatedQuery.isLoading
+
+  const isLoadingNewPage = isInfinite
+    ? infiniteQuery.isFetchingNextPage
     : paginatedQuery.isPlaceholderData
 
   return {
     rowSet,
     progressMessage,
+    isLoading,
     isLoadingNewPage,
     fetchNextPageOfInfiniteData: infiniteQuery.fetchNextPage,
-    isFetchingNextPageOfInfiniteData: infiniteQuery.isFetchingNextPage,
     hasNextPageOfInfiniteData: infiniteQuery.hasNextPage,
   }
 }

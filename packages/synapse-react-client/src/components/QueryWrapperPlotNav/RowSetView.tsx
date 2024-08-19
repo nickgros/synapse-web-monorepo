@@ -1,5 +1,5 @@
 import React, { Suspense, useState } from 'react'
-import CardContainer from '../CardContainer'
+import { CardContainer } from '../CardContainer/CardContainer'
 import { SynapseTable, SynapseTableConfiguration } from '../SynapseTable'
 import { CardConfiguration } from '../CardContainerLogic'
 import LastUpdatedOn from './LastUpdatedOn'
@@ -45,15 +45,18 @@ export function RowSetView(props: RowSetViewProps) {
   const {
     rowSet,
     progressMessage,
+    isLoading,
     isLoadingNewPage,
     fetchNextPageOfInfiniteData,
-    isFetchingNextPageOfInfiniteData,
     hasNextPageOfInfiniteData,
   } = useRowSet(initialLimitIsApplied ? initialLimit : undefined)
 
   return (
     <SynapseErrorBoundary>
       <div className={`FilterAndView`}>
+        {isLoading && (
+          <QueryWrapperLoadingScreen progressMessage={progressMessage} />
+        )}
         <Suspense
           fallback={
             <QueryWrapperLoadingScreen progressMessage={progressMessage} />
@@ -84,9 +87,11 @@ export function RowSetView(props: RowSetViewProps) {
               onRemoveInitialLimit={() => {
                 setInitialLimitIsApplied(false)
               }}
-              fetchNextPage={fetchNextPageOfInfiniteData}
+              fetchNextPage={() => {
+                void fetchNextPageOfInfiniteData()
+              }}
               hasNextPage={hasNextPageOfInfiniteData}
-              isFetchingNextPage={isFetchingNextPageOfInfiniteData}
+              isFetchingNextPage={isLoadingNewPage}
             />
           )}
         </Suspense>

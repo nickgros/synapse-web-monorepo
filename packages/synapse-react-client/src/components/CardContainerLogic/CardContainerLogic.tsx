@@ -171,7 +171,7 @@ export type CardContainerLogicProps = {
 /**
  * Class wraps around CardContainer and serves as a standalone logic container for rendering cards.
  */
-export const CardContainerLogic = (props: CardContainerLogicProps) => {
+export function CardContainerLogic(props: CardContainerLogicProps) {
   const entityId = parseEntityIdFromSqlStatement(props.sql)
   const queryFilters = getAdditionalFilters(
     props.additionalFiltersSessionStorageKey,

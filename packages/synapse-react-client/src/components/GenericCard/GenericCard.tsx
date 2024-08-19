@@ -350,7 +350,6 @@ class _GenericCard extends React.Component<GenericCardPropsInternal> {
       ctaLinkConfig,
       labelLinkConfig,
       descriptionConfig,
-      rgbIndex,
       columnIconOptions,
       table,
       queryVisualizationContext: { getColumnDisplayName },
@@ -502,7 +501,6 @@ class _GenericCard extends React.Component<GenericCardPropsInternal> {
           target={target}
           isAlignToLeftNav={true}
           secondaryLabelLimit={secondaryLabelLimit}
-          rgbIndex={rgbIndex}
         />
       )
     }

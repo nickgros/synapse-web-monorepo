@@ -1,48 +1,39 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import * as ToastMessage from '../ToastMessage/ToastMessage'
 import {
   AddToDownloadListRequest,
   AddToDownloadListResponse,
-  AsynchronousJobStatus,
-  QueryBundleRequest,
+  Query,
   QueryResultBundle,
 } from '@sage-bionetworks/synapse-types'
 import * as DownloadConfirmationUIModule from './DownloadConfirmationUI'
-import { TableQueryDownloadConfirmation } from './index'
-import { SynapseClientError } from '../../index'
+import { TableQueryDownloadConfirmation } from './TableQueryDownloadConfirmation'
+import { SynapseClientError } from '../../utils'
 import {
   QueryVisualizationContextConsumer,
   QueryVisualizationContextType,
   QueryVisualizationWrapper,
 } from '../QueryVisualizationWrapper/QueryVisualizationWrapper'
 import { mockQueryBundleRequest } from '../../mocks/mockFileViewQuery'
-import {
-  useAddQueryToDownloadList,
-  useGetQueryResultBundleWithAsyncStatus,
-} from '../../synapse-queries'
-import {
-  getUseMutationMock,
-  getUseQuerySuccessMock,
-} from '../../testutils/ReactQueryMockUtils'
+import { useAddQueryToDownloadList } from '../../synapse-queries'
+import { getUseMutationMock } from '../../testutils/ReactQueryMockUtils'
 import QueryWrapper from '../QueryWrapper'
-import { MOCK_USER_ID } from '../../mocks/user/mock_user_profile'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 import { noop } from 'lodash-es'
+import { server } from '../../mocks/msw/server'
 
-jest.mock('../../../src/synapse-queries', () => {
-  const actual = jest.requireActual('../../../src/synapse-queries')
+import { registerTableQueryResult } from '../../mocks/msw/handlers/tableQueryService'
+
+jest.mock('../../synapse-queries', () => {
+  const actual = jest.requireActual('../../synapse-queries')
   return {
     ...actual,
-    useGetQueryResultBundleWithAsyncStatus: jest.fn(),
     useAddQueryToDownloadList: jest.fn(),
   }
 })
 
-const mockUseGetQueryResultBundle = jest.mocked(
-  useGetQueryResultBundleWithAsyncStatus,
-)
 const mockUseAddQueryToDownloadList = jest.mocked(useAddQueryToDownloadList)
 const ID_COLUMN_ID = 11112
 const CURRENT_VERSION_COLUMN_ID = 11113
@@ -53,11 +44,11 @@ const mockDownloadConfirmationUi = jest
     <div data-testid={DOWNLOAD_CONFIRMATION_UI_TEST_ID}></div>
   ))
 
-const mockQueryWithSelectFileColumn = {
+const mockQueryWithSelectFileColumn: Query = {
   ...mockQueryBundleRequest.query,
   selectFileColumn: ID_COLUMN_ID,
 }
-const mockQueryWithSelectFileAndVersionColumn = {
+const mockQueryWithSelectFileAndVersionColumn: Query = {
   ...mockQueryBundleRequest.query,
   selectFileColumn: ID_COLUMN_ID,
   selectFileVersionColumn: CURRENT_VERSION_COLUMN_ID,
@@ -91,7 +82,11 @@ async function setUp(
           <QueryVisualizationContextConsumer>
             {context => {
               receivedQueryVisualizationContext = context
-              return <TableQueryDownloadConfirmation />
+              return (
+                <Suspense>
+                  <TableQueryDownloadConfirmation />
+                </Suspense>
+              )
             }}
           </QueryVisualizationContextConsumer>
         </QueryVisualizationWrapper>
@@ -117,7 +112,40 @@ async function setUp(
   return { component, user }
 }
 
+const queryResultBundle: QueryResultBundle = {
+  concreteType: 'org.sagebionetworks.repo.model.table.QueryResultBundle',
+  queryCount: 100,
+  sumFileSizes: {
+    sumFileSizesBytes: 40128868,
+    greaterThan: false,
+  },
+  columnModels: [
+    {
+      columnType: 'ENTITYID',
+      name: 'id',
+      id: ID_COLUMN_ID.toString(),
+    },
+    {
+      columnType: 'INTEGER',
+      name: 'currentVersion',
+      id: CURRENT_VERSION_COLUMN_ID.toString(),
+    },
+  ],
+}
+
 describe('TableQueryDownloadConfirmation', () => {
+  beforeAll(() => server.listen())
+  beforeEach(() => {
+    registerTableQueryResult(mockQueryBundleRequest.query, queryResultBundle)
+    registerTableQueryResult(mockQueryWithSelectFileColumn, queryResultBundle)
+    registerTableQueryResult(
+      mockQueryWithSelectFileAndVersionColumn,
+      queryResultBundle,
+    )
+  })
+  afterEach(() => server.restoreHandlers())
+  afterAll(() => server.close())
+
   let mutationMockReturnValue: ReturnType<
     typeof getUseMutationMock<
       AddToDownloadListResponse,
@@ -127,43 +155,6 @@ describe('TableQueryDownloadConfirmation', () => {
   >
   beforeEach(() => {
     jest.clearAllMocks()
-
-    mockUseGetQueryResultBundle.mockReturnValue(
-      getUseQuerySuccessMock<
-        AsynchronousJobStatus<QueryBundleRequest, QueryResultBundle>
-      >({
-        jobState: 'COMPLETE',
-        jobCanceling: false,
-        requestBody: mockQueryBundleRequest,
-        startedOn: '2021-01-01T00:00:00.000Z',
-        changedOn: '2021-01-01T00:00:00.000Z',
-        runtimeMS: 1000,
-        startedByUserId: MOCK_USER_ID,
-        etag: '000',
-        jobId: '123',
-        responseBody: {
-          concreteType:
-            'org.sagebionetworks.repo.model.table.QueryResultBundle',
-          queryCount: 100,
-          sumFileSizes: {
-            sumFileSizesBytes: 40128868,
-            greaterThan: false,
-          },
-          columnModels: [
-            {
-              columnType: 'ENTITYID',
-              name: 'id',
-              id: ID_COLUMN_ID.toString(),
-            },
-            {
-              columnType: 'INTEGER',
-              name: 'currentVersion',
-              id: CURRENT_VERSION_COLUMN_ID.toString(),
-            },
-          ],
-        },
-      }),
-    )
 
     mutationMockReturnValue = getUseMutationMock<
       AddToDownloadListResponse,
@@ -176,15 +167,19 @@ describe('TableQueryDownloadConfirmation', () => {
 
   it('passes the correct props to DownloadConfirmationUI', async () => {
     await setUp()
+
     expect(mockDownloadConfirmationUi).toHaveBeenCalled()
-    const passedProps = mockDownloadConfirmationUi.mock.lastCall![0]
-    expect(passedProps).toEqual({
-      onAddToDownloadCart: expect.any(Function),
-      onCancel: expect.any(Function),
-      fileCount: 100,
-      fileSize: 40128868,
-      isAddingToDownloadCart: false,
-      isLoadingStats: false,
+
+    await waitFor(() => {
+      const passedProps = mockDownloadConfirmationUi.mock.lastCall![0]
+      expect(passedProps).toEqual({
+        onAddToDownloadCart: expect.any(Function),
+        onCancel: expect.any(Function),
+        fileCount: 100,
+        fileSize: 40128868,
+        isAddingToDownloadCart: false,
+        isLoadingStats: false,
+      })
     })
   })
 

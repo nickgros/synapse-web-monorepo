@@ -1,8 +1,9 @@
-import React, { ComponentProps } from 'react'
+import React, { ComponentProps, forwardRef, Ref, useCallback } from 'react'
 import {
   MenuItem,
   Pagination,
   PaginationItem,
+  PaginationRenderItemParams,
   Select,
   SelectChangeEvent,
   Typography,
@@ -48,6 +49,36 @@ export const TablePagination = () => {
     setPageSize(value)
   }
 
+  // A custom `renderItem` implementation for the MUI Pagination component that prefetches a page's data when the page number button is hovered over
+  const renderPaginationItem = useCallback(
+    (params: PaginationRenderItemParams) => {
+      // eslint-disable-next-line react/no-unstable-nested-components -- this declaration is within a useCallback itself, so it is stable (enough)
+      const ButtonWithPagePrefetchOnHover = forwardRef(
+        function PaginationItemButton(
+          props: ComponentProps<'button'>,
+          ref: Ref<HTMLButtonElement>,
+        ) {
+          return (
+            <button
+              ref={ref}
+              {...props}
+              onMouseOver={() => {
+                if (params.page) {
+                  void prefetchPage(params.page)
+                }
+              }}
+            />
+          )
+        },
+      )
+
+      return (
+        <PaginationItem {...params} component={ButtonWithPagePrefetchOnHover} />
+      )
+    },
+    [prefetchPage],
+  )
+
   // PORTALS-2259: Special presentation case.  If we're on the first page,
   // and the total query count is equal to 1 (and is the page size is not 1), then hide the pagination UI.
   // Also hide pagination if the query count is unavailable.
@@ -71,23 +102,7 @@ export const TablePagination = () => {
           float: 'left',
           '.MuiPaginationItem-root': { fontSize: '14px' },
         }}
-        renderItem={item => {
-          return (
-            <PaginationItem
-              {...item}
-              component={(props: ComponentProps<'button'>) => (
-                <button
-                  {...props}
-                  onMouseOver={() => {
-                    if (item.page) {
-                      prefetchPage(item.page)
-                    }
-                  }}
-                />
-              )}
-            />
-          )
-        }}
+        renderItem={renderPaginationItem}
       />
       <Typography variant="body1" style={{ display: 'inline-block' }}>
         {`${queryCount?.toLocaleString()} total rows /`}
