@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogContent, IconButton } from '@mui/material'
 import { FeatureFlagEnum } from '@sage-bionetworks/synapse-types'
 import React, { useEffect, useState } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import {
   AppUtils,
   IconSvg,
@@ -111,7 +111,7 @@ function Navbar() {
   ) : (
     <></>
   )
-  const hostname = window.location.hostname.toLowerCase()
+  const hostname = globalThis?.location?.hostname.toLowerCase() ?? ''
   // for now, we only support login in the dev environment (localstorage) or from a .synapse.org subdomain (http-only secure cookie)
   const isSynapseSubdomainOrLocal =
     (hostname.endsWith('.synapse.org') ||
@@ -166,7 +166,7 @@ function Navbar() {
             setShowMenu(false)
           }}
         >
-          <span>&#10005;</span>
+          <span>{'\u2715'}</span>
         </div>
         <div className="nav-link-container">
           {isSignedIn &&
@@ -337,9 +337,7 @@ function Navbar() {
                   onClickedNavLink={() => {
                     setShowMenu(false)
                   }}
-                >
-                  {route.name}
-                </DropdownNavButton>
+                />
               )
             }
             return (

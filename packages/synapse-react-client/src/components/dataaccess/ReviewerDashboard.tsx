@@ -9,7 +9,7 @@ import {
   RouteObject,
   RouterProvider,
   useParams,
-} from 'react-router-dom'
+} from 'react-router'
 import { useGetCurrentUserBundle } from '../../synapse-queries/user/useUserBundle'
 import { SynapseErrorBoundary } from '../error/ErrorBanner'
 import IconSvg, { IconName } from '../IconSvg/IconSvg'

@@ -7,6 +7,7 @@ const config = new ConfigBuilder()
   .setBuildLibEntry(resolve(__dirname, 'src/index.ts'))
   .setIncludeVitestConfig(true)
   .setConfigOverrides({
+    build: { minify: false },
     test: {
       include: ['src/**/*.test.[jt]s?(x)'],
       setupFiles: ['src/tests/setupTests.ts'],

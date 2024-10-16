@@ -1,7 +1,8 @@
-import { BackendDestinationEnum } from '../functions'
-import { LoginResponse } from '@sage-bionetworks/synapse-types'
-import { SynapseClientError } from '@sage-bionetworks/synapse-client/util/SynapseClientError'
 import { TwoFactorAuthErrorResponse } from '@sage-bionetworks/synapse-client/generated/models/TwoFactorAuthErrorResponse'
+import { SynapseClientError } from '@sage-bionetworks/synapse-client/util/SynapseClientError'
+import { LoginResponse } from '@sage-bionetworks/synapse-types'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router'
 import {
   bindOAuthProviderToAccount,
   getRootURL,
@@ -9,7 +10,7 @@ import {
   oAuthSessionRequest,
   setAccessTokenCookie,
 } from '../../synapse-client'
-import { useEffect, useMemo, useState } from 'react'
+import { BackendDestinationEnum } from '../functions'
 import { OAUTH2_PROVIDERS } from '../SynapseConstants'
 import { OAuth2State } from '../types'
 import { useOneSageURL } from './useOneSageURL'
@@ -54,15 +55,14 @@ export default function useDetectSSOCode(
   } = opts
   const redirectURL = getRootURL()
   // 'code' handling (from SSO) should be preformed on the root page, and then redirect to original route.
-  const fullUrl: URL = new URL(window.location.href)
-  // in test environment the searchParams isn't defined
-  const { searchParams } = fullUrl
-  const code = searchParams?.get('code')
-  const provider = searchParams?.get('provider')
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const code = searchParams.get('code')
+  const provider = searchParams.get('provider')
 
   // If the URL contains a client_id and redirect_uri, then we are acting as an identity provider for an external OAuth client
   const isHandlingSynapseOAuthSignIn = Boolean(
-    searchParams?.get('client_id') && searchParams?.get('redirect_uri'),
+    searchParams.get('client_id') && searchParams.get('redirect_uri'),
   )
 
   // If the Synapse user signed in with an external IdP, we may have passed data in the 'state' param
@@ -70,7 +70,7 @@ export default function useDetectSSOCode(
   const state: OAuth2State | null = useMemo(() => {
     // If we are acting as an OIDC identity provider, then we should not parse the state param -- it was sent to us, and we should return it untouched
     if (!isHandlingSynapseOAuthSignIn) {
-      const encodedState = searchParams?.get('state')
+      const encodedState = searchParams.get('state')
       try {
         return encodedState
           ? (JSON.parse(decodeURIComponent(encodedState)) as OAuth2State)
@@ -147,7 +147,7 @@ export default function useDetectSSOCode(
           const onFailure = (err: SynapseClientError) => {
             if (err.status === 404) {
               // Synapse account not found, send to registration page
-              window.location.replace(registerAccountUrl)
+              navigate(registerAccountUrl, { replace: true })
             }
             console.error('Error with account login: ', err)
             if (onError) {

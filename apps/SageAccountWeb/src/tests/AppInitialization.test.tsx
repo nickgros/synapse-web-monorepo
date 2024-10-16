@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { AppContextProvider } from '../AppContext'
 import LoginPage from '../LoginPage'
 import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import { FullContextProvider } from 'synapse-react-client'
 
 describe('App initialization tests', () => {

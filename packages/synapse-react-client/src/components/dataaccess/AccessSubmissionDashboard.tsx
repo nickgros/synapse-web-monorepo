@@ -1,6 +1,6 @@
 import { omitBy } from 'lodash-es'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router'
 import { useDebouncedEffect } from '../../utils/hooks/useDebouncedEffect'
 import { SubmissionState } from '@sage-bionetworks/synapse-types'
 import { TYPE_FILTER } from '@sage-bionetworks/synapse-types'

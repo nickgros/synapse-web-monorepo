@@ -3,6 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./dist/*": {
+      "import": "./dist/*",
+      "require": "./dist/*"
+    },
+    "./src/*": {
+      "import": "./src/*",
+      "require": "./src/*"
+    }
+  },
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
@@ -23,7 +37,7 @@
     "react-bootstrap": "^1.6.8",
     "react-cookie": "4.0.0",
     "react-plotly.js": "^2.6.0",
-    "react-router-dom": "^6.27.0",
+    "react-router": "0.0.0-nightly-ac199f437-20241014",
     "react-spinners": "^0.13.8",
     "react-switch": "^7.0.0",
     "sass": "^1.71.1",
@@ -36,6 +50,7 @@
   "scripts": {
     "clean": "rimraf coverage",
     "lint": "eslint src",
+    "build": "vite build",
     "test": "vitest",
     "generate-sitemap": "node sitemap/generate-sitemap.cjs",
     "type-check": "tsc --noEmit"

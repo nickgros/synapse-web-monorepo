@@ -4,9 +4,10 @@ import BrainhubCarousel, {
 import React, { useState } from 'react'
 import Arrow from '../../assets/icons/Arrow'
 import useShowDesktop from '../../utils/hooks/useShowDesktop'
-import { SizeMe } from 'react-sizeme'
 import '@brainhubeu/react-carousel/lib/style.css'
+import SizeMeModule from 'react-sizeme'
 
+const { SizeMe } = SizeMeModule
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder
 function mod(a: number, b: number) {
   return ((a % b) + b) % b

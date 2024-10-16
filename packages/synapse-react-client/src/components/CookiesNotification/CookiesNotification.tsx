@@ -22,8 +22,8 @@ export const alertConfig = {
       function properly. With your consent, we would also like to use cookies to
       remember your preferences and enhance our websites. Please review our{' '}
       <Link href={PRIVACY_POLICY_LINK}>Privacy Policy</Link>. By clicking
-      “Accept All,” you consent to our use of cookies. You can adjust your
-      cookie preferences anytime on the Settings page.
+      &quot;Accept All,&quot; you consent to our use of cookies. You can adjust
+      your cookie preferences anytime on the Settings page.
     </Typography>
   ),
   primaryButtonText: 'ALLOW ALL',

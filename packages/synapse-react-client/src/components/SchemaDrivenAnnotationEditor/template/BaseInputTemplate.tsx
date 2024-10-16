@@ -2,15 +2,14 @@ import React from 'react'
 import { ChangeEvent, FocusEvent } from 'react'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 import {
-  ariaDescribedByIds,
   BaseInputTemplateProps,
-  examplesId,
-  getInputProps,
-  labelValue,
   FormContextType,
   RJSFSchema,
   StrictRJSFSchema,
 } from '@rjsf/utils'
+import * as RJSFUtils from '@rjsf/utils'
+
+const { ariaDescribedByIds, examplesId, getInputProps, labelValue } = RJSFUtils
 
 const TYPES_THAT_SHRINK_LABEL = ['date', 'datetime-local', 'file', 'time']
 

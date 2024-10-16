@@ -1,13 +1,17 @@
-import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContentLayout'
-import { useDetailsPageContext } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContext'
-import { MarkdownSynapseFromColumnData } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/markdown/MarkdownSynapseFromColumnData'
+import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework'
+import { useDetailsPageContext } from '@sage-bionetworks/synapse-portal-framework'
+import { MarkdownSynapseFromColumnData } from '@sage-bionetworks/synapse-portal-framework'
 import { ColumnSingleValueFilterOperator } from '@sage-bionetworks/synapse-types'
 import React from 'react'
-import { publicationsSql, studiesSql, toolStudySql } from 'src/config/resources'
-import { columnAliases } from 'src/config/synapseConfigs/commonProps'
-import { publicationsCardConfiguration } from 'src/config/synapseConfigs/publications'
-import { studyCardConfiguration } from 'src/config/synapseConfigs/studies'
-import { toolsCardConfiguration } from 'src/config/synapseConfigs/tools'
+import {
+  publicationsSql,
+  studiesSql,
+  toolStudySql,
+} from '../../config/resources'
+import { columnAliases } from '../../config/synapseConfigs/commonProps'
+import { publicationsCardConfiguration } from '../../config/synapseConfigs/publications'
+import { studyCardConfiguration } from '../../config/synapseConfigs/studies'
+import { toolsCardConfiguration } from '../../config/synapseConfigs/tools'
 import {
   CardContainerLogic,
   NoContentPlaceholderType,

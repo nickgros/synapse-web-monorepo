@@ -4,7 +4,7 @@ import { SectionLayout } from '@sage-bionetworks/synapse-portal-framework/compon
 import TabbedSynapseObjects from '@sage-bionetworks/synapse-portal-framework/components/TabbedSynapseObjects'
 import sharedRoutes from '@sage-bionetworks/synapse-portal-framework/shared-config/sharedRoutes'
 import React from 'react'
-import { RouteObject } from 'react-router-dom'
+import { RouteObject } from 'react-router'
 import {
   challengeCardConfiguration,
   ChallengeDetailsPage,

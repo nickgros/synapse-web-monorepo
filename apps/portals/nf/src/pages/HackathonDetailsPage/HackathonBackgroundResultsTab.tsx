@@ -1,6 +1,6 @@
 import React from 'react'
-import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContentLayout'
-import { MarkdownSynapseFromColumnData } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/markdown/MarkdownSynapseFromColumnData'
+import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework'
+import { MarkdownSynapseFromColumnData } from '@sage-bionetworks/synapse-portal-framework'
 
 export default function HackathonBackgroundResultsTab() {
   return (

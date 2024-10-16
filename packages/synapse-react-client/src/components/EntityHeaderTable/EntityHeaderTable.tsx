@@ -32,7 +32,6 @@ import { useGetEntityHeaders } from '../../synapse-queries'
 import IconSvg from '../IconSvg'
 import { SkeletonTable } from '../Skeleton'
 import { AddCircleTwoTone } from '@mui/icons-material'
-import { parse } from 'papaparse'
 import { SYNAPSE_ENTITY_ID_REGEX } from '../../utils/functions/RegularExpressions'
 import { Filter } from './Filter'
 import { EntityHeaderNameCell } from './EntityHeaderTableCellRenderers'
@@ -51,6 +50,9 @@ import { useEntityHeaderTableState } from './useEntityHeaderTableState'
 import { noop, upperFirst } from 'lodash-es'
 import pluralize from 'pluralize'
 import { StyledTableContainer } from '../styled/StyledTableContainer'
+import papaparseModule from 'papaparse'
+
+const { parse } = papaparseModule
 
 const DEFAULT_FINDER_CONFIG: EntityFinderModalProps['configuration'] = {
   selectMultiple: true,

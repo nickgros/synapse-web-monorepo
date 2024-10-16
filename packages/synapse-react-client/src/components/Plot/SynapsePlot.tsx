@@ -1,31 +1,39 @@
-import Plotly, { AxisType, PlotType } from 'plotly.js-basic-dist'
-import React from 'react'
-import createPlotlyComponent from 'react-plotly.js/factory'
-import { SynapseConstants } from '../../utils'
+import { Skeleton } from '@mui/material'
 import {
   FacetColumnRequest,
   QueryBundleRequest,
   QueryFilter,
   Row,
 } from '@sage-bionetworks/synapse-types'
-import { parseEntityIdFromSqlStatement } from '../../utils/functions/SqlFunctions'
+import type {
+  AxisType,
+  Config,
+  Datum,
+  Layout,
+  LayoutAxis,
+  PlotData,
+  PlotMouseEvent,
+  PlotType,
+} from 'plotly.js-basic-dist'
+import React from 'react'
 import { useGetFullTableQueryResults } from '../../synapse-queries'
-import { Skeleton } from '@mui/material'
-import { QueryWrapperSynapsePlotRowClickEvent } from '../QueryWrapperPlotNav/QueryWrapperSynapsePlot'
+import { SynapseConstants } from '../../utils'
+import { parseEntityIdFromSqlStatement } from '../../utils/functions/SqlFunctions'
 import { QueryContextType } from '../QueryContext'
-const Plot = createPlotlyComponent(Plotly)
+import { QueryWrapperSynapsePlotRowClickEvent } from '../QueryWrapperPlotNav/QueryWrapperSynapsePlot'
+import Plot from './Plot'
 
 export type SynapsePlotWidgetParams = {
   query: string //sql string
   title?: string //plot title
-  xtitle?: Plotly.LayoutAxis['title'] // x-axis title
-  ytitle?: Plotly.LayoutAxis['title'] // y-axis title
+  xtitle?: LayoutAxis['title'] // x-axis title
+  ytitle?: LayoutAxis['title'] // y-axis title
   type: PlotType
   xaxistype?: AxisType
-  showlegend?: Plotly.Layout['showlegend'] // sets the legend visibility
+  showlegend?: Layout['showlegend'] // sets the legend visibility
   horizontal?: boolean // sets the if a bar chart should be horizontal or vertical
-  barmode?: Plotly.Layout['barmode'] // Plotly barmode
-  displayModeBar?: Plotly.Config['displayModeBar'] // sets the modebar visibility
+  barmode?: Layout['barmode'] // Plotly barmode
+  displayModeBar?: Config['displayModeBar'] // sets the modebar visibility
 }
 
 // QueryWrapperPlotNav customPlot parameters, undefined otherwise
@@ -75,10 +83,10 @@ export const SynapsePlot = (props: SynapsePlotProps) => {
     displayModeBar,
   } = props.synapsePlotWidgetParams
 
-  const config: Partial<Plotly.Config> = {
+  const config: Partial<Config> = {
     displayModeBar,
   }
-  const layout: Partial<Plotly.Layout> = {
+  const layout: Partial<Layout> = {
     showlegend: showlegend,
     title,
     barmode: barmode,
@@ -100,7 +108,7 @@ export const SynapsePlot = (props: SynapsePlotProps) => {
     }
   }
   // init plot_data
-  const plotData: Partial<Plotly.PlotData>[] = []
+  const plotData: Partial<PlotData>[] = []
   const orientation = horizontal ? 'h' : 'v'
   const headers = queryData.queryResult?.queryResults.headers ?? []
   const rows = queryData.queryResult?.queryResults.rows ?? []
@@ -123,18 +131,16 @@ export const SynapsePlot = (props: SynapsePlotProps) => {
     for (let j = 1; j < row.values.length; j += 1) {
       // create pairs of data
       const rowValues = row.values
-      const xArray = plotData[j - 1]!.x as Plotly.Datum[]
-      const yArray = plotData[j - 1]!.y as Plotly.Datum[]
-      const customdata = plotData[j - 1]!.customdata as Plotly.Datum[]
+      const xArray = plotData[j - 1]!.x as Datum[]
+      const yArray = plotData[j - 1]!.y as Datum[]
+      const customdata = plotData[j - 1]!.customdata as Datum[]
 
       xArray.push(horizontal ? rowValues[j] : rowValues[0])
       yArray.push(horizontal ? rowValues[0] : rowValues[j])
       customdata.push(JSON.stringify(row))
     }
   }
-  let onPlotClick:
-    | ((event: Readonly<Plotly.PlotMouseEvent>) => void)
-    | undefined
+  let onPlotClick: ((event: Readonly<PlotMouseEvent>) => void) | undefined
   if (onCustomPlotClick && queryContext) {
     onPlotClick = eventData => {
       const selectedRow = JSON.parse(

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { SynapseClient } from 'synapse-react-client'
 
 export default function LogoutPage() {

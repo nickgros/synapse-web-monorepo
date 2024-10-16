@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import { createMemoryRouter, RouterProvider } from 'react-router-dom'
+import { createMemoryRouter, RouterProvider } from 'react-router'
 import selectEvent from 'react-select-event'
 import { MOCK_ACCESS_TOKEN } from '../../mocks/MockSynapseContext'
 import { server } from '../../mocks/msw/server'

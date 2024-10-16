@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, ButtonProps } from '@mui/material'
-import { Link, LinkProps } from 'react-router-dom'
+import { Link, LinkProps } from 'react-router'
 import { SRC_SIGN_IN_CLASS } from '../../utils/SynapseConstants'
 import { useSynapseContext } from '../../utils'
 

@@ -13,7 +13,6 @@ import SearchIcon from '@mui/icons-material/Search'
 import { useErrorHandler } from 'react-error-boundary'
 import { ReflexContainer, ReflexElement, ReflexSplitter } from 'react-reflex'
 import 'react-reflex/styles.css'
-import { SizeMe } from 'react-sizeme'
 import SynapseClient from '../../synapse-client'
 import {
   entityTypeToFriendlyName,
@@ -37,6 +36,9 @@ import { EntityTree, EntityTreeContainer, FinderScope } from './tree/EntityTree'
 import { EntityTreeNodeType } from './tree/VirtualizedTree'
 import { useEntitySelection } from './useEntitySelection'
 import { VersionSelectionType } from './VersionSelectionType'
+import SizeMeModule from 'react-sizeme'
+
+const { SizeMe } = SizeMeModule
 
 const DEFAULT_SELECTABLE_TYPES = Object.values(EntityType)
 const TABLE_DEFAULT_VISIBLE_TYPES = Object.values(EntityType)

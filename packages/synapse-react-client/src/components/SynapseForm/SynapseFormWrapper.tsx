@@ -1,4 +1,3 @@
-import $RefParser from '@apidevtools/json-schema-ref-parser'
 import { get, includes } from 'lodash-es'
 import React from 'react'
 import { Button } from '@mui/material'
@@ -87,7 +86,6 @@ class _SynapseFormWrapper extends React.Component<
     }
   }
 
-  //same as above but also uses $RefParser to convert json $refs to regular json
   getFileEntityDataDereferenced = async (
     token: string,
     entityId: string,
@@ -99,10 +97,9 @@ class _SynapseFormWrapper extends React.Component<
       versionNumber,
       this.onError,
     )
-    const derefContent = (await $RefParser.dereference(content)) as JSON
     return {
       version: version,
-      content: derefContent,
+      content: content,
     }
   }
 

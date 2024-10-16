@@ -10,7 +10,7 @@ import {
 import userEvent from '@testing-library/user-event'
 import { rest } from 'msw'
 import React from 'react'
-import { createMemoryRouter, RouterProvider } from 'react-router-dom'
+import { createMemoryRouter, RouterProvider } from 'react-router'
 import {
   defaultQueryClientConfig,
   SynapseConstants,

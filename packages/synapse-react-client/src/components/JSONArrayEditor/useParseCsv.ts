@@ -1,7 +1,9 @@
 import { JSONSchema7Definition } from 'json-schema'
-import { parse as papaparse } from 'papaparse'
 import { useCallback, useMemo } from 'react'
 import { isObject } from 'lodash-es'
+import papaparseModule from 'papaparse'
+
+const { parse: papaparse } = papaparseModule
 
 export type ParseCsvOptions = {
   /* If provided, items will be parsed based on the data type prescribed by the schema */

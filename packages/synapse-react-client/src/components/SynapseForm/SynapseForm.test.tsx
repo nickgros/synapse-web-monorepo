@@ -2,7 +2,7 @@ import $RefParser from '@apidevtools/json-schema-ref-parser'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import SynapseForm, { SynapseFormProps } from './SynapseForm'
 import { createWrapper } from '../../testutils/TestingLibraryUtils'
 import {

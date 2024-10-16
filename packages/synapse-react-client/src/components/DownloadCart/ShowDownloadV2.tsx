@@ -5,7 +5,7 @@ import { useErrorHandler } from 'react-error-boundary'
 import { useGetDownloadListStatistics } from '../../synapse-queries/download/useDownloadList'
 import IconSvg from '../IconSvg/IconSvg'
 import { Tooltip, Link as MuiLink } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 export type ShowDownloadV2Props = {
   to: string

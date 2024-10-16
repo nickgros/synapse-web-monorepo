@@ -1,5 +1,5 @@
 import { QueryResultBundle, Row } from '@sage-bionetworks/synapse-types'
-import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash-es'
 import React, { useContext } from 'react'
 import { getColumnIndex } from 'synapse-react-client'
 

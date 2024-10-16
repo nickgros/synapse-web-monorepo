@@ -1,6 +1,8 @@
 import { PaletteOptions } from '@mui/material'
 import { PortalContextType } from './PortalContext'
 
-export type PortalProps = PortalContextType & {
-  palette: PaletteOptions
-}
+export type PortalProps = React.PropsWithChildren<
+  PortalContextType & {
+    palette: PaletteOptions
+  }
+>

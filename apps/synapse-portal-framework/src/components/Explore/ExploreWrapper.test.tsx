@@ -3,7 +3,7 @@ import React from 'react'
 import { describe, expect, it } from 'vitest'
 import ExploreWrapper from './ExploreWrapper'
 import { ExploreWrapperProps } from './ExploreWrapperProps'
-import { createMemoryRouter, RouterProvider } from 'react-router-dom'
+import { createMemoryRouter, RouterProvider } from 'react-router'
 
 describe('ExploreWrapper', () => {
   const props = {

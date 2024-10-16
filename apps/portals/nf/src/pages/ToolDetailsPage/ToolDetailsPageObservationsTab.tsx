@@ -1,8 +1,8 @@
-import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContentLayout'
-import { DetailsPageContextConsumer } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContext'
+import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework'
+import { DetailsPageContextConsumer } from '@sage-bionetworks/synapse-portal-framework'
 import { ColumnSingleValueFilterOperator } from '@sage-bionetworks/synapse-types'
 import React from 'react'
-import { observationsSql } from 'src/config/resources'
+import { observationsSql } from '../../config/resources'
 import {
   TimelinePlot,
   CardContainerLogic,

@@ -1,32 +1,32 @@
 import { InfoOutlined } from '@mui/icons-material'
-import Plotly from 'plotly.js-basic-dist'
-import React, { useMemo, useState } from 'react'
-import { Dropdown } from 'react-bootstrap'
-import createPlotlyComponent from 'react-plotly.js/factory'
-import { SizeMe } from 'react-sizeme'
-import { getContrastColorPalette } from '../../ColorGradient/ColorGradient'
-import { SynapseConstants } from '../../../utils'
-import SynapseClient from '../../../synapse-client'
-import { useSynapseContext } from '../../../utils/context/SynapseContext'
+import { Box, Tooltip } from '@mui/material'
 import {
   ColumnTypeEnum,
   FacetColumnRequest,
   FacetColumnResultValueCount,
   FacetColumnResultValues,
 } from '@sage-bionetworks/synapse-types'
-import loadingScreen from '../../LoadingScreen/LoadingScreen'
-import { useQueryVisualizationContext } from '../../QueryVisualizationWrapper'
-import { EnumFacetFilter } from '../query-filter/EnumFacetFilter/EnumFacetFilter'
-import { Box, Tooltip } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
-import { ConfirmationDialog } from '../../ConfirmationDialog/ConfirmationDialog'
-import { FacetPlotLegendList } from './FacetPlotLegendList'
-import { FacetWithLabel, truncate } from './FacetPlotLegendUtils'
+import type Plotly from 'plotly.js-basic-dist'
+import React, { useMemo, useState } from 'react'
+import { Dropdown } from 'react-bootstrap'
+import SynapseClient from '../../../synapse-client'
+import { SynapseConstants } from '../../../utils'
+import { useSynapseContext } from '../../../utils/context/SynapseContext'
 import { getCorrespondingColumnForFacet } from '../../../utils/functions/queryUtils'
+import { getContrastColorPalette } from '../../ColorGradient/ColorGradient'
+import { ConfirmationDialog } from '../../ConfirmationDialog/ConfirmationDialog'
+import loadingScreen from '../../LoadingScreen/LoadingScreen'
+import Plot from '../../Plot/Plot'
 import PlotPanelHeader from '../../Plot/PlotPanelHeader'
 import { useQueryContext } from '../../QueryContext'
+import { useQueryVisualizationContext } from '../../QueryVisualizationWrapper'
+import { EnumFacetFilter } from '../query-filter/EnumFacetFilter/EnumFacetFilter'
+import { FacetPlotLegendList } from './FacetPlotLegendList'
+import { FacetWithLabel, truncate } from './FacetPlotLegendUtils'
+import SizeMeModule from 'react-sizeme'
 
-const Plot = createPlotlyComponent(Plotly)
+const { SizeMe } = SizeMeModule
 
 export type FacetNavPanelProps = {
   applyChangesToGraphSlice: (
@@ -417,7 +417,7 @@ const FacetNavPanel: React.FunctionComponent<FacetNavPanelProps> = (
                         applyChangesToGraphSlice,
                       )
                     }
-                  ></Plot>
+                  />
                 </div>
               )}
             </SizeMe>

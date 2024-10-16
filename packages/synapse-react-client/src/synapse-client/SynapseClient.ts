@@ -350,8 +350,10 @@ const MAX_NUMBER_OF_PARTS = 10000
 // This corresponds to the Synapse-managed S3 storage location:
 export const SYNAPSE_STORAGE_LOCATION_ID = 1
 export function getRootURL(): string {
-  const portString = window.location.port ? `:${window.location.port}` : ''
-  return `${window.location.protocol}//${window.location.hostname}${portString}/`
+  const portString = globalThis?.location?.port
+    ? `:${globalThis.location.port}`
+    : ''
+  return `${globalThis?.location?.protocol}//${globalThis?.location?.hostname}${portString}/`
 }
 
 export const getVersion = (): Promise<SynapseVersion> => {
@@ -4356,7 +4358,7 @@ export const changePassword = (
 // http://rest-docs.synapse.org/rest/POST/user/password/reset.html
 export const resetPassword = (email: string) => {
   const endpoint = appendFinalQueryParamKey(
-    new URL(window.location.href),
+    new URL(globalThis?.location.href),
     'passwordResetToken',
   )
   const url = `/auth/v1/user/password/reset?passwordResetEndpoint=${encodeURIComponent(

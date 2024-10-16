@@ -1,7 +1,7 @@
 import React from 'react'
 import { AddAlertTwoTone } from '@mui/icons-material'
 import { Link } from '@mui/material'
-import { HomePageHeaderConfig } from '@sage-bionetworks/synapse-portal-framework/types/portal-config'
+import { HomePageHeaderConfig } from '@sage-bionetworks/synapse-portal-framework'
 
 const homePageHeader: HomePageHeaderConfig = {
   summary: (

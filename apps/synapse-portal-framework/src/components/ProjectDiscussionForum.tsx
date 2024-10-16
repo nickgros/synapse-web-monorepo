@@ -6,7 +6,7 @@ import {
   SynapseUtilityFunctions,
 } from 'synapse-react-client'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router'
 import { Box, IconButton } from '@mui/material'
 
 const ProjectDiscussionForum = () => {

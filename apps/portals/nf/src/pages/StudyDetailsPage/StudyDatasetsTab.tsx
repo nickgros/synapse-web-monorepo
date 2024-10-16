@@ -1,9 +1,9 @@
-import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContentLayout'
-import { useDetailsPageContext } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContext'
+import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework'
+import { useDetailsPageContext } from '@sage-bionetworks/synapse-portal-framework'
 import { ColumnSingleValueFilterOperator } from '@sage-bionetworks/synapse-types'
 import React from 'react'
-import { datasetsSql } from 'src/config/resources'
-import { datasetCardConfiguration } from 'src/config/synapseConfigs/datasets'
+import { datasetsSql } from '../../config/resources'
+import { datasetCardConfiguration } from '../../config/synapseConfigs/datasets'
 import { CardContainerLogic } from 'synapse-react-client'
 
 export default function StudyDatasetsTab() {

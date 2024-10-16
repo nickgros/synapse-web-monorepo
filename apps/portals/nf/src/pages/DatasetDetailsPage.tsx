@@ -1,15 +1,17 @@
-import DetailsPage from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage'
-import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContentLayout'
-import { DetailsPageContextConsumer } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContext'
-import { useGetPortalComponentSearchParams } from '@sage-bionetworks/synapse-portal-framework/utils/UseGetPortalComponentSearchParams'
+import {
+  DetailsPage,
+  DetailsPageContent,
+  DetailsPageContextConsumer,
+  useGetPortalComponentSearchParams,
+} from '@sage-bionetworks/synapse-portal-framework'
 import { ColumnSingleValueFilterOperator } from '@sage-bionetworks/synapse-types'
 import React from 'react'
-import { datasetsSql } from 'src/config/resources'
-import { columnAliases } from 'src/config/synapseConfigs/commonProps'
+import { datasetsSql } from '../config/resources'
+import { columnAliases } from '../config/synapseConfigs/commonProps'
 import {
   datasetCardConfiguration,
   datasetsRgbIndex,
-} from 'src/config/synapseConfigs/datasets'
+} from '../config/synapseConfigs/datasets'
 import {
   CardContainerLogic,
   DatasetJsonLdScript,

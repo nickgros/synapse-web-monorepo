@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { ShowMore, SynapseHookUtils } from 'synapse-react-client'
 import { StyledOuterContainer } from './StyledComponents'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router'
 import {
   SYNAPSE_SOURCE_APP_ID,
   SourceAppProvider,

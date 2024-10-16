@@ -11,13 +11,10 @@ import ELBrowseToolsPage from './elportal/ELBrowseToolsPage'
 import ELBetaLaunchBanner from './elportal/ELBetaLaunchBanner'
 import ARKWelcomePage from './arkportal/ARKWelcomePage'
 import GenieHomePageHeader from './genie/GenieHomePageHeader'
-import ParticipantsBarPlot from './crc-researcher/ParticipantsBarPlot'
-import StatusLineChart from './crc-researcher/StatusLineChart'
-import SurveysCompletedPlots from './crc-researcher/SurveysCompletedPlots'
 import Image from './Image'
 import RedirectWithQuery from './RedirectWithQuery'
 import RedirectToURL from './RedirectToURL'
-import { Navigate as Redirect } from 'react-router-dom'
+import { Navigate as Redirect } from 'react-router'
 import Header from './Header'
 import ChallengeParticipantGoogleMap from './challengeportal/ChallengeParticipantGoogleMap'
 import ChallengeDetailPageWrapper from './challengeportal/ChallengeDetailPageWrapper'
@@ -35,9 +32,6 @@ const PortalComponents = {
   Ecosystem,
   AboutPortal,
   DevelopedBySage,
-  ParticipantsBarPlot,
-  StatusLineChart,
-  SurveysCompletedPlots,
   Image,
   RedirectToURL,
   RedirectWithQuery,

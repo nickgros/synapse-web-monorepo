@@ -1,13 +1,12 @@
 import React, { Suspense, useMemo } from 'react'
-import Plotly from 'plotly.js-basic-dist'
-import createPlotlyComponent from 'react-plotly.js/factory'
-import { SizeMe } from 'react-sizeme'
+import type Plotly from 'plotly.js-basic-dist'
 import {
   ColumnTypeEnum,
   FacetColumnResult,
   FacetColumnResultValueCount,
   FacetColumnResultValues,
 } from '@sage-bionetworks/synapse-types'
+import Plot from '../Plot/Plot'
 import {
   extractPlotDataArray,
   getPlotStyle,
@@ -36,8 +35,9 @@ import { SkeletonParagraph, SkeletonTable } from '../Skeleton'
 import { times } from 'lodash-es'
 import { useQueryContext } from '../QueryContext'
 import { useSuspenseQuery } from '@tanstack/react-query'
+import SizeMeModule from 'react-sizeme'
 
-const Plot = createPlotlyComponent(Plotly)
+const { SizeMe } = SizeMeModule
 
 export type FacetPlotsCardProps = {
   title?: string

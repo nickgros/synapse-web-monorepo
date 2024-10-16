@@ -10,10 +10,16 @@ import {
   useTheme,
 } from '@mui/material'
 import React from 'react'
-import { useMatch } from 'react-router-dom'
+import { useMatch } from 'react-router'
 import NavLink from '../NavLink'
+import { NavbarConfig } from './Navbar'
 
-export function DropdownNavButton(props) {
+type DropdownNavButtonProps = {
+  route: NavbarConfig['routes'][number]
+  onClickedNavLink: () => void
+}
+
+export function DropdownNavButton(props: DropdownNavButtonProps) {
   const { route, onClickedNavLink } = props
   const match = useMatch({ path: route.path, end: route.path === '/' })
   const theme = useTheme()
@@ -28,27 +34,29 @@ export function DropdownNavButton(props) {
     setAnchorEl(null)
   }
 
-  const navLinkChildItems = route.children.map(childRoute => {
-    return (
-      <MenuItem
-        key={childRoute.path}
-        className={'dropdown-item SRC-primary-background-color-hover'}
-      >
-        <NavLink
-          className="dropdown-item SRC-nested-color"
-          to={childRoute.path}
-          style={{ textDecoration: 'none' }}
-          onClick={() => {
-            handleClose()
-            onClickedNavLink()
-          }}
+  const navLinkChildItems =
+    route.children!.map(childRoute => {
+      return (
+        <MenuItem
+          key={childRoute.path}
+          className={'dropdown-item SRC-primary-background-color-hover'}
         >
-          {childRoute.name}
-        </NavLink>
-      </MenuItem>
-    )
-  })
+          <NavLink
+            className="dropdown-item SRC-nested-color"
+            to={childRoute.path}
+            style={{ textDecoration: 'none' }}
+            onClick={() => {
+              handleClose()
+              onClickedNavLink()
+            }}
+          >
+            {childRoute.name}
+          </NavLink>
+        </MenuItem>
+      )
+    }) ?? null
 
+  return null
   return (
     <>
       {isSmallView && (

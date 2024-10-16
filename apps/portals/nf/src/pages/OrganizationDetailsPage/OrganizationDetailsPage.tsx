@@ -1,14 +1,14 @@
-import DetailsPage from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage'
+import { DetailsPage } from '@sage-bionetworks/synapse-portal-framework'
 import {
   DetailsPageTabConfig,
   DetailsPageTabs,
-} from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageTabs'
-import RedirectWithQuery from '@sage-bionetworks/synapse-portal-framework/components/RedirectWithQuery'
-import { useGetPortalComponentSearchParams } from '@sage-bionetworks/synapse-portal-framework/utils/UseGetPortalComponentSearchParams'
+} from '@sage-bionetworks/synapse-portal-framework'
+import { RedirectWithQuery } from '@sage-bionetworks/synapse-portal-framework'
+import { useGetPortalComponentSearchParams } from '@sage-bionetworks/synapse-portal-framework'
 import React from 'react'
-import { Outlet, RouteObject } from 'react-router-dom'
-import { fundersSql } from 'src/config/resources'
-import { organizationCardSchema } from 'src/config/synapseConfigs/organizations'
+import { Outlet, RouteObject } from 'react-router'
+import { fundersSql } from '../../config/resources'
+import { organizationCardSchema } from '../../config/synapseConfigs/organizations'
 import { CardContainerLogic, SynapseConstants } from 'synapse-react-client'
 import OrganizationDetailsTab from './OrganizationDetailsTab'
 import OrganizationDataTab from './OrganizationDataTab'

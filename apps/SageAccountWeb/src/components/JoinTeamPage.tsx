@@ -6,7 +6,7 @@ import {
   SynapseClient,
   UserOrTeamBadge,
 } from 'synapse-react-client'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import {
   isJoinTeamSignedToken,
   isMembershipInvtnSignedToken,

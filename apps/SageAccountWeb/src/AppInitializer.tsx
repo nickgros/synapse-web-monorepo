@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import { getSearchParam } from './URLUtils'
 import { SignedTokenInterface } from '@sage-bionetworks/synapse-types'
 import {

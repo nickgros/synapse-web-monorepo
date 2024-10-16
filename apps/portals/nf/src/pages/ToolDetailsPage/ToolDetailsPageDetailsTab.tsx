@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material'
-import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContentLayout'
-import { useDetailsPageContext } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageContext'
-import { MarkdownSynapseFromColumnData } from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/markdown/MarkdownSynapseFromColumnData'
+import { DetailsPageContent } from '@sage-bionetworks/synapse-portal-framework'
+import { useDetailsPageContext } from '@sage-bionetworks/synapse-portal-framework'
+import { MarkdownSynapseFromColumnData } from '@sage-bionetworks/synapse-portal-framework'
 import { ColumnSingleValueFilterOperator } from '@sage-bionetworks/synapse-types'
 import React from 'react'
 import {
@@ -14,10 +14,10 @@ import {
   toolApplicationsSql,
   usageRequirementsSql,
   vendorSql,
-} from 'src/config/resources'
-import { columnAliases } from 'src/config/synapseConfigs/commonProps'
-import { datasetsRgbIndex } from 'src/config/synapseConfigs/datasets'
-import { publicationsV2CardConfiguration } from 'src/config/synapseConfigs/publications'
+} from '../../config/resources'
+import { columnAliases } from '../../config/synapseConfigs/commonProps'
+import { datasetsRgbIndex } from '../../config/synapseConfigs/datasets'
+import { publicationsV2CardConfiguration } from '../../config/synapseConfigs/publications'
 import {
   CardContainerLogic,
   MarkdownSynapse,

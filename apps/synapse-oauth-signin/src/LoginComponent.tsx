@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { SynapseClient, useSynapseContext } from 'synapse-react-client'
 
 export function LoginComponent() {

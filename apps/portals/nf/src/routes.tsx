@@ -1,38 +1,38 @@
-import App from '@sage-bionetworks/synapse-portal-framework/App'
-import ExploreWrapper from '@sage-bionetworks/synapse-portal-framework/components/Explore/ExploreWrapper'
-import NFBrowseToolsPage from '@sage-bionetworks/synapse-portal-framework/components/nf/NFBrowseToolsPage'
-import RedirectWithQuery from '@sage-bionetworks/synapse-portal-framework/components/RedirectWithQuery'
-import { SectionLayout } from '@sage-bionetworks/synapse-portal-framework/components/SectionLayout'
-import SurveyToast from '@sage-bionetworks/synapse-portal-framework/components/SurveyToast'
-import sharedRoutes from '@sage-bionetworks/synapse-portal-framework/shared-config/sharedRoutes'
-import { sharePageLinkExplorePageButtonProps } from '@sage-bionetworks/synapse-portal-framework/shared-config/SharePageLinkButtonConfig'
+import { RouteConfig } from '@react-router/dev/routes'
+import {
+  ExploreWrapper,
+  NFBrowseToolsPage,
+  RedirectWithQuery,
+  SectionLayout,
+  sharedRoutes,
+  sharePageLinkExplorePageButtonProps,
+} from '@sage-bionetworks/synapse-portal-framework'
 import React from 'react'
-import { RouteObject } from 'react-router-dom'
-import DatasetDetailsPage from 'src/pages/DatasetDetailsPage'
-import { hackathonDetailsPageRoutesConfig } from 'src/pages/HackathonDetailsPage/HackathonDetailsPage'
-import { organizationsDetailsPageRoute } from 'src/pages/OrganizationDetailsPage/OrganizationDetailsPage'
-import { toolDetailsPageRoutesConfig } from 'src/pages/ToolDetailsPage/ToolDetailsPage'
 import { DynamicForm, SharePageLinkButton } from 'synapse-react-client'
-import HomePage from '../pages/HomePage'
-import InitiativeDetailsPage from '../pages/InitiativeDetailsPage'
-import { studyDetailsPageRoute } from '../pages/StudyDetailsPage/StudyDetailsPage'
-import explorePageRoutes from './explorePageRoutes'
-import { popularSearchesSql, toolsSql } from './resources'
+import explorePageRoutes from './config/explorePageRoutes'
+import { popularSearchesSql, toolsSql } from './config/resources'
+import DatasetDetailsPage from './pages/DatasetDetailsPage'
+import { hackathonDetailsPageRoutesConfig } from './pages/HackathonDetailsPage/HackathonDetailsPage'
+import HomePage from './pages/HomePage'
+import InitiativeDetailsPage from './pages/InitiativeDetailsPage'
+import { organizationsDetailsPageRoute } from './pages/OrganizationDetailsPage/OrganizationDetailsPage'
+import { studyDetailsPageRoute } from './pages/StudyDetailsPage/StudyDetailsPage'
+import { toolDetailsPageRoutesConfig } from './pages/ToolDetailsPage/ToolDetailsPage'
 
-const routes: RouteObject[] = [
+export const routes: RouteConfig = [
   {
     path: '/',
-    element: (
-      <App>
-        <SurveyToast
-          localStorageKey={
-            'org.sagebionetworks.security.cookies.portal.nfsurvey.dismissed'
-          }
-          description="Help us improve the NF Data Portal by completing a data access survey!"
-          surveyURL="https://docs.google.com/forms/d/e/1FAIpQLSdSgkq66IoLHbvXNmMEjEg4nMELwM-_CaJK3rFkU9pn84gYuA/viewform"
-        />
-      </App>
-    ),
+    file: './layout/app.tsx',
+    children: [
+      // ...sharedRoutes,
+
+      { index: true, file: './pages/HomePage.tsx' },
+    ],
+  },
+]
+
+const rest = [
+  {
     children: [
       ...sharedRoutes,
       { index: true, element: <HomePage /> },

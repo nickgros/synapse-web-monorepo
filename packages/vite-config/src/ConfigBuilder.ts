@@ -6,6 +6,7 @@ import vitestConfig from './vitest-config.js'
 
 export class ConfigBuilder {
   private includeReactConfig = false
+  private includeReactRouterConfig = false
   private includeLibraryConfig = false
   private buildLibEntry: string | string[] | undefined = undefined
   private includeVitestConfig = false
@@ -14,6 +15,13 @@ export class ConfigBuilder {
 
   setIncludeReactConfig(includeReactConfig: boolean): ConfigBuilder {
     this.includeReactConfig = includeReactConfig
+    return this
+  }
+
+  setIncludeReactRouterConfig(
+    includeReactRouterConfig: boolean,
+  ): ConfigBuilder {
+    this.includeReactRouterConfig = includeReactRouterConfig
     return this
   }
 
@@ -64,6 +72,7 @@ export class ConfigBuilder {
       config = mergeConfig(config, {
         plugins: getPluginConfig({
           includeReactPlugins: this.includeReactConfig,
+          includeReactRouterPlugin: this.includeReactRouterConfig,
           includeLibraryPlugins: this.includeLibraryConfig,
         }),
       })

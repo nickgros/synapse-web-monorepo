@@ -7,7 +7,7 @@ import {
   useTheme,
 } from '@mui/material'
 import React from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
 import { ExploreWrapperProps } from './ExploreWrapperProps'
 
 function CustomScrollButton(props: TabScrollButtonProps) {

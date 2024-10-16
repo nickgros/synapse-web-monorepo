@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { getDefaultRegistry } from '@rjsf/core'
+import * as RJSFCore from '@rjsf/core'
 import { convertToArray } from '../AnnotationEditorUtils'
 import {
   ADDITIONAL_PROPERTY_FLAG,
@@ -11,6 +11,8 @@ import {
   StrictRJSFSchema,
 } from '@rjsf/utils'
 import { JSONSchema7Definition } from 'json-schema'
+
+const { getDefaultRegistry } = RJSFCore
 
 /**
  * Extends the @rjsf/core `ObjectField` and just adds a custom hook for Synapse annotation business logic

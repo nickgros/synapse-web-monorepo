@@ -1,6 +1,6 @@
 import { Box, Container, ContainerProps } from '@mui/material'
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 import { HelpPopover } from 'synapse-react-client'
 import { scrollToWithOffset } from '../utils'
 

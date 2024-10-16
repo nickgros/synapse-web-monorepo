@@ -1,3 +1,4 @@
+import { reactRouter } from '@react-router/dev/vite'
 import { PluginOption } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
@@ -7,6 +8,7 @@ import dts from 'vite-plugin-dts'
 
 export type PluginConfigOptions = {
   includeReactPlugins?: boolean
+  includeReactRouterPlugin?: boolean
   includeLibraryPlugins?: boolean
 }
 
@@ -18,8 +20,7 @@ const COMMON_PLUGINS: PluginOption[] = [nodePolyfills()]
 /**
  * Plugins that our React apps and libraries will use
  */
-const REACT_PLUGINS: PluginOption[] = [
-  react(),
+const REACT_SUPPLEMENT_PLUGINS: PluginOption[] = [
   svgr({
     svgrOptions: {
       plugins: ['@svgr/plugin-jsx'],
@@ -49,8 +50,15 @@ const LIBRARY_PLUGINS: PluginOption[] = [
  */
 export function getPluginConfig(options: PluginConfigOptions): PluginOption[] {
   const plugins: PluginOption[] = [...COMMON_PLUGINS]
-  if (options.includeReactPlugins) {
-    plugins.push(...REACT_PLUGINS)
+
+  if (options.includeReactPlugins && !options.includeReactRouterPlugin) {
+    plugins.push(react())
+  } else if (options.includeReactRouterPlugin) {
+    plugins.push(reactRouter())
+  }
+
+  if (options.includeReactPlugins || options.includeReactRouterPlugin) {
+    plugins.push(...REACT_SUPPLEMENT_PLUGINS)
   }
   if (options.includeLibraryPlugins) {
     plugins.push(...LIBRARY_PLUGINS)

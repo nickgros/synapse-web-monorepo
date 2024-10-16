@@ -8,7 +8,7 @@ import {
 } from 'synapse-react-client'
 import { SourceAppProvider } from './components/useSourceApp'
 import AppInitializer from './AppInitializer'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,10 +1,8 @@
 import React, { FunctionComponent } from 'react'
-import Plotly from 'plotly.js-basic-dist'
-import createPlotlyComponent from 'react-plotly.js/factory'
+import type Plotly from 'plotly.js-basic-dist'
 import { GraphItem, BarPlotColors, PlotStyle } from './types'
 import _ from 'lodash-es'
-
-const Plot = createPlotlyComponent(Plotly)
+import Plot from './Plot'
 
 export type BarPlotProps = {
   isTop: boolean

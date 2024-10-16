@@ -1,10 +1,8 @@
 import React, { FunctionComponent } from 'react'
-import Plotly from 'plotly.js-basic-dist'
-import createPlotlyComponent from 'react-plotly.js/factory'
+import type Plotly from 'plotly.js-basic-dist'
 import { GraphItem, PlotStyle, Dictionary } from './types'
 import _, { countBy } from 'lodash-es'
-
-const Plot = createPlotlyComponent(Plotly)
+import Plot from './Plot'
 
 export type DotPlotProps = {
   plotData: GraphItem[]

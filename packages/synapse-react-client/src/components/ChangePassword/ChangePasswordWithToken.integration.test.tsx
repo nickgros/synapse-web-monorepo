@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { server } from '../../mocks/msw/server'
 import { noop } from 'lodash-es'
 import * as ToastMessage from '../ToastMessage/ToastMessage'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router'
 import SynapseClient from '../../synapse-client'
 import { MOCK_USER_ID } from '../../mocks/user/mock_user_profile'
 import {

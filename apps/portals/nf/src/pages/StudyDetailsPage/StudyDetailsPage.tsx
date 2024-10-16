@@ -1,14 +1,14 @@
 import {
   DetailsPageTabConfig,
   DetailsPageTabs,
-} from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/DetailsPageTabs'
-import DetailsPage from '@sage-bionetworks/synapse-portal-framework/components/DetailsPage/index'
-import RedirectWithQuery from '@sage-bionetworks/synapse-portal-framework/components/RedirectWithQuery'
-import { sharePageLinkButtonDetailPageProps } from '@sage-bionetworks/synapse-portal-framework/shared-config/SharePageLinkButtonConfig'
-import { useGetPortalComponentSearchParams } from '@sage-bionetworks/synapse-portal-framework/utils/UseGetPortalComponentSearchParams'
+} from '@sage-bionetworks/synapse-portal-framework'
+import { DetailsPage } from '@sage-bionetworks/synapse-portal-framework'
+import { RedirectWithQuery } from '@sage-bionetworks/synapse-portal-framework'
+import { sharePageLinkButtonDetailPageProps } from '@sage-bionetworks/synapse-portal-framework'
+import { useGetPortalComponentSearchParams } from '@sage-bionetworks/synapse-portal-framework'
 import { ColumnSingleValueFilterOperator } from '@sage-bionetworks/synapse-types'
 import React from 'react'
-import { Outlet, RouteObject } from 'react-router-dom'
+import { Outlet, RouteObject } from 'react-router'
 import {
   CardContainerLogic,
   ErrorPage,

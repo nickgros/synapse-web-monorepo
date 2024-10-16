@@ -1,4 +1,4 @@
-import { NavigateFunction } from 'react-router-dom'
+import { NavigateFunction } from 'react-router'
 import { POST_SSO_REDIRECT_URL_LOCALSTORAGE_KEY } from '../SynapseConstants'
 import { useEffect, useState } from 'react'
 

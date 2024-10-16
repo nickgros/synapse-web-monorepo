@@ -12,7 +12,7 @@ import {
   FileUploadComplete,
   SortBy,
 } from '@sage-bionetworks/synapse-types'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import {
   BackendDestinationEnum,
   getEndpoint,

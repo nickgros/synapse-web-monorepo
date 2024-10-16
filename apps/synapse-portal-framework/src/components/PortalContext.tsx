@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import { RouteObject } from 'react-router-dom'
 import {
   FooterConfig,
   HomePageHeaderConfig,
@@ -9,7 +8,6 @@ import { NavbarConfig } from './navbar/Navbar'
 
 export type PortalContextType = {
   portalName: string
-  routeConfig: RouteObject[]
   headerConfig: HomePageHeaderConfig
   footerConfig: FooterConfig
   logoHeaderConfig: LogoConfig

@@ -1,4 +1,4 @@
-import { NavbarConfig } from '@sage-bionetworks/synapse-portal-framework/components/navbar/Navbar'
+import { NavbarConfig } from '@sage-bionetworks/synapse-portal-framework'
 
 export const navbarConfig: NavbarConfig = {
   routes: [

@@ -1,6 +1,6 @@
 import { Tooltip } from '@mui/material'
 import React from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router'
 import { SynapseComponents } from 'synapse-react-client'
 import { useDetailsPageContext } from './DetailsPageContext'
 

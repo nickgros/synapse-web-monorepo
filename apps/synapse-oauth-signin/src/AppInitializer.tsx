@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { OAuthClientError } from './OAuthClientError'
 import React, { useCallback, useEffect } from 'react'
 import { ApplicationSessionManager, useFramebuster } from 'synapse-react-client'

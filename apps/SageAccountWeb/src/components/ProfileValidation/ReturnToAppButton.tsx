@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router'
 
 export const ReturnToAppButton: React.FC<{ children?: React.ReactNode }> = ({
   children,

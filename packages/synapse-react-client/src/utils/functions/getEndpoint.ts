@@ -23,7 +23,7 @@ export const getSynapsePortalEndpoint = (hostname: string): string => {
     : 'https://www.synapse.org/'
 }
 const DEFAULT_SYNAPSE_PORTAL = getSynapsePortalEndpoint(
-  window.location.hostname,
+  globalThis.location?.hostname ?? '',
 )
 
 export const PRODUCTION_ENDPOINT_CONFIG: EndpointObject = {
@@ -35,9 +35,9 @@ export const PRODUCTION_ENDPOINT_CONFIG: EndpointObject = {
 export const getEndpoint = (endpoint: BackendDestinationEnum): string => {
   let endpoint_config = PRODUCTION_ENDPOINT_CONFIG
   // @ts-ignore if overriding endpoint config
-  if (window.SRC && window.SRC.OVERRIDE_ENDPOINT_CONFIG) {
+  if (globalThis && globalThis.SRC && globalThis.SRC.OVERRIDE_ENDPOINT_CONFIG) {
     // @ts-ignore
-    endpoint_config = window.SRC && window.SRC.OVERRIDE_ENDPOINT_CONFIG
+    endpoint_config = globalThis.SRC && globalThis.SRC.OVERRIDE_ENDPOINT_CONFIG
   }
   const { PORTAL, REPO } = endpoint_config
   if (!PORTAL || !REPO) {

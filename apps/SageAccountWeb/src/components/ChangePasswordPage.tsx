@@ -3,7 +3,7 @@ import { LeftRightPanel } from './LeftRightPanel'
 import { SourceAppLogo } from './SourceApp'
 import { SetPasswordInstructions } from './ResetPassword'
 import { ChangePassword } from 'synapse-react-client'
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 export const ChangePasswordPage = () => {
   const { search } = useLocation()

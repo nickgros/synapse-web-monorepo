@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navigate, NavigateProps, useLocation } from 'react-router-dom'
+import { Navigate, NavigateProps, useLocation } from 'react-router'
 
 /**
  * Allows us to use react-router's Redirect as a portal component without losing the query params.

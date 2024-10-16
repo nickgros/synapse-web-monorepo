@@ -1,6 +1,6 @@
 import React from 'react'
 import { TwoFactorEnrollmentForm } from 'synapse-react-client'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 export default function TwoFactorAuthEnrollmentPage() {
   const navigate = useNavigate()

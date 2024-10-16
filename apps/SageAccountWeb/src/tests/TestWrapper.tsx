@@ -1,5 +1,5 @@
 import React from 'react'
-import { MemoryRouter, MemoryRouterProps } from 'react-router-dom'
+import { MemoryRouter, MemoryRouterProps } from 'react-router'
 import AppWrapper from '../AppWrapper'
 
 export type TestWrapperProps = React.PropsWithChildren<{

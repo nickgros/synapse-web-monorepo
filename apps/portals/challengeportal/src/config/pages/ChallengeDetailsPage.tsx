@@ -18,7 +18,7 @@ import {
   EntityType,
 } from '@sage-bionetworks/synapse-types'
 import React from 'react'
-import { RouteObject } from 'react-router-dom'
+import { RouteObject } from 'react-router'
 import {
   CardConfiguration,
   CardContainerLogic,

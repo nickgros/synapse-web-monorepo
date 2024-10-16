@@ -9,7 +9,7 @@ import {
   SynapseQueries,
   useSynapseContext,
 } from 'synapse-react-client'
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router'
 import { ContinueButton } from './ProfileValidation/ContinueButton'
 import { useSourceApp } from './useSourceApp'
 

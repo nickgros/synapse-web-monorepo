@@ -23,7 +23,7 @@ import {
   isMembershipInvtnSignedToken,
 } from '@sage-bionetworks/synapse-types'
 import { SourceAppLogo } from './SourceApp'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router'
 import { EmailConfirmationPage } from './EmailConfirmationPage'
 import GoogleLogo from '../assets/g-logo.png'
 import { useAppContext } from '../AppContext'

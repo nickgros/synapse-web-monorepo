@@ -17,13 +17,15 @@ import UpSetJS, {
 import { QueryBundleRequest } from '@sage-bionetworks/synapse-types'
 import SynapseClient from '../../synapse-client'
 import { SynapseConstants } from '../../utils'
-import { SizeMe } from 'react-sizeme'
 import { getColorPalette } from '../ColorGradient/ColorGradient'
 import { parseEntityIdFromSqlStatement } from '../../utils/functions/SqlFunctions'
 import { ErrorBanner } from '../error/ErrorBanner'
 import loadingScreen from '../LoadingScreen/LoadingScreen'
 import LargeButton from '../../components/styled/LargeButton'
 import { useSynapseContext } from '../../utils/context/SynapseContext'
+import SizeMeModule from 'react-sizeme'
+
+const { SizeMe } = SizeMeModule
 
 export type UpsetPlotProps = {
   sql: string // first column should contain values, second column should contain a single set value.  ie. SELECT distinct individualID, assay FROM syn20821313

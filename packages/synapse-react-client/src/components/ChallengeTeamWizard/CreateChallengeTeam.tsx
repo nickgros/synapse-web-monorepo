@@ -4,7 +4,9 @@ import TextField from '../TextField'
 import { CreateTeamRequest, Team } from '@sage-bionetworks/synapse-types'
 import useCreateAndRegisterChallengeTeam from './useCreateAndRegisterChallengeTeam'
 import { isEmpty, noop } from 'lodash-es'
-import { parse } from 'papaparse'
+import papaparseModule from 'papaparse'
+
+const { parse } = papaparseModule
 
 export type CreateChallengeTeamProps = {
   challengeId: string

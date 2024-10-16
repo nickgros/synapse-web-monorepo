@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import { useDeepCompareEffect } from '@react-hookz/web'
 import {
   QueryBundleRequest,
   QueryFilter,
 } from '@sage-bionetworks/synapse-types'
 import { cloneDeep, isEqual } from 'lodash-es'
-import * as DeepLinkingUtils from '../../functions/deepLinkingUtils'
-import { DEFAULT_PAGE_SIZE } from '../../SynapseConstants'
-import { parseEntityIdAndVersionFromSqlStatement } from '../../functions/SqlFunctions'
-import useDeepCompareEffect from 'use-deep-compare-effect'
-import { removeEmptyQueryParams } from '../../functions/queryUtils'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { ReadonlyDeep } from 'type-fest'
+import * as DeepLinkingUtils from '../../functions/deepLinkingUtils'
+import { removeEmptyQueryParams } from '../../functions/queryUtils'
+import { parseEntityIdAndVersionFromSqlStatement } from '../../functions/SqlFunctions'
+import { DEFAULT_PAGE_SIZE } from '../../SynapseConstants'
 import { UniqueFacetIdentifier } from '../../types/UniqueFacetIdentifier'
 import {
   QueryChangeCommitOptions,

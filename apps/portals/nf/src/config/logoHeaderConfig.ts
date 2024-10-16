@@ -1,4 +1,4 @@
-import { LogoConfig } from '@sage-bionetworks/synapse-portal-framework/types/portal-config'
+import { LogoConfig } from '@sage-bionetworks/synapse-portal-framework'
 import logo from '/logo.svg?url'
 
 const logoHeader: LogoConfig = {

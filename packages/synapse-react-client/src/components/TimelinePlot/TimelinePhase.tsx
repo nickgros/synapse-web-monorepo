@@ -1,15 +1,13 @@
-import React, { useMemo, useRef, useState } from 'react'
-import Plotly, { Layout, PlotData } from 'plotly.js-basic-dist'
-import createPlotlyComponent from 'react-plotly.js/factory'
-import dayjs, { ManipulateType } from 'dayjs'
 import { Dialog } from '@mui/material'
+import { Row } from '@sage-bionetworks/synapse-types'
+import dayjs, { ManipulateType } from 'dayjs'
+import type Plotly from 'plotly.js-basic-dist'
+import React, { useMemo, useRef, useState } from 'react'
+import Plot from '../Plot/Plot'
 import {
   ObservationCard,
   ObservationCardSchema,
 } from '../row_renderers/ObservationCard'
-import { Row } from '@sage-bionetworks/synapse-types'
-
-const Plot = createPlotlyComponent(Plotly)
 
 type TimepointData = {
   timepoints: dayjs.Dayjs[]
@@ -116,13 +114,15 @@ const getLayout = (
   timelineData: Plotly.Data[],
   rowData: Row[],
   schema: ObservationCardSchema,
-): Partial<Layout> => {
+): Partial<Plotly.Layout> => {
   const xTickVals = timelineData.map(value => {
     // return the utcFormattedTimepoint
-    return (value as PlotData).x[0]
+    return (value as Plotly.PlotData).x[0]
   })
   const xTickText = timelineData.map(value => {
-    const rowIds = (value as PlotData).customdata[0] as number[] | undefined
+    const rowIds = (value as Plotly.PlotData).customdata[0] as
+      | number[]
+      | undefined
     if (rowIds && rowIds.length > 0) {
       const count = rowIds.length
       const rows = rowData?.filter(row => {
