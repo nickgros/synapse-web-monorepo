@@ -158,7 +158,6 @@
     "@storybook/react": "^8.2.4",
     "@storybook/react-vite": "^8.2.4",
     "@storybook/test": "^8.2.4",
-    "@storybook/testing-library": "^0.2.2",
     "@storybook/theming": "^8.2.4",
     "@svgr/plugin-jsx": "^8.1.0",
     "@testing-library/dom": "^10.4.0",

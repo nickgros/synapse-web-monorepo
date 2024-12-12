@@ -9,7 +9,7 @@ import {
   getFacetedUniqueValues as defaultGetFacetedUniqueValues,
 } from '@tanstack/react-table'
 import { ColumnHeaderEnumFilter } from './ColumnHeaderEnumFilter'
-import { userEvent } from '@storybook/testing-library'
+import { userEvent } from '@storybook/test'
 
 type TestTableRow = {
   multiSelect: string
