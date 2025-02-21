@@ -17,7 +17,7 @@ jobs:
           ref: ${{ inputs.branch-or-tag }}
       - uses: ./.github/actions/pnpm-setup-action
         name: build
-      - run: pnpm nx run ${{ inputs.app-name }}:build --mode=${{ inputs.vite-mode }}
+      - run: pnpm nx run SageAccountWeb:build --mode=development
       - name: upload-built-artifact
         uses: actions/upload-artifact@v4
         with:
