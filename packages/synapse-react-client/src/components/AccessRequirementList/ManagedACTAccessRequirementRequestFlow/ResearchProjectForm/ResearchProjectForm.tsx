@@ -31,6 +31,14 @@ import ManagedACTAccessRequirementFormWikiWrapper from '../ManagedACTAccessRequi
 const INTENDED_DATA_USE_MIN_WORD_COUNT = 50
 const INTENDED_DATA_USE_MAX_WORD_COUNT = 500
 
+const AD_KNOWLEDGE_PORTAL_MANAGED_AR_ID_PROD = 9603055
+const AD_KNOWLEDGE_PORTAL_CONFIRMATION_INSTRUCTION = (
+  <>
+    If requesting access to AD Knowledge Portal data, did you provide a clear
+    list of full <i>Study Names</i>? (AD Knowledge Portal requirement only)
+  </>
+)
+
 export type ResearchProjectFormProps = {
   /* The access requirement to which the research project refers */
   managedACTAccessRequirement: ManagedACTAccessRequirement
@@ -153,6 +161,7 @@ export default function ResearchProjectForm(props: ResearchProjectFormProps) {
       {showConfirmationScreen && (
         <ConfirmationScreenContent
           isIDURequired={managedACTAccessRequirement.isIDURequired}
+          accessRequirementId={managedACTAccessRequirement.id}
         />
       )}
       {!showConfirmationScreen && (
@@ -278,8 +287,13 @@ export default function ResearchProjectForm(props: ResearchProjectFormProps) {
   )
 }
 
-function ConfirmationScreenContent(props: { isIDURequired: boolean }) {
-  const { isIDURequired } = props
+type ConfirmationScreenContentProps = {
+  isIDURequired: boolean
+  accessRequirementId?: number
+}
+
+function ConfirmationScreenContent(props: ConfirmationScreenContentProps) {
+  const { isIDURequired, accessRequirementId } = props
   return (
     <DialogContent>
       <Typography variant="body1" fontWeight={700} gutterBottom>
@@ -297,6 +311,11 @@ function ConfirmationScreenContent(props: { isIDURequired: boolean }) {
           verifiable? You must give the full name of your institution, so we can
           look it up.
         </Typography>
+        {accessRequirementId === AD_KNOWLEDGE_PORTAL_MANAGED_AR_ID_PROD && (
+          <Typography component={'li'} variant="body1" gutterBottom>
+            {AD_KNOWLEDGE_PORTAL_CONFIRMATION_INSTRUCTION}
+          </Typography>
+        )}
         {isIDURequired && (
           <Typography component={'li'} variant="body1" gutterBottom>
             Did you provide clear <i>study objectives</i> or your{' '}
