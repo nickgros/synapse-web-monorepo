@@ -4,23 +4,24 @@ import svgr from 'vite-plugin-svgr'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { externalizeDeps } from 'vite-plugin-externalize-deps'
 import dts from 'vite-plugin-dts'
+import { reactRouter } from '@react-router/dev/vite'
 
 export type PluginConfigOptions = {
   includeReactPlugins?: boolean
+  includeReactRouterPlugin?: boolean
   includeLibraryPlugins?: boolean
   externalizeDepsOptions?: Parameters<typeof externalizeDeps>[0]
+  useNodePolyfills?: boolean
 }
 
-/**
- * Plugins that all of our Vite configurations will use
- */
-const COMMON_PLUGINS: PluginOption[] = [nodePolyfills()]
+const REACT_BASE_PLUGIN: PluginOption[] = [react()]
+const REACT_ROUTER_BASE_PLUGIN: PluginOption[] = [reactRouter()]
+const NODE_POLYFILLS_PLUGIN: PluginOption[] = [nodePolyfills()]
 
 /**
  * Plugins that our React apps and libraries will use
  */
-const REACT_PLUGINS: PluginOption[] = [
-  react(),
+const REACT_ADDITIONAL_PLUGINS: PluginOption[] = [
   svgr({
     svgrOptions: {
       plugins: ['@svgr/plugin-jsx'],
@@ -53,10 +54,17 @@ function getLibraryPlugins(
  * plugin configurations (see https://github.com/vitejs/vite/issues/16479)
  */
 export function getPluginConfig(options: PluginConfigOptions): PluginOption[] {
-  const plugins: PluginOption[] = [...COMMON_PLUGINS]
-  if (options.includeReactPlugins) {
-    plugins.push(...REACT_PLUGINS)
+  const plugins: PluginOption[] = []
+  if (options.includeReactRouterPlugin) {
+    plugins.push(...REACT_ROUTER_BASE_PLUGIN, ...REACT_ADDITIONAL_PLUGINS)
+  } else if (options.includeReactPlugins) {
+    plugins.push(...REACT_BASE_PLUGIN, ...REACT_ADDITIONAL_PLUGINS)
   }
+
+  if (options.useNodePolyfills) {
+    plugins.push(...NODE_POLYFILLS_PLUGIN)
+  }
+
   if (options.includeLibraryPlugins) {
     plugins.push(...getLibraryPlugins(options.externalizeDepsOptions))
   }

@@ -3,6 +3,7 @@ import { ConfigBuilder } from './ConfigBuilder.js'
 
 const portalsSharedViteConfig = new ConfigBuilder()
   .setIncludeReactConfig(true)
+  .setUseNodePolyfills(true)
   .setIncludeVitestConfig(true)
   .setConfigOverrides({
     port: 3001, // Reserve port 3000 for SageAccountWeb

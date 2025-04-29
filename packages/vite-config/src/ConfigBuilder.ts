@@ -8,11 +8,20 @@ export class ConfigBuilder {
   private includeLibraryConfig = false
   private buildLibEntry: string | string[] | undefined = undefined
   private includeVitestConfig = false
-  private pluginConfigOptions: PluginConfigOptions = {}
+  private pluginConfigOptions: PluginConfigOptions = {
+    useNodePolyfills: true,
+  }
   private configOverrides: Record<string, any> | null = null
 
   setIncludeReactConfig(includeReactConfig: boolean): ConfigBuilder {
     this.pluginConfigOptions.includeReactPlugins = includeReactConfig
+    return this
+  }
+
+  setIncludeReactRouterConfig(
+    includeReactRouterConfig: boolean,
+  ): ConfigBuilder {
+    this.pluginConfigOptions.includeReactRouterPlugin = includeReactRouterConfig
     return this
   }
 
@@ -34,6 +43,11 @@ export class ConfigBuilder {
   ): ConfigBuilder {
     this.includeLibraryConfig = includeLibraryConfig
     this.pluginConfigOptions.externalizeDepsOptions = externalizeDepsOptions
+    return this
+  }
+
+  setUseNodePolyfills(useNodePolyfills: boolean): ConfigBuilder {
+    this.pluginConfigOptions.useNodePolyfills = useNodePolyfills
     return this
   }
 

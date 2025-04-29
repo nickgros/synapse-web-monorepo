@@ -1,5 +1,6 @@
 import { CardDeck } from '@/components/CardDeck/CardDeck'
 import { CardDeckCardProps } from '@/components/CardDeck/CardDeckCardProps'
+import { getLinkParams } from '@/components/GenericCard/TableRowGenericCard'
 import { ImageFileHandle } from '@/components/widgets/ImageFileHandle'
 import { useGetEntity } from '@/synapse-queries/entity/useEntity'
 import useGetQueryResultBundle from '@/synapse-queries/entity/useGetQueryResultBundle'
@@ -7,7 +8,7 @@ import { SynapseConstants } from '@/utils'
 import { getFieldIndex } from '@/utils/functions/queryUtils'
 import { QueryBundleRequest } from '@sage-bionetworks/synapse-types'
 import { CardLink } from '../CardContainer/CardLink'
-import { getFileHandleAssociation, getLinkParams } from '../GenericCard'
+import { getFileHandleAssociation } from '../GenericCard'
 
 export type TableQueryCardDeckProps = {
   entityId: string /* The table entity which should be queried */
