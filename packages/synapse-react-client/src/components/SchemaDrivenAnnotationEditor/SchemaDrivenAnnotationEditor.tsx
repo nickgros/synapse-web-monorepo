@@ -302,7 +302,7 @@ export function SchemaDrivenAnnotationEditor(
             formData={formData}
             onChange={({ formData }) => {
               onChange(formData)
-              setFormData(formData)
+              setFormData(cleanFormData(formData, false))
               setValidationError(undefined)
             }}
             onBlur={() => {

@@ -719,6 +719,50 @@ describe('SchemaDrivenAnnotationEditor tests', () => {
     await screen.findByDisplayValue(stringAnnotationWithCommas)
   })
 
+  it('supports toggling a oneOf schema with null (SWC-7330)', async () => {
+    server.use(
+      noAnnotationsHandler,
+      configureSchemaBindingHandler({
+        ...mockSchemaBinding,
+        jsonSchemaVersionInfo: {
+          ...mockSchemaBinding.jsonSchemaVersionInfo,
+          $id: 'org.sagebionetworks-MockOneOfTypeSchema-1.0.0',
+        },
+      }),
+    )
+
+    await renderComponent()
+
+    await screen.findByText('requires scientific annotations', {
+      exact: false,
+    })
+
+    // Find the select widget that controls the type
+    const selectWidget = await screen.findByRole('combobox')
+    expect(selectWidget).toHaveValue('null')
+
+    // null -> number
+    await userEvent.click(selectWidget)
+    const numberOption = await screen.findByRole('option', { name: 'number' })
+    await userEvent.click(numberOption)
+
+    expect(selectWidget).toHaveValue('number')
+
+    // number -> null
+    await userEvent.click(selectWidget)
+    const nullOption = await screen.findByRole('option', { name: 'null' })
+    await userEvent.click(nullOption)
+
+    expect(selectWidget).toHaveValue('null')
+
+    // number -> null
+    await userEvent.click(selectWidget)
+    const numberAgain = await screen.findByRole('option', { name: 'number' })
+    await userEvent.click(numberAgain)
+
+    expect(selectWidget).toHaveValue('number')
+  })
+
   describe('Passes entity data to the Form component to compute conditional fields', () => {
     it('shows a conditional field where the concreteType matches FileEntity', async () => {
       server.use(

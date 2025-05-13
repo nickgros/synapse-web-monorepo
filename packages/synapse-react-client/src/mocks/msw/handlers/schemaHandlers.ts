@@ -2,6 +2,7 @@
 import {
   mockConditionalOnConcreteTypeSchema,
   mockFileEntityValidationSchema,
+  mockOneOfToSelectTypeSchema,
   mockProjectValidationSchema,
   mockValidationSchema,
 } from '@/mocks/mockSchema'
@@ -17,6 +18,7 @@ const validationSchemas: JSONSchema7[] = [
   mockConditionalOnConcreteTypeSchema,
   mockFileEntityValidationSchema,
   mockProjectValidationSchema,
+  mockOneOfToSelectTypeSchema,
 ]
 
 export function getValidationSchemaHandlers(backendOrigin?: string) {

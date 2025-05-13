@@ -124,3 +124,29 @@ export const DirectlyProvidedSchema: Story = {
     },
   },
 }
+
+export const Test: Story = {
+  args: {
+    validationSchema: {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "https://repo-prod.prod.sagebase.org/repo/v1/schema/type/registered/org.sagebionetworks-MockOneOfTypeSchema-1.0.0",
+      "type": "object",
+
+      "properties": {
+        "RIN": {
+          "description": "RNA Integrity Number",
+
+          "oneOf": [{
+            "type": "number",
+            "title": "number"
+          }, {
+            "type": "null",
+            "title": "null"
+          }]
+        }
+      },
+
+      "title": "OneOf test"
+    }
+  }
+};
