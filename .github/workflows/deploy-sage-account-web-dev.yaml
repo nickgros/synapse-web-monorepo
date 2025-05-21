@@ -9,14 +9,40 @@ on:
 
 jobs:
   build-and-deploy-sage-account-web:
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-    uses: ./.github/workflows/build-and-deploy-app.yml
-    with:
-      app-name: SageAccountWeb
-      branch-or-tag: ${{ inputs.tag }}
-      bucket-name: dev.accounts.synapse.org
-      cfdist-id: E39Y0MUIDX97EG
-      deployment-role-arn: arn:aws:iam::797640923903:role/sagebase-github-oidc-sage-bionetworks-web-monorepo-infra
-      vite-mode: 'development'
+    steps:
+      - uses: ./.github/workflows/build-and-deploy-app.yml
+        with:
+          app-name: SageAccountWeb
+          branch-or-tag: ${{ inputs.tag }}
+          bucket-name: dev.accounts.synapse.org
+          cfdist-id: E39Y0MUIDX97EG
+          deployment-role-arn: arn:aws:iam::797640923903:role/sagebase-github-oidc-sage-bionetworks-web-monorepo-infra
+          vite-mode: 'development'
+      # Also deploy the accounts site to the GitHub container registry, where SWC can pull it and use it in E2E tests
+      - name: Move to SageAccountWeb directory
+        run: cd apps/SageAccountWeb
+      - name: Build image
+        run: docker build -t sage-account-web . --label "runnumber=${GITHUB_RUN_ID}"
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          
+          # This changes all uppercase characters to lowercase.
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # This strips the git ref prefix from the version.
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # This strips the "v" prefix from the tag name.
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # This uses the Docker `latest` tag convention.
+          [ "$VERSION" == "main" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
