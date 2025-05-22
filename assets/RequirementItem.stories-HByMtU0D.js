@@ -1,0 +1,44 @@
+import{j as a}from"./jsx-runtime-BD4Lws4r.js";import{m as P}from"./mockWiki-CZdZHQnO.js";import{M as x}from"./MarkdownSynapse-DJwz4JA-.js";import{d as s}from"./ToastMessage-DSzMTlR5.js";import{R as n,a as t}from"./RequirementItem-BTcZwLvl.js";import{P as O}from"./Paper-bcyjQXbo.js";import"./index-BQmiQiuI.js";import"./iframe-B_s7h1r3.js";import"./mock_user_profile-CijvmO8r.js";import"./mock_file_handle-Ct1MSfYs.js";import"./VerificationSubmission-B0kBNeMy.js";import"./useFiles-D_JB97Dd.js";import"./SynapseConstants-DP5MDcEa.js";import"./OrientationBanner-B9Ix_96M.js";import"./index-BKcNlqDU.js";import"./spreadSx-CwcO6WA9.js";import"./react-CIBidaCI.js";import"./FullWidthAlert-B6Hzy503.js";import"./Alert-DlTRLF6t.js";import"./createTheme-TJQ-Me4W.js";import"./resolveComponentProps-CNz-D9dt.js";import"./isHostComponent-DVu5iVWx.js";import"./useForkRef-DI00mLUt.js";import"./createSvgIcon-DH7gczeL.js";import"./DefaultPropsProvider-DtDi0Gt5.js";import"./Close-CggPnEUr.js";import"./IconButton-G7ahMeIA.js";import"./ButtonBase-BgglPDc6.js";import"./useTimeout-BDW9Ghs7.js";import"./TransitionGroupContext-BBWYv0r8.js";import"./useIsFocusVisible-Cex7JU8r.js";import"./useEventCallback-DAsX7y3A.js";import"./Stack-DylG5yLx.js";import"./getThemeProps-B1NOqccD.js";import"./useTheme-CoBXuknm.js";import"./Box-D3BYjgB7.js";import"./AlertTitle-6ZpIjRE4.js";import"./Typography-btQXjNFB.js";import"./useTheme-DwB7SBSA.js";import"./Grow-DjwQF0B5.js";import"./index-DBgz7f_2.js";import"./utils-B9UGWasi.js";import"./ClickAwayListener-vbZZL3nn.js";import"./ownerDocument-DW-IO8s5.js";import"./Tooltip-BnVDD-6_.js";import"./index-cvsUPyqt.js";import"./useControlled-CnNyARgE.js";import"./useId-DVHINaBJ.js";import"./Popper-CUtaqr2z.js";import"./Button-GHEHd2qc.js";import"./fetchWithExponentialTimeout-Cpvpsfq8.js";import"./StringUtils-CzgJJW-6.js";import"./useQuery-BRwyF-CG.js";import"./utils-aAzvXSW-.js";import"./Link-D3THyCk_.js";import"./Collapse-jKA3781i.js";import"./isNil-mi6BU05T.js";import"./_Uint8Array-DECVW7wJ.js";import"./_baseTimes-36S_kd0L.js";import"./isObjectLike-DmjEXA5C.js";import"./isArray-Dxzbedgu.js";import"./_baseIsEqual-C4SuTQ3y.js";import"./_getTag-DYiGo6mU.js";import"./tinycolor-Begke6kS.js";import"./Fade-j31nN2R5.js";import"./Skeleton-B0qgezQP.js";import"./inputBaseClasses-Bonb5ujV.js";import"./calculateFriendlyFileSize-CR3Crrbc.js";import"./CheckCircleTwoTone-BagmZIiC.js";import"./InfoTwoTone-BqVlvS4U.js";import"./mutation-Bl_77Z8X.js";import"./dayjs.min-D6Gybxm8.js";import"./chunk-AYJ5UCUI-DuHSP6qP.js";import"./cloneDeep-D-VLR9nf.js";import"./_initCloneObject-CWrZArqt.js";import"./isEqual-DLYyY67n.js";import"./merge-D9bDLSfz.js";import"./identity-DKeuBCMA.js";import"./SkeletonButton-CUz-cBYp.js";import"./SkeletonInlineBlock-DmWfdPEs.js";import"./SkeletonTable-BlksKcy8.js";import"./times-BxF6ZD44.js";import"./toInteger-DzgHPup7.js";import"./isSymbol-B0yBMpE8.js";import"./SkeletonParagraph-CCLHTBSK.js";import"./uniqueId-foaDn3QB.js";import"./toString-4uBEoJN0.js";import"./CSSTransition-BTJer4eW.js";import"./ConditionalWrapper-Ds_i8ZVi.js";import"./LockTwoTone-BhEuaN9M.js";import"./Avatar-BrDVFyAx.js";const dr={title:"Governance/Data Access Request Flow/Requirements/RequirementItem",component:n,argTypes:{status:{control:"select",options:[...new Set(Object.values(t))]}},tags:["autodocs"],render:A=>a.jsx(O,{sx:{p:5,margin:"auto",maxWidth:"700px"},children:a.jsx(n,{...A,children:a.jsx(x,{markdown:P.markdown})})})},r={args:{status:t.COMPLETE,actions:[{variant:"outlined",children:"Learn More",onClick:()=>{s("Learn More clicked")}}]}},o={args:{status:t.PENDING,actions:[{variant:"outlined",children:"Learn More",onClick:()=>{s("Learn More clicked")}}]}},e={args:{status:t.LOADING,actions:[]}},i={args:{status:t.COMPLETE,actions:[]}},m={args:{status:t.LOCKED,actions:[{variant:"outlined",children:"Accept terms",onClick:()=>{s("Accept terms clicked")}}]}};var p,c,d;r.parameters={...r.parameters,docs:{...(p=r.parameters)==null?void 0:p.docs,source:{originalSource:`{
+  args: {
+    status: RequirementItemStatus.COMPLETE,
+    actions: [{
+      variant: 'outlined',
+      children: 'Learn More',
+      onClick: () => {
+        displayToast('Learn More clicked');
+      }
+    }]
+  }
+}`,...(d=(c=r.parameters)==null?void 0:c.docs)==null?void 0:d.source}}};var u,l,g;o.parameters={...o.parameters,docs:{...(u=o.parameters)==null?void 0:u.docs,source:{originalSource:`{
+  args: {
+    status: RequirementItemStatus.PENDING,
+    actions: [{
+      variant: 'outlined',
+      children: 'Learn More',
+      onClick: () => {
+        displayToast('Learn More clicked');
+      }
+    }]
+  }
+}`,...(g=(l=o.parameters)==null?void 0:l.docs)==null?void 0:g.source}}};var L,k,C;e.parameters={...e.parameters,docs:{...(L=e.parameters)==null?void 0:L.docs,source:{originalSource:`{
+  args: {
+    status: RequirementItemStatus.LOADING,
+    actions: []
+  }
+}`,...(C=(k=e.parameters)==null?void 0:k.docs)==null?void 0:C.source}}};var M,E,R;i.parameters={...i.parameters,docs:{...(M=i.parameters)==null?void 0:M.docs,source:{originalSource:`{
+  args: {
+    status: RequirementItemStatus.COMPLETE,
+    actions: []
+  }
+}`,...(R=(E=i.parameters)==null?void 0:E.docs)==null?void 0:R.source}}};var S,I,q;m.parameters={...m.parameters,docs:{...(S=m.parameters)==null?void 0:S.docs,source:{originalSource:`{
+  args: {
+    status: RequirementItemStatus.LOCKED,
+    actions: [{
+      variant: 'outlined',
+      children: 'Accept terms',
+      onClick: () => {
+        displayToast('Accept terms clicked');
+      }
+    }]
+  }
+}`,...(q=(I=m.parameters)==null?void 0:I.docs)==null?void 0:q.source}}};const ur=["Complete","Pending","Loading","NoActions","Locked"];export{r as Complete,e as Loading,m as Locked,i as NoActions,o as Pending,ur as __namedExportsOrder,dr as default};
