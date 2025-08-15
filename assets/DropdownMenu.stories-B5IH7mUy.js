@@ -1,0 +1,28 @@
+import{j as n}from"./jsx-runtime-D_zvdyIk.js";import{D as m}from"./DropdownMenu-BxDe1IFX.js";import{I as s}from"./IconSvg-Br_gLJe_.js";import"./index-bqo5TgK4.js";import"./iframe-BWhMz8_p.js";import"./Button-BBNinPG5.js";import"./createTheme-DafKpa7R.js";import"./DefaultPropsProvider-D5B1AITN.js";import"./createSimplePaletteValueFilter-sGs_ku48.js";import"./useTimeout-BRiyRUpE.js";import"./ButtonBase-BIKkVoec.js";import"./useForkRef-DBPyDf3S.js";import"./isFocusVisible-B8k4qzLc.js";import"./CircularProgress-C5IYZviS.js";import"./Typography-bPn8uOYp.js";import"./index-BfprNM_h.js";import"./extendSxProp-Cph9rC05.js";import"./useTheme-DpXojDgV.js";import"./Tooltip-CDH_CeG3.js";import"./index-DxZ0auih.js";import"./useTheme-CNSIRb32.js";import"./useSlot-Bf19Xh20.js";import"./useControlled-Dgt9tsee.js";import"./getReactElementRef-C8P0G6nS.js";import"./index-B7iH1pIn.js";import"./index-BzeBLNAY.js";import"./Grow-DBGKzkJE.js";import"./Popper-BC3eKN7L.js";import"./ownerDocument-DW-IO8s5.js";import"./Fade-CA57bcmY.js";import"./Paper-B113B_DA.js";import"./ClickAwayListener-CT2CFK1B.js";import"./MenuList-B0dZ5FOs.js";import"./getScrollbarSize-CaCM53D3.js";import"./ownerWindow-HkKU3E4x.js";import"./List-1C8gXdqu.js";import"./MenuItem-ET2X9qkv.js";import"./dividerClasses-CpPVc4T8.js";import"./ListItemIcon-DxHTf4gP.js";import"./ListItemText-D5AZf-0q.js";import"./Divider-H0bbEiaO.js";import"./createSvgIcon-aLr9nUbl.js";import"./spreadSx-CwcO6WA9.js";import"./LayersTwoTone-C_xnTndr.js";import"./ContentCopyTwoTone--fDCCCnu.js";import"./HelpOutlineTwoTone-XC7mu4M1.js";import"./ErrorOutlined-BPldgoaJ.js";import"./GetAppTwoTone-D9tg3G6B.js";import"./InfoOutlined-BSstAhhR.js";import"./PhoneTwoTone-D70RtG_2.js";import"./DeleteTwoTone-DT1EpZtm.js";import"./CheckCircleTwoTone-BSWQP55r.js";const mo={title:"UI/DropdownMenu",component:m},o=p=>()=>{console.log("Item clicked",p)},t={args:{dropdownButtonText:"Dropdown Menu Button",buttonProps:{endIcon:n.jsx(s,{icon:"verticalEllipsis",wrap:!1})},items:[[{text:"Do something cool",onClick:o(0)},{text:"This one has a tooltip",tooltipText:"Some more info",onClick:o(1)},{text:"This one is disabled",disabled:!0,onClick:o(3)},{text:"This one has both",disabled:!0,tooltipText:"You can't do this for reasons",onClick:o(4)}],[{text:"You can organize actions into groups",onClick:o(5)}]]}};var i,r,e;t.parameters={...t.parameters,docs:{...(i=t.parameters)==null?void 0:i.docs,source:{originalSource:`{
+  args: {
+    dropdownButtonText: 'Dropdown Menu Button',
+    buttonProps: {
+      endIcon: <IconSvg icon="verticalEllipsis" wrap={false} />
+    },
+    items: [[{
+      text: 'Do something cool',
+      onClick: onClickHandler(0)
+    }, {
+      text: 'This one has a tooltip',
+      tooltipText: 'Some more info',
+      onClick: onClickHandler(1)
+    }, {
+      text: 'This one is disabled',
+      disabled: true,
+      onClick: onClickHandler(3)
+    }, {
+      text: 'This one has both',
+      disabled: true,
+      tooltipText: "You can't do this for reasons",
+      onClick: onClickHandler(4)
+    }], [{
+      text: 'You can organize actions into groups',
+      onClick: onClickHandler(5)
+    }]]
+  }
+}`,...(e=(r=t.parameters)==null?void 0:r.docs)==null?void 0:e.source}}};const so=["Demo"];export{t as Demo,so as __namedExportsOrder,mo as default};
