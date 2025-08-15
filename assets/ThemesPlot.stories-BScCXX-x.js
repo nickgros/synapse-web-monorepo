@@ -1,0 +1,55 @@
+import{T as p}from"./ThemesPlot-C35zDcfS.js";import"./jsx-runtime-D_zvdyIk.js";import"./useFiles-CCgyXTk-.js";import"./VerificationSubmission-OWkqLMYZ.js";import"./SynapseConstants-Bkj3gHJE.js";import"./OrientationBanner-Kcb1EbaG.js";import"./index-VuyhINOV.js";import"./index--_s_l9g5.js";import"./iframe-pyZDNJ8T.js";import"./spreadSx-CwcO6WA9.js";import"./react-BT7bNxW7.js";import"./FullWidthAlert-BTfzgsOK.js";import"./Alert-OS0t4bPf.js";import"./createTheme-DxJ79BXc.js";import"./DefaultPropsProvider-iW3t653H.js";import"./useSlot-DveTpe9j.js";import"./useForkRef-DuFVzXGe.js";import"./createSimplePaletteValueFilter-SAZZY-kP.js";import"./createSvgIcon-Dh3r7Et6.js";import"./Close-CqPBC-YI.js";import"./IconButton-BS4bgkyD.js";import"./useTimeout-DRuALipg.js";import"./ButtonBase-DR4l1HUk.js";import"./isFocusVisible-B8k4qzLc.js";import"./CircularProgress-BnZig6ry.js";import"./Paper-CiTNHdWV.js";import"./useTheme-B0yWLZKw.js";import"./useTheme-ClYKScKD.js";import"./Stack-DvaAKiBz.js";import"./extendSxProp-DGPJAFUB.js";import"./getThemeProps-BU7lhVxx.js";import"./Box--i-_aWQj.js";import"./AlertTitle-s2NeJaUb.js";import"./Typography-D2khfl49.js";import"./index-cXJRHP25.js";import"./ClickAwayListener-Dd-apYwh.js";import"./getReactElementRef-J4nKeEsv.js";import"./index-X3wy_rbI.js";import"./index-BLshjiEN.js";import"./ownerDocument-DW-IO8s5.js";import"./Grow-DUH0kjWn.js";import"./Tooltip-BXMy3cax.js";import"./index-HuzFGznI.js";import"./useControlled-CG1DbziZ.js";import"./Popper-D4LipFq_.js";import"./Button-DQEfVqin.js";import"./fetchWithExponentialTimeout-CXmnpl-T.js";import"./StringUtils-C5rFena9.js";import"./useQuery-Mmwd0UGX.js";import"./QueryClientProvider-ZvUUiE0t.js";import"./Link-Br14C7fU.js";import"./Collapse-f9j8T1LX.js";import"./_baseUniq-DGhQ1Gxb.js";import"./_Uint8Array-CZ-bZX-p.js";import"./isArray-Y1hUIWuk.js";import"./_getTag-ByaQxPJR.js";import"./isEqual-BPgluCw7.js";import"./merge-Kg_vOFnX.js";import"./_initCloneObject-DaNCXzEh.js";import"./identity-DKeuBCMA.js";import"./tinycolor-Begke6kS.js";import"./Fade-Bo8PZvMt.js";import"./inputBaseClasses-Bt0ELv0W.js";import"./calculateFriendlyFileSize-CJJqCcxJ.js";import"./CheckCircleTwoTone-CvEuNtVO.js";import"./InfoTwoTone-6pdyjRO9.js";import"./useMutation-BlfAdHU_.js";import"./dayjs.min-DFoF1U9V.js";import"./chunk-AYJ5UCUI-CYpb56mu.js";import"./cloneDeep-azNH1Mt7.js";import"./Skeleton-BKtMPDz_.js";import"./SqlFunctions-C8HqQ3uk.js";import"./unCamelCase-ZiU_emRy.js";import"./LoadingScreen-DFMq7rYA.js";import"./Backdrop-B2t1Gkx4.js";import"./LinearProgress-DPpboXup.js";import"./uniq-BnnuS6gp.js";import"./Plot-B_O9ep72.js";import"./index-Chjiymov.js";import"./_createAggregator-2DLvSr5z.js";import"./_baseEach-CtHJPo36.js";import"./_baseIteratee-C_fnqBGy.js";import"./_baseGet-47mnty4Y.js";import"./isSymbol-DZd6qpcY.js";import"./toString-D23exauM.js";import"./hasIn-CQ3WctYD.js";import"./_baseOrderBy-CGmBAYSU.js";import"./_baseMap-BaSX1gr-.js";import"./head-aneRfQQJ.js";const Go={title:"Home Page/ThemesPlot",component:p},o={args:{onPointClick:m=>{console.log(m.event)},topBarPlot:{entityId:"syn21641485",xField:"totalCount",yField:"groupBy",groupField:"consortium",colors:{CSBC:"rgba(64,123,160, 1)","PS-ON":"rgba(91,176,181,1)",ICBP:"rgba(197, 191, 223, 1)",TEC:"rgba(156, 196, 233, 1)"},whereClause:"totalCount is not NULL"},sideBarPlot:{entityId:"syn21649281",xField:"totalCount",yField:"theme",groupField:"consortium",countLabel:"grants",plotStyle:{backgroundColor:"#f5f9fa"},colors:{CSBC:"#1c76af","PS-ON":"#5bb0b5",ICBP:"#9cc4e9",TEC:"#c5bfdf"}},dotPlot:{entityId:"syn21639584",xField:"totalCount",yField:"theme",groupField:"groupBy",infoField:"themeDescription",whereClause:"groupBy IN ('publications', 'tools', 'datasets')",markerSymbols:{tools:"y-down",datasets:"diamond-x",publications:"circle"},plotStyle:{markerLine:"rgba(0, 0, 0,1)",markerFill:"rgba(255, 255, 255,1)",markerSize:11,backgroundColor:"#f5f9fa"}}}};var t,r,i;o.parameters={...o.parameters,docs:{...(t=o.parameters)==null?void 0:t.docs,source:{originalSource:`{
+  args: {
+    onPointClick: e => {
+      console.log(e.event);
+    },
+    topBarPlot: {
+      entityId: 'syn21641485',
+      xField: 'totalCount',
+      yField: 'groupBy',
+      groupField: 'consortium',
+      colors: {
+        CSBC: 'rgba(64,123,160, 1)',
+        'PS-ON': 'rgba(91,176,181,1)',
+        ICBP: 'rgba(197, 191, 223, 1)',
+        TEC: 'rgba(156, 196, 233, 1)'
+      },
+      whereClause: 'totalCount is not NULL'
+    },
+    sideBarPlot: {
+      entityId: 'syn21649281',
+      xField: 'totalCount',
+      yField: 'theme',
+      groupField: 'consortium',
+      countLabel: 'grants',
+      plotStyle: {
+        backgroundColor: '#f5f9fa'
+      },
+      colors: {
+        CSBC: '#1c76af',
+        'PS-ON': '#5bb0b5',
+        ICBP: '#9cc4e9',
+        TEC: '#c5bfdf'
+      }
+    },
+    dotPlot: {
+      entityId: 'syn21639584',
+      xField: 'totalCount',
+      yField: 'theme',
+      groupField: 'groupBy',
+      infoField: 'themeDescription',
+      whereClause: "groupBy IN ('publications', 'tools', 'datasets')",
+      markerSymbols: {
+        tools: 'y-down',
+        datasets: 'diamond-x',
+        publications: 'circle'
+      },
+      plotStyle: {
+        markerLine: 'rgba(0, 0, 0,1)',
+        markerFill: 'rgba(255, 255, 255,1)',
+        markerSize: 11,
+        backgroundColor: '#f5f9fa'
+      }
+    }
+  }
+}`,...(i=(r=o.parameters)==null?void 0:r.docs)==null?void 0:i.source}}};const Jo=["ThemesPlotDemo"];export{o as ThemesPlotDemo,Jo as __namedExportsOrder,Go as default};
