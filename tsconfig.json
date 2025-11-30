@@ -7,6 +7,7 @@
     "allowJs": true
   },
   "references": [
+    { "path": "./apps/portal-builder" },
     { "path": "./apps/portals/adknowledgeportal" },
     { "path": "./apps/portals/ampals" },
     { "path": "./apps/portals/arkportal" },

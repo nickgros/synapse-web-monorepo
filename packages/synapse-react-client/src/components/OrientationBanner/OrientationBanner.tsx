@@ -9,7 +9,7 @@ import FullWidthAlert, {
   FullWidthAlertProps,
 } from '../FullWidthAlert/FullWidthAlert'
 
-const OrientationBannerNameStrings = [
+export const OrientationBannerNameStrings = [
   'Challenges',
   'CohortBuilder',
   'DataAccessManagement',

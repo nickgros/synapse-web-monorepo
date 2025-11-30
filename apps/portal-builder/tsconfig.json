@@ -8,7 +8,7 @@
     "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
     "useUnknownInCatchVariables": false,
-    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
+    "types": ["vite/client", "vitest/globals"],
     "paths": {
       "@/*": ["./*"],
       "@sage-bionetworks/synapse-types": [
@@ -31,10 +31,9 @@
       "vite-config/*": ["../../../packages/vite-config/src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/tests/setupTests.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "references": [
     { "path": "../synapse-portal-framework" },
-    { "path": "../../packages/synapse-client" },
     { "path": "../../packages/synapse-react-client" },
     { "path": "../../packages/synapse-types" }
   ]

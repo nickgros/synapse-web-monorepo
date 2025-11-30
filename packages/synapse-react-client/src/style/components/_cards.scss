@@ -291,6 +291,9 @@ $text-color-lighter: #898989;
     .SRC-cardMetadata-column2 {
       width: auto; /* Take remaining space */
     }
+    > table {
+      color: inherit;
+    }
   }
 
   &.SRC-typeDataset {
