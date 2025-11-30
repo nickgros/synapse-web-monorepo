@@ -9,9 +9,6 @@ import PhoneIcon from '@mui/icons-material/PhoneIphone'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useState, useEffect, useRef } from 'react'
 import { usePortalConfig, useResourceEditor } from '../../state'
-import { PortalPreviewRenderer } from './PortalPreviewRenderer'
-import { ResourcePreviewRenderer } from './ResourcePreviewRenderer'
-import { IframePreview } from './IframePreview'
 
 type DeviceSize = 'desktop' | 'tablet' | 'phone'
 
@@ -19,6 +16,19 @@ const deviceWidths: Record<DeviceSize, string> = {
   desktop: '100%',
   tablet: '768px',
   phone: '375px',
+}
+
+interface PreviewReadyMessage {
+  type: 'PREVIEW_READY'
+}
+
+function isPreviewReadyMessage(data: unknown): data is PreviewReadyMessage {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'type' in data &&
+    (data as PreviewReadyMessage).type === 'PREVIEW_READY'
+  )
 }
 
 export function PreviewPanel() {
@@ -32,26 +42,52 @@ export function PreviewPanel() {
     setPreviewPath,
   } = useResourceEditor()
 
-  // Track when we switch from resource editing to portal preview
-  // This key forces the iframe to remount when switching back to portal view
-  const [iframeKey, setIframeKey] = useState(0)
-  const wasEditingResource = useRef(isEditingResource)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const [isPreviewReady, setIsPreviewReady] = useState(false)
 
+  // Listen for PREVIEW_READY message from the iframe
   useEffect(() => {
-    // When switching from resource editing to portal preview, increment key
-    if (wasEditingResource.current && !isEditingResource) {
-      setIframeKey(k => k + 1)
+    const handleMessage = (event: MessageEvent) => {
+      if (isPreviewReadyMessage(event.data)) {
+        setIsPreviewReady(true)
+      }
     }
-    wasEditingResource.current = isEditingResource
-  }, [isEditingResource])
+
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
+  // Send updates to the preview iframe based on current mode
+  useEffect(() => {
+    if (!isPreviewReady || !iframeRef.current?.contentWindow) return
+
+    if (isEditingResource && activeResource) {
+      // Resource preview mode
+      iframeRef.current.contentWindow.postMessage(
+        {
+          type: 'RESOURCE_PREVIEW',
+          resource: activeResource,
+          palette: config.palette,
+        },
+        '*',
+      )
+    } else {
+      // Portal preview mode
+      iframeRef.current.contentWindow.postMessage(
+        {
+          type: 'CONFIG_UPDATE',
+          config,
+          path: previewPath,
+        },
+        '*',
+      )
+    }
+  }, [config, previewPath, isPreviewReady, isEditingResource, activeResource])
 
   const handleBackToPortal = () => {
     setActiveResource(null)
     setPreviewPath(null)
   }
-
-  // Determine if we should show resource preview
-  const showResourcePreview = isEditingResource && activeResource !== null
 
   return (
     <Box
@@ -96,7 +132,9 @@ export function PreviewPanel() {
         <ToggleButtonGroup
           value={deviceSize}
           exclusive
-          onChange={(_, value) => value && setDeviceSize(value)}
+          onChange={(_, value: DeviceSize | null) => {
+            if (value) setDeviceSize(value)
+          }}
           size="small"
         >
           <ToggleButton value="phone" title="Phone">
@@ -133,16 +171,17 @@ export function PreviewPanel() {
             overflow: 'hidden',
           }}
         >
-          {showResourcePreview ? (
-            <ResourcePreviewRenderer resource={activeResource} />
-          ) : (
-            <IframePreview key={iframeKey} width="100%" height="100%">
-              <PortalPreviewRenderer
-                config={config}
-                initialPath={previewPath}
-              />
-            </IframePreview>
-          )}
+          <iframe
+            ref={iframeRef}
+            src="/preview.html"
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              display: 'block',
+            }}
+            title="Portal Preview"
+          />
         </Box>
       </Box>
     </Box>

@@ -1,17 +1,22 @@
+/**
+ * PreviewRenderer
+ *
+ * Renders the portal preview. This component is designed to run in its own
+ * iframe/document, so it doesn't need any special iframe document handling.
+ * Styles are imported by the preview.tsx entry point.
+ */
+
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useEffect, useMemo, useRef } from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { mergeTheme } from 'synapse-react-client/theme/mergeTheme'
-import '@sage-bionetworks/synapse-portal-framework/style/App.scss'
-import 'synapse-react-client/style/main.scss'
 import { PortalContextProvider } from '@sage-bionetworks/synapse-portal-framework/components/PortalContext'
 import { ApplicationSessionContextProvider } from 'synapse-react-client/utils/AppUtils/session/ApplicationSessionContext'
 import { PortalConfig, RouteNode } from '../../types'
-import { useIframeDocument } from './IframePreview'
 import { PreviewLayout } from './PreviewLayout'
 import { configToRouteObjects } from '../../utils/configToRoutes'
 
-interface PortalPreviewRendererProps {
+interface PreviewRendererProps {
   config: PortalConfig
   /** Optional initial path to navigate to in the preview */
   initialPath?: string | null
@@ -65,12 +70,7 @@ function deriveNavbarConfig(routes: RouteNode[]): {
     })
 }
 
-export function PortalPreviewRenderer({
-  config,
-  initialPath,
-}: PortalPreviewRendererProps) {
-  const iframeDocument = useIframeDocument()
-
+export function PreviewRenderer({ config, initialPath }: PreviewRendererProps) {
   const theme = useMemo(
     () =>
       createTheme(
@@ -79,41 +79,9 @@ export function PortalPreviewRenderer({
             primary: { main: config.palette.primary },
             secondary: { main: config.palette.secondary },
           },
-          components: {
-            // Configure MUI components to render portals inside the iframe
-            MuiPopover: {
-              defaultProps: {
-                container: iframeDocument.body,
-              },
-            },
-            MuiPopper: {
-              defaultProps: {
-                container: iframeDocument.body,
-              },
-            },
-            MuiModal: {
-              defaultProps: {
-                container: iframeDocument.body,
-                // Disable scroll lock which can interfere with iframe interactions
-                disableScrollLock: true,
-              },
-            },
-            MuiMenu: {
-              defaultProps: {
-                container: iframeDocument.body,
-                // Disable scroll lock to prevent interaction issues in iframe
-                disableScrollLock: true,
-                slotProps: {
-                  backdrop: {
-                    invisible: true,
-                  },
-                },
-              },
-            },
-          },
         }),
       ),
-    [config.palette, iframeDocument],
+    [config.palette],
   )
 
   // Build navbar config from routes tree

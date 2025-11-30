@@ -147,7 +147,7 @@ export function createDefaultPortalConfig(): PortalConfig {
         name: 'AD Knowledge Portal Studies',
         description:
           'Study data from the AD Knowledge Portal with research studies, data types, species, and other metadata',
-        sql: 'SELECT * FROM syn17083367 ORDER BY isFeatured DESC LIMIT 5',
+        sql: 'SELECT * FROM syn17083367 ORDER BY isFeatured DESC',
         // Primary key for linking to detail pages
         primaryKeyColumns: ['Study'],
         // Column metadata is fetched dynamically from Synapse

@@ -428,7 +428,9 @@ function InlineResourceEditor({
       primaryKeyColumns,
       selectColumns: resource.selectColumns ?? [],
       lastColumnFetch: resource.lastColumnFetch,
+      columnAliases: resource.columnAliases,
       cardDisplay,
+      tableDisplay: resource.tableDisplay,
     }
   }
 
@@ -452,6 +454,18 @@ function InlineResourceEditor({
     const updated = buildUpdatedResource()
     updateResource(resource.id, updated)
     setActiveResource(updated)
+  }
+
+  /**
+   * Helper to update resource and sync active resource preview
+   * Use this for updates that should trigger a live preview refresh
+   */
+  const updateResourceWithPreview = (updates: Partial<Resource>) => {
+    const updatedResource = { ...resource, ...updates }
+    updateResource(resource.id, updates)
+    if (isActive) {
+      setActiveResource(updatedResource as Resource)
+    }
   }
 
   const handleRefreshColumns = () => {
@@ -1095,7 +1109,7 @@ function InlineResourceEditor({
                             const newAliases = { ...resource.columnAliases }
                             delete newAliases[columnName]
                             newAliases[newValue] = alias
-                            updateResource(resource.id, {
+                            updateResourceWithPreview({
                               columnAliases: newAliases,
                             })
                           }
@@ -1117,7 +1131,7 @@ function InlineResourceEditor({
                         label="Display Name"
                         value={alias}
                         onChange={e => {
-                          updateResource(resource.id, {
+                          updateResourceWithPreview({
                             columnAliases: {
                               ...resource.columnAliases,
                               [columnName]: e.target.value,
@@ -1133,7 +1147,7 @@ function InlineResourceEditor({
                         onClick={() => {
                           const newAliases = { ...resource.columnAliases }
                           delete newAliases[columnName]
-                          updateResource(resource.id, {
+                          updateResourceWithPreview({
                             columnAliases:
                               Object.keys(newAliases).length > 0
                                 ? newAliases
@@ -1160,7 +1174,7 @@ function InlineResourceEditor({
                       col => !existingKeys.includes(col),
                     )
                     const newColumnName = availableColumn ?? 'column_name'
-                    updateResource(resource.id, {
+                    updateResourceWithPreview({
                       columnAliases: {
                         ...resource.columnAliases,
                         [newColumnName]: '',

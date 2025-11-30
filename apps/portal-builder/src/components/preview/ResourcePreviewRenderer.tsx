@@ -1,15 +1,25 @@
+import { useEffect, useMemo, useState } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import TableRowsIcon from '@mui/icons-material/TableRows'
+import ViewModuleIcon from '@mui/icons-material/ViewModule'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 import CardContainerLogic from 'synapse-react-client/components/CardContainerLogic'
+import StandaloneQueryWrapper from 'synapse-react-client/components/StandaloneQueryWrapper'
 import * as SynapseConstants from 'synapse-react-client/utils/SynapseConstants'
-import FullContextProvider from 'synapse-react-client/utils/context/FullContextProvider'
 import { CardLink } from 'synapse-react-client/components/CardContainer/CardLink'
 import { TargetEnum } from 'synapse-react-client/utils/html/TargetEnum'
 import { LabelLinkConfig } from 'synapse-react-client/components/CardContainerLogic/CardContainerLogic'
+import { mergeTheme } from 'synapse-react-client/theme/mergeTheme'
 import { CardDisplayConfig, Resource } from '../../types'
+
+type ViewMode = 'card' | 'table'
 
 interface ResourcePreviewRendererProps {
   resource: Resource
+  palette?: { primary: string; secondary: string }
 }
 
 /**
@@ -111,8 +121,46 @@ function toSrcLabelLinkConfig(
  */
 export function ResourcePreviewRenderer({
   resource,
+  palette,
 }: ResourcePreviewRendererProps) {
   const cardDisplay = resource.cardDisplay
+  // Check for meaningful card config - must have genericCardSchema with at least a title
+  const hasCardConfig = Boolean(cardDisplay?.genericCardSchema?.title)
+
+  // Default to card view if card configuration exists, otherwise table view
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    hasCardConfig ? 'card' : 'table',
+  )
+
+  // Update view mode when resource changes (e.g., switching between resources)
+  useEffect(() => {
+    setViewMode(hasCardConfig ? 'card' : 'table')
+  }, [resource.id, hasCardConfig])
+
+  const handleViewModeChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newMode: ViewMode | null,
+  ) => {
+    if (newMode !== null) {
+      setViewMode(newMode)
+    }
+  }
+
+  // Create theme from palette
+  const theme = useMemo(
+    () =>
+      createTheme(
+        mergeTheme({
+          palette: palette
+            ? {
+                primary: { main: palette.primary },
+                secondary: { main: palette.secondary },
+              }
+            : undefined,
+        }),
+      ),
+    [palette],
+  )
 
   // Map our card type to SRC card type constant
   const getCardType = (type: string | undefined) => {
@@ -167,81 +215,120 @@ export function ResourcePreviewRenderer({
         }
 
   return (
-    <Box
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'background.paper',
-      }}
-    >
-      {/* Header */}
+    <ThemeProvider theme={theme}>
       <Box
         sx={{
-          p: 2,
-          borderBottom: 1,
-          borderColor: 'divider',
-          backgroundColor: 'grey.50',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: 'background.paper',
         }}
       >
-        <Typography variant="h6">{resource.name}</Typography>
-        {resource.description && (
-          <Typography variant="body2" color="text.secondary">
-            {resource.description}
-          </Typography>
-        )}
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          component="div"
-          mt={1}
+        {/* Header */}
+        <Box
           sx={{
-            fontFamily: 'monospace',
-            backgroundColor: 'grey.100',
-            p: 1,
-            borderRadius: 1,
+            p: 2,
+            borderBottom: 1,
+            borderColor: 'divider',
+            backgroundColor: 'grey.50',
           }}
         >
-          {resource.sql}
-        </Typography>
-        {resource.selectColumns && resource.selectColumns.length > 0 && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              mb: 1,
+            }}
+          >
+            <Box>
+              <Typography variant="h6">{resource.name}</Typography>
+              {resource.description && (
+                <Typography variant="body2" color="text.secondary">
+                  {resource.description}
+                </Typography>
+              )}
+            </Box>
+            <ToggleButtonGroup
+              value={viewMode}
+              exclusive
+              onChange={handleViewModeChange}
+              size="small"
+              aria-label="view mode"
+            >
+              <ToggleButton
+                value="card"
+                aria-label="card view"
+                disabled={!hasCardConfig}
+                title={
+                  hasCardConfig ? 'Card view' : 'No card configuration defined'
+                }
+              >
+                <ViewModuleIcon fontSize="small" />
+              </ToggleButton>
+              <ToggleButton
+                value="table"
+                aria-label="table view"
+                title="Table view"
+              >
+                <TableRowsIcon fontSize="small" />
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
           <Typography
             variant="caption"
             color="text.secondary"
             component="div"
-            mt={0.5}
+            sx={{
+              fontFamily: 'monospace',
+              backgroundColor: 'grey.100',
+              p: 1,
+              borderRadius: 1,
+            }}
           >
-            {resource.selectColumns.length} columns:{' '}
-            {resource.selectColumns.map(c => c.name).join(', ')}
+            {resource.sql}
           </Typography>
-        )}
-      </Box>
+          {resource.selectColumns && resource.selectColumns.length > 0 && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              component="div"
+              mt={0.5}
+            >
+              {resource.selectColumns.length} columns:{' '}
+              {resource.selectColumns.map(c => c.name).join(', ')}
+            </Typography>
+          )}
+        </Box>
 
-      {/* Card Preview */}
-      <Box
-        sx={{
-          flexGrow: 1,
-          overflow: 'auto',
-          p: 2,
-          '& .SRC-portalCard': {
-            margin: 1,
-          },
-        }}
-      >
-        <FullContextProvider
-          synapseContext={{
-            accessToken: undefined,
-            isInExperimentalMode: false,
-            utcTime: false,
-            withErrorBoundary: true,
+        {/* Data Preview */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            overflow: 'auto',
+            p: 2,
+            '& .SRC-portalCard': {
+              margin: 1,
+            },
           }}
         >
-          <CardContainerLogic
-            sql={resource.sql}
-            cardConfiguration={srcCardConfiguration}
-          />
-        </FullContextProvider>
+          {viewMode === 'card' && hasCardConfig ? (
+            <CardContainerLogic
+              sql={resource.sql}
+              cardConfiguration={srcCardConfiguration}
+              columnAliases={resource.columnAliases}
+            />
+          ) : (
+            <StandaloneQueryWrapper
+              sql={resource.sql}
+              columnAliases={resource.columnAliases}
+              visibleColumnCount={resource.tableDisplay?.visibleColumnCount}
+              showDownloadColumn={resource.tableDisplay?.showDownloadColumn}
+              showAccessColumn={resource.tableDisplay?.showAccessColumn}
+            />
+          )}
+        </Box>
       </Box>
-    </Box>
+    </ThemeProvider>
   )
 }

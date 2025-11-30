@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Portal Preview - Live preview of portal configuration"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      if (window.parent !== window) {
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__ =
+          window.parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
+      }
+    </script>
+    <title>Portal Preview</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/preview.tsx"></script>
+  </body>
+</html>

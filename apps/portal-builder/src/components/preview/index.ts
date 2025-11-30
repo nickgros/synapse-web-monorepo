@@ -1,5 +1,6 @@
 export { PreviewPanel } from './PreviewPanel'
-export { PortalPreviewRenderer } from './PortalPreviewRenderer'
+export { PreviewRenderer } from './PreviewRenderer'
 export { PreviewLayout } from './PreviewLayout'
 export { PreviewPage } from './PreviewPage'
 export { DetailPagePreview } from './DetailPagePreview'
+export { ResourcePreviewRenderer } from './ResourcePreviewRenderer'
