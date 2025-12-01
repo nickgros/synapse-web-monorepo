@@ -248,6 +248,112 @@ Planned improvements include:
 - [ ] **Validation Panel**: Comprehensive validation of configuration with actionable errors
 - [ ] **Resource References**: Allow pages/components to reference resources by ID
 
+## Search Document Generation
+
+Portal Builder includes tools for generating OpenSearch-compatible search documents from portal configurations. This enables full-text search across all portal content.
+
+### Prerequisites
+
+- Python 3.10+
+- Docker (for running OpenSearch locally)
+- A Synapse account with access to the data referenced in your portal config
+
+### Generating Search Documents
+
+The `generate_search_documents.py` script extracts all searchable content from a portal configuration:
+
+```bash
+# Install Python dependencies
+cd apps/portal-builder
+pip install -r scripts/requirements.txt
+
+python scripts/generate_search_documents.py \
+  --config path/to/portal-config.json \
+  --output output-index.ndjson
+```
+
+The script generates an NDJSON file where each document contains:
+
+- All columns from the resource's Synapse table
+- Full markdown content from detail page sections
+- Key fields from related resources
+- Detail page URLs for linking back to the portal
+
+### Running OpenSearch Locally
+
+A Docker Compose file is provided for running OpenSearch locally for development/testing:
+
+```bash
+cd apps/portal-builder
+
+# Start OpenSearch and OpenSearch Dashboards
+docker compose -f docker-compose.opensearch.yml up -d
+
+# Wait ~30 seconds for OpenSearch to start
+# OpenSearch API: http://localhost:9200
+# OpenSearch Dashboards: http://localhost:5601
+```
+
+### Ingesting Documents into OpenSearch
+
+Use the ingestion script to load your NDJSON file into OpenSearch:
+
+```bash
+cd apps/portal-builder
+
+# Ingest documents (handles large files by batching)
+./scripts/ingest-opensearch.sh output-index.ndjson
+```
+
+The script will:
+
+1. Wait for OpenSearch to be ready
+2. Create an index with appropriate mappings
+3. Batch-upload documents (to handle large files)
+4. Report the total document count
+
+### Querying Your Data
+
+**Via curl:**
+
+```bash
+# Simple search
+curl 'localhost:9200/portal-docs/_search?q=Alzheimer' | jq '.hits.hits[:3]'
+
+# Full-text search with highlighting
+curl -X POST 'localhost:9200/portal-docs/_search' -H 'Content-Type: application/json' -d '{
+  "query": {
+    "multi_match": {
+      "query": "your search term",
+      "fields": ["resourceName", "markdownContent", "columns.*"]
+    }
+  },
+  "highlight": {
+    "fields": { "*": {} }
+  }
+}'
+```
+
+**Via OpenSearch Dashboards:**
+
+1. Open http://localhost:5601
+2. Navigate to Dev Tools (hamburger menu → Management → Dev Tools)
+3. Run queries like:
+   ```
+   GET portal-docs/_search
+   {
+     "query": { "match_all": {} },
+     "size": 10
+   }
+   ```
+
+### Stopping OpenSearch
+
+```bash
+cd apps/portal-builder
+docker compose -f docker-compose.opensearch.yml down
+```
+
 ## Contributing
 
 ### Adding New Editor Sections
