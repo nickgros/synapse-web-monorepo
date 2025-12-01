@@ -1,20 +1,19 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import TableRowsIcon from '@mui/icons-material/TableRows'
 import ViewModuleIcon from '@mui/icons-material/ViewModule'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
 import CardContainerLogic from 'synapse-react-client/components/CardContainerLogic'
 import StandaloneQueryWrapper from 'synapse-react-client/components/StandaloneQueryWrapper'
 import * as SynapseConstants from 'synapse-react-client/utils/SynapseConstants'
 import { CardLink } from 'synapse-react-client/components/CardContainer/CardLink'
 import { TargetEnum } from 'synapse-react-client/utils/html/TargetEnum'
 import { LabelLinkConfig } from 'synapse-react-client/components/CardContainerLogic/CardContainerLogic'
-import { mergeTheme } from 'synapse-react-client/theme/mergeTheme'
 import { CardDisplayConfig, Resource } from '../../types'
 import { isEmpty } from 'lodash-es'
+import { PreviewContextWrapper } from './PreviewContextWrapper'
 
 type ViewMode = 'card' | 'table'
 
@@ -147,22 +146,6 @@ export function ResourcePreviewRenderer({
     }
   }
 
-  // Create theme from palette
-  const theme = useMemo(
-    () =>
-      createTheme(
-        mergeTheme({
-          palette: palette
-            ? {
-                primary: { main: palette.primary },
-                secondary: { main: palette.secondary },
-              }
-            : undefined,
-        }),
-      ),
-    [palette],
-  )
-
   // Map our card type to SRC card type constant
   const getCardType = (type: string | undefined) => {
     switch (type) {
@@ -216,7 +199,7 @@ export function ResourcePreviewRenderer({
         }
 
   return (
-    <ThemeProvider theme={theme}>
+    <PreviewContextWrapper palette={palette}>
       <Box
         sx={{
           height: '100%',
@@ -330,6 +313,6 @@ export function ResourcePreviewRenderer({
           )}
         </Box>
       </Box>
-    </ThemeProvider>
+    </PreviewContextWrapper>
   )
 }

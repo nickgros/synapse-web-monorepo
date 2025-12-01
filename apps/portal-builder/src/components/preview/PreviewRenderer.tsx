@@ -15,23 +15,12 @@ import { ApplicationSessionContextProvider } from 'synapse-react-client/utils/Ap
 import { PortalConfig, RouteNode } from '../../types'
 import { PreviewLayout } from './PreviewLayout'
 import { configToRouteObjects } from '../../utils/configToRoutes'
+import { mockSessionContext } from './PreviewContextWrapper'
 
 interface PreviewRendererProps {
   config: PortalConfig
   /** Optional initial path to navigate to in the preview */
   initialPath?: string | null
-}
-
-// Mock session context for preview - user is not logged in
-const mockSessionContext = {
-  token: undefined,
-  termsOfServiceStatus: undefined,
-  twoFactorStatus: undefined,
-  hasInitializedSession: true,
-  refreshSession: async () => {},
-  twoFactorAuthSSOErrorResponse: undefined,
-  clearSession: async () => {},
-  isLoadingSSO: false,
 }
 
 /**
