@@ -21,9 +21,8 @@ Requirements:
 import argparse
 import json
 import re
-import sys
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -60,7 +59,7 @@ class SearchDocument:
 class ResourceData:
     """Cached data for a resource."""
     resource: dict[str, Any]
-    dataframe: pd.DataFrame
+    dataframe: Any
     detail_route: dict[str, Any] | None = None
     detail_path: str | None = None
 
@@ -82,7 +81,7 @@ class SearchDocumentGenerator:
         match = re.search(r"FROM\s+(syn\d+(?:\.\d+)?)", sql, re.IGNORECASE)
         return match.group(1) if match else None
 
-    def load_resource_dataframe(self, resource: dict[str, Any]) -> pd.DataFrame:
+    def load_resource_dataframe(self, resource: dict[str, Any]) -> Any:
         """Load a resource's data as a pandas DataFrame."""
         resource_id = resource["id"]
         
@@ -408,6 +407,30 @@ class SearchDocumentGenerator:
         print(f"Written {len(documents)} documents to {output_path}")
 
 
+def _get_logged_in_username(syn: Synapse) -> str | None:
+    """Return the logged-in username.
+
+    Prefer a username attribute on the client; otherwise call the legacy
+    syn.getUserProfile() while suppressing DeprecationWarning.
+    """
+    try:
+        username_attr = getattr(syn, "username", None)
+        if username_attr:
+            return username_attr
+
+        # Final fallback: call deprecated method but suppress the DeprecationWarning
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            try:
+                profile = syn.getUserProfile()
+                return getattr(profile, "userName", None)
+            except Exception:
+                return None
+    except Exception:
+        return None
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate OpenSearch documents from portal configuration"
@@ -446,14 +469,22 @@ def main():
     
     # Initialize Synapse client
     print("Connecting to Synapse...")
+    # Suppress the specific deprecation warning that originates from syn.getUserProfile
+    # (which may be called internally by the Synapse client during initialization).
+    import warnings
+    warnings.filterwarnings("ignore", category=DeprecationWarning, message=".*getUserProfile.*")
     syn = synapseclient.Synapse()
-    print(f"Logged in as: {syn.getUserProfile().userName}")
+    logged_in_user = _get_logged_in_username(syn)
+    if logged_in_user:
+        print(f"Logged in as: {logged_in_user}")
+    else:
+        print("Logged in as: <unknown>")
     print()
-    
+
     # Generate documents
     generator = SearchDocumentGenerator(portal_config, syn)
     documents = generator.generate_all_documents()
-    
+
     # Write output
     generator.write_ndjson(documents, args.output)
     
