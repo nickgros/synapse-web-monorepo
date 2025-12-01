@@ -280,6 +280,9 @@ importers:
       '@mui/system':
         specifier: ^7.1.1
         version: 7.1.1(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.8)(react@19.1.0))(@types/react@19.1.8)(react@19.1.0))(@types/react@19.1.8)(react@19.1.0)
+      '@sage-bionetworks/synapse-client':
+        specifier: workspace:*
+        version: link:../../packages/synapse-client
       '@sage-bionetworks/synapse-portal-framework':
         specifier: workspace:*
         version: link:../synapse-portal-framework
@@ -353,6 +356,9 @@ importers:
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
+      tsx:
+        specifier: ^4.19.4
+        version: 4.19.4
       typescript:
         specifier: 5.8.3
         version: 5.8.3
