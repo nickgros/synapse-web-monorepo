@@ -1189,32 +1189,6 @@ function InlineResourceEditor({
               </Stack>
             </AccordionDetails>
           </Accordion>
-
-          {/* Detail Page Configuration */}
-          <Accordion sx={{ boxShadow: 'none' }}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="body2">
-                Detail Page
-                {resource.detailsPage && (
-                  <Typography
-                    component="span"
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ ml: 1 }}
-                  >
-                    ({resource.detailsPage.path})
-                  </Typography>
-                )}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails sx={{ p: 0 }}>
-              <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>
-                Detail page configuration has moved to the Routes editor. Create
-                a route with &quot;Display As: Details&quot; to configure a
-                detail page for this resource.
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
         </Stack>
       </CardContent>
     </Card>

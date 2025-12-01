@@ -1,4 +1,5 @@
 import { Link } from '@mui/material'
+import { Link as RouterLink } from 'react-router'
 
 type GenericCardTitleProps = {
   title: string
@@ -11,7 +12,7 @@ export function GenericCardTitle(props: GenericCardTitleProps) {
 
   if (href) {
     return (
-      <Link target={target} href={href}>
+      <Link component={RouterLink} target={target} to={href}>
         {title}
       </Link>
     )

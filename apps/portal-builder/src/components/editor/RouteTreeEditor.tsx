@@ -34,9 +34,10 @@ import PreviewIcon from '@mui/icons-material/Visibility'
 import { useState, useMemo } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { usePortalConfig, useResourceEditor } from '../../state'
-import { RouteNode, ComponentBlock } from '../../types'
+import { RouteNode, ComponentBlock, Resource } from '../../types'
 import { ComponentPicker } from './ComponentPicker'
 import { ComponentBlockEditor } from './ComponentBlockEditor'
+import { DetailsPageEditor } from './DetailsPageEditor'
 
 /**
  * Build the full path for a route by combining parent paths
@@ -692,7 +693,7 @@ function ExploreRouteEditor({
 interface DetailsRouteEditorProps {
   route: RouteNode
   onUpdate: (updates: Partial<RouteNode>) => void
-  resources: { id: string; name: string }[]
+  resources: Resource[]
 }
 
 function DetailsRouteEditor({
@@ -702,59 +703,62 @@ function DetailsRouteEditor({
 }: DetailsRouteEditorProps) {
   const detailsConfig = route.detailsConfig
 
-  return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Details Page Configuration
-      </Typography>
+  // Handler to update detailsConfig from DetailsPageEditor
+  const handleConfigChange = (
+    updates: Partial<NonNullable<typeof detailsConfig>>,
+  ) => {
+    onUpdate({
+      detailsConfig: {
+        ...detailsConfig,
+        resourceId: detailsConfig?.resourceId ?? '',
+        ...updates,
+      },
+    })
+  }
 
-      <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-        <InputLabel>Resource</InputLabel>
-        <Select
-          value={detailsConfig?.resourceId ?? ''}
-          onChange={e =>
-            onUpdate({
-              detailsConfig: {
-                ...detailsConfig,
-                resourceId: e.target.value,
-              },
-            })
-          }
-          label="Resource"
-        >
-          <MenuItem value="">
-            <em>Select a resource</em>
-          </MenuItem>
-          {resources.map(resource => (
-            <MenuItem key={resource.id} value={resource.id}>
-              {resource.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+  // If no config exists yet, show a resource selector to initialize
+  if (!detailsConfig?.resourceId) {
+    return (
+      <Paper variant="outlined" sx={{ p: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          Details Page Configuration
+        </Typography>
 
-      <FormControlLabel
-        control={
-          <Switch
-            checked={detailsConfig?.showHeaderCard !== false}
+        <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+          <InputLabel>Resource</InputLabel>
+          <Select
+            value=""
             onChange={e =>
               onUpdate({
                 detailsConfig: {
-                  ...detailsConfig,
-                  resourceId: detailsConfig?.resourceId ?? '',
-                  showHeaderCard: e.target.checked,
+                  resourceId: e.target.value,
+                  showHeaderCard: true,
+                  tabs: [],
+                  sections: [],
                 },
               })
             }
-          />
-        }
-        label="Show Header Card"
-      />
+            label="Resource"
+          >
+            <MenuItem value="">
+              <em>Select a resource to configure details page</em>
+            </MenuItem>
+            {resources.map(resource => (
+              <MenuItem key={resource.id} value={resource.id}>
+                {resource.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Paper>
+    )
+  }
 
-      <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-        Configure tabs and sections in the Resources editor under the selected
-        resource&apos;s detail page settings.
-      </Typography>
-    </Paper>
+  return (
+    <DetailsPageEditor
+      config={detailsConfig}
+      onChange={handleConfigChange}
+      resources={resources}
+    />
   )
 }

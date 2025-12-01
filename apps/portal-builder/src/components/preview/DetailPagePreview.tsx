@@ -4,7 +4,7 @@ import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 import { useLocation } from 'react-router'
-import { PortalConfig } from '../../types'
+import { PortalConfig, DetailsPageConfig, RouteNode } from '../../types'
 import { DetailsPagePreviewRenderer } from './DetailsPagePreviewRenderer'
 
 interface DetailPagePreviewProps {
@@ -12,17 +12,88 @@ interface DetailPagePreviewProps {
 }
 
 /**
+ * Helper function to find a matching route in the routes tree
+ */
+function findMatchingRoute(
+  routes: RouteNode[],
+  pathname: string,
+  parentPath = '',
+): RouteNode | null {
+  for (const route of routes) {
+    const fullPath = route.path.startsWith('/')
+      ? route.path
+      : `${parentPath}/${route.path}`
+
+    // Check if this route matches and has detailsConfig
+    if (route.displayAs === 'details' && route.detailsConfig) {
+      // Details routes often have params like /Studies/:studyId or /Studies/DetailsPage
+      // Check if the pathname starts with the base path (before params)
+      const basePath = fullPath.replace(/\/:[^/]+/g, '').replace(/\/$/, '')
+      if (
+        pathname.startsWith(basePath) ||
+        pathname === basePath ||
+        pathname.startsWith(fullPath.replace(/\/$/, ''))
+      ) {
+        return route
+      }
+    }
+
+    // Recurse into children
+    if (route.children?.length) {
+      const childMatch = findMatchingRoute(route.children, pathname, fullPath)
+      if (childMatch) return childMatch
+    }
+  }
+  return null
+}
+
+/**
  * Preview component for detail pages in the portal builder.
  * Matches the current path to a configured resource with a detail page
  * and renders it using the DetailsPagePreviewRenderer.
+ *
+ * Supports two configuration sources:
+ * 1. Resource.detailsPage - legacy resource-based configuration
+ * 2. RouteNode.detailsConfig - route-based configuration (references a resourceId)
  */
 export function DetailPagePreview({ config }: DetailPagePreviewProps) {
   const location = useLocation()
 
-  // Find the resource that matches this path
+  // First, try to find a route with detailsConfig that matches the path
+  const matchedRoute = useMemo(() => {
+    if (!config.routes) return null
+    return findMatchingRoute(config.routes, location.pathname)
+  }, [location.pathname, config.routes])
+
+  // If we found a route with detailsConfig, get the resource and build detailsPage config
+  if (matchedRoute?.detailsConfig) {
+    const resource = config.resources?.find(
+      r => r.id === matchedRoute.detailsConfig?.resourceId,
+    )
+    if (resource) {
+      // Convert detailsConfig to DetailsPageConfig format
+      // Use type assertion since we're manually providing defaults
+      const detailsPage = {
+        path: matchedRoute.path,
+        sqlOperator: matchedRoute.detailsConfig.sqlOperator ?? 'LIKE',
+        showHeaderCard: matchedRoute.detailsConfig.showHeaderCard ?? true,
+        doiResourceType: matchedRoute.detailsConfig.doiResourceType,
+        tabs: matchedRoute.detailsConfig.tabs,
+        sections: matchedRoute.detailsConfig.sections,
+      } satisfies DetailsPageConfig
+      return (
+        <DetailsPagePreviewRenderer
+          resource={resource}
+          detailsPage={detailsPage}
+          allResources={config.resources || []}
+        />
+      )
+    }
+  }
+
+  // Fallback: Try to find a resource that matches this path (legacy approach)
   const matchedResource = useMemo(() => {
     // Parse the path to find matching resource
-    // Detail page paths are typically /{resourcePath}/{id} or /{resourcePath}/DetailsPage?{column}={value}
     const pathSegments = location.pathname.split('/').filter(Boolean)
     if (pathSegments.length < 1) {
       return null
@@ -33,10 +104,7 @@ export function DetailPagePreview({ config }: DetailPagePreviewProps) {
 
     return config.resources?.find(resource => {
       if (!resource.detailsPage) return false
-      // Match by the resource's detail page path
       const detailPath = resource.detailsPage.path
-      // The path could be like '/Explore/Studies/DetailsPage' or '/Studies/:studyId'
-      // We need to check if the current location pathname starts with the base path
       return (
         location.pathname.startsWith(detailPath.replace(/\/:[^/]+/g, '')) ||
         location.pathname.startsWith(resourcePath)

@@ -14,6 +14,7 @@ import { TargetEnum } from 'synapse-react-client/utils/html/TargetEnum'
 import { LabelLinkConfig } from 'synapse-react-client/components/CardContainerLogic/CardContainerLogic'
 import { mergeTheme } from 'synapse-react-client/theme/mergeTheme'
 import { CardDisplayConfig, Resource } from '../../types'
+import { isEmpty } from 'lodash-es'
 
 type ViewMode = 'card' | 'table'
 
@@ -125,7 +126,7 @@ export function ResourcePreviewRenderer({
 }: ResourcePreviewRendererProps) {
   const cardDisplay = resource.cardDisplay
   // Check for meaningful card config - must have genericCardSchema with at least a title
-  const hasCardConfig = Boolean(cardDisplay?.genericCardSchema?.title)
+  const hasCardConfig = !isEmpty(cardDisplay)
 
   // Default to card view if card configuration exists, otherwise table view
   const [viewMode, setViewMode] = useState<ViewMode>(
