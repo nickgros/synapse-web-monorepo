@@ -1,3 +1,4 @@
+import React from 'react'
 import { Box, Typography } from '@mui/material'
 import { QueryBundleRequest } from '@sage-bionetworks/synapse-types'
 import { SynapseConstants } from 'synapse-react-client'
@@ -5,10 +6,10 @@ import useGetQueryResultBundle from 'synapse-react-client/synapse-queries/entity
 import { parseEntityIdAndVersionFromSqlStatement } from 'synapse-react-client/utils/functions'
 import { getFieldIndex } from 'synapse-react-client/utils/functions/queryUtils'
 import styles from './PopularChallengesSection.module.scss'
-import { ReactComponent as TriangleImage } from '../assets/triangle.svg'
-import { ReactComponent as CircleImage } from '../assets/circle.svg'
-import { ReactComponent as LongLineImage } from '../assets/longLine.svg'
+import { ReactComponent as Vectors } from '../assets/popularChallengesVectors.svg'
 import ColorfulPortalCardWithChips from 'synapse-react-client/components/BasePortalCard/ColorfulPortalCardWithChips/ColorfulPortalCardWithChips'
+import { stringListToArray } from 'synapse-react-client/utils/functions/StringUtils'
+import filterRowsByLandingPageSection from '@/utils/filterRowsByLandingPageSection'
 
 type PopularChallengesSectionProps = {
   sql: string
@@ -18,7 +19,7 @@ type PopularChallengesSectionProps = {
 const PopularChallengesSection = ({
   sql,
   borderRadiusPx,
-}: PopularChallengesSectionProps) => {
+}: PopularChallengesSectionProps): React.ReactNode => {
   const { entityId } = parseEntityIdAndVersionFromSqlStatement(sql)
 
   const queryBundleRequest: QueryBundleRequest = {
@@ -34,17 +35,18 @@ const PopularChallengesSection = ({
     useGetQueryResultBundle(queryBundleRequest)
 
   const dataRows = queryResultBundle?.queryResult?.queryResults.rows ?? []
+  const filteredDataRows = filterRowsByLandingPageSection(
+    'popular',
+    dataRows,
+    queryResultBundle!,
+  )
 
   return (
     <Box className={styles.PopularChallengesSection__root}>
-      <TriangleImage
-        className={styles.PopularChallengesSection__triangleImage}
-      />
-      <CircleImage className={styles.PopularChallengesSection__circleImage} />
-      <LongLineImage
-        className={styles.PopularChallengesSection__longLineImage}
-      />
-      <Box className={styles.PopularChallengesSection__header}>
+      <Box className={styles.PopularChallengesSection__headerSection}>
+        <Vectors
+          className={styles.PopularChallengesSection__titleSectionVectors}
+        />
         <Typography
           variant="headline1"
           className={styles.PopularChallengesSection__sectionTitle}
@@ -53,22 +55,10 @@ const PopularChallengesSection = ({
         </Typography>
       </Box>
       <Box className={styles.PopularChallengesSection__container}>
-        {dataRows.map(row => {
-          const chips = row.values[getFieldIndex('chips', queryResultBundle)]
-          let chipsArray: string[]
-
-          if (Array.isArray(chips)) {
-            chipsArray = chips.map(String)
-          } else {
-            try {
-              const parsed = JSON.parse(chips ?? '[]')
-              chipsArray = Array.isArray(parsed)
-                ? parsed.map(String)
-                : [String(parsed)]
-            } catch {
-              chipsArray = chips ? [String(chips)] : []
-            }
-          }
+        {filteredDataRows.map(row => {
+          const chips =
+            row.values[getFieldIndex('chips', queryResultBundle)] ?? ''
+          const chipsArray = stringListToArray(chips)
 
           return (
             <ColorfulPortalCardWithChips

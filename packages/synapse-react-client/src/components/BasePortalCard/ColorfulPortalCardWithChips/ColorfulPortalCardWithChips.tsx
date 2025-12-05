@@ -1,9 +1,11 @@
+import React from 'react'
 import BasePortalCard from '../BasePortalCard'
 import { Chip, Box, Button, Stack, Typography } from '@mui/material'
 import styles from './ColorfulPortalCardWithChips.module.scss'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { useImageUrl } from '@/utils/hooks/useImageUrlUtils'
 import { hashCode } from '@/utils/functions/StringUtils'
+import MarkdownSynapse from '@/components/Markdown/MarkdownSynapse'
 
 type ColorfulPortalCardWithChipsProps = {
   title?: string
@@ -31,7 +33,7 @@ const getChicletColors = (chips: string[]) => {
   })
 }
 
-const Chips = ({ values }: { values: string[] }) => {
+const Chips = ({ values }: { values: string[] }): React.ReactNode => {
   const chipColors = getChicletColors(values)
   return (
     <Box className={styles.ColorfulPortalCardWithChips__chipsContainer}>
@@ -62,7 +64,7 @@ const ColorfulPortalCardWithChips = ({
   entityId,
   borderRadiusPx,
   cardSize = 'medium',
-}: ColorfulPortalCardWithChipsProps) => {
+}: ColorfulPortalCardWithChipsProps): React.ReactNode => {
   const imageUrl = useImageUrl(backgroundImage ?? '', entityId ?? '')
   const backgroundImageValue = imageUrl ?? backgroundImage
 
@@ -86,7 +88,12 @@ const ColorfulPortalCardWithChips = ({
             />
           )}
           <Stack className={styles.ColorfulPortalCardWithChips__titleSection}>
-            <Typography variant="headline1">{title} </Typography>
+            <Typography
+              variant="headline1"
+              className={styles.ColorfulPortalCardWithChips__title}
+            >
+              {title}
+            </Typography>
             <Typography
               variant="headline1"
               className={styles.ColorfulPortalCardWithChips__challengeName}
@@ -108,7 +115,7 @@ const ColorfulPortalCardWithChips = ({
             variant="smallText1"
             className={styles.ColorfulPortalCardWithChips__description}
           >
-            {description}
+            <MarkdownSynapse markdown={description ?? ''} />
           </Typography>
           {learnMoreLink && (
             <Button

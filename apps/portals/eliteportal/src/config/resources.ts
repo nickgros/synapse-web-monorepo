@@ -1,6 +1,8 @@
 import { ExternalAnalysisPlatform } from 'synapse-react-client/components/SynapseTable/export/ExternalAnalysisPlatformsConstants'
 import { SearchV2Props } from 'synapse-react-client/components/SynapseTable/SearchV2'
 
+export const SYNAPSE_PORTAL_ID = '1003'
+
 export const dataSql = 'SELECT * FROM syn52234677'
 export const dataOnStudiesPageSql =
   "SELECT * FROM syn52234677 WHERE `resourceType` = 'metadata'"
@@ -37,4 +39,7 @@ export const cavaticaConnectAccountURL =
   'https://help.eliteportal.org/help/analysis-environments#IntegrationwithAnalysis&ComputeEnvironments-GainingAccess'
 export const goalsV2Table = 'syn64618674'
 
-export const enabledAnalysisPlatforms: ExternalAnalysisPlatform[] = ['cavatica']
+export const enabledAnalysisPlatforms: ExternalAnalysisPlatform[] = [
+  'cavatica',
+  'terra',
+]
