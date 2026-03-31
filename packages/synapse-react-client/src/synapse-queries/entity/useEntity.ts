@@ -49,8 +49,37 @@ import { SetOptional } from 'type-fest'
 import { getNextPageParamForPaginatedResults } from '../InfiniteQueryUtils'
 import { KeyFactory } from '../KeyFactory'
 import { invalidateAllQueriesForEntity } from '../QueryFilterUtils'
+import type { SynapseQueriesContext } from '../types'
 import { useGetEntityBundleSuspenseQueryOptions } from './useEntityBundle'
 
+/**
+ * Returns queryOptions for fetching an Entity by ID and optional version. entityId is optional;
+ * if absent, queryFn is set to skipToken so the query is disabled.
+ */
+export function getEntityQuery<T extends Entity>(
+  entityId: string | undefined,
+  versionNumber: string | number | undefined,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<T, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityVersionQueryKey(
+      entityId,
+      versionNumber,
+    ),
+    queryFn: entityId
+      ? () =>
+          SynapseClient.getEntity<T>(
+            context.accessToken,
+            entityId,
+            versionNumber?.toString(),
+          )
+      : skipToken,
+  })
+}
+
+/**
+ * @deprecated Use {@link getEntityQuery} instead, passing context from {@link useSynapseContext}.
+ */
 export function useGetEntityQueryOptions<T extends Entity>() {
   const { keyFactory, accessToken } = useSynapseContext()
   return (
@@ -280,6 +309,28 @@ export function removeStandardEntityFields(
   return omit(json, entityJsonKeys[json.concreteType])
 }
 
+export function getEntityJsonQuery(
+  entityId: string,
+  versionNumber: number | undefined,
+  includeDerivedAnnotations: boolean,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<EntityJson, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityJsonQueryKey(
+      entityId,
+      versionNumber,
+      includeDerivedAnnotations,
+    ),
+    queryFn: () =>
+      SynapseClient.getEntityJson(
+        entityId,
+        versionNumber,
+        includeDerivedAnnotations,
+        context.accessToken,
+      ),
+  })
+}
+
 /**
  * This hook automatically transforms the data to include these objects:
  * - `entity`: the unmodified Entity data object
@@ -361,6 +412,16 @@ export function useUpdateViaJson(
   })
 }
 
+export function getEntityPathQuery(
+  entityId: string,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<EntityPath, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityPathQueryKey(entityId),
+    queryFn: () => SynapseClient.getEntityPath(entityId, context.accessToken),
+  })
+}
+
 export function useGetEntityPath(
   entityId: string,
   options?: Partial<UseQueryOptions<EntityPath, SynapseClientError>>,
@@ -385,6 +446,16 @@ export function useGetEntityACL(
   })
 }
 
+export function getEntityAliasQuery(
+  alias: string,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<EntityId | null, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityAliasQueryKey(alias),
+    queryFn: () => SynapseClient.getEntityAlias(alias, context.accessToken),
+  })
+}
+
 export function useGetEntityAlias(
   alias: string,
   options?: Partial<UseQueryOptions<EntityId | null, SynapseClientError>>,
@@ -394,6 +465,22 @@ export function useGetEntityAlias(
     ...options,
     queryKey: keyFactory.getEntityAliasQueryKey(alias),
     queryFn: () => SynapseClient.getEntityAlias(alias, accessToken),
+  })
+}
+
+export function getEntityEvaluationsQuery(
+  entityId: string,
+  params: GetEvaluationParameters | undefined,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<Evaluation[] | null, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityEvaluationsQueryKey(entityId),
+    queryFn: () =>
+      SynapseClient.getAllEntityEvaluations(
+        entityId,
+        params,
+        context.accessToken,
+      ),
   })
 }
 
@@ -408,6 +495,17 @@ export function useGetEntityEvaluations(
     queryKey: keyFactory.getEntityEvaluationsQueryKey(entityId),
     queryFn: () =>
       SynapseClient.getAllEntityEvaluations(entityId, params, accessToken),
+  })
+}
+
+export function getEntityPermissionsQuery(
+  entityId: string,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<UserEntityPermissions | null, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityPermissionsQueryKey(entityId),
+    queryFn: () =>
+      SynapseClient.getEntityPermissions(entityId, context.accessToken),
   })
 }
 
@@ -605,6 +703,27 @@ export function useUpdateTableColumns(
 }
 
 type EntityLookupQueryData = string | null
+
+export function getEntityLookupQuery(
+  entityLookupRequest: EntityLookupRequest,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<EntityLookupQueryData, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityLookupQueryKey(entityLookupRequest),
+    queryFn: async () =>
+      (
+        await allowNotFoundError(() =>
+          context.synapseClient.entityServicesClient.postRepoV1EntityChild({
+            entityLookupRequest: entityLookupRequest,
+          }),
+        )
+      )?.id ?? null,
+  })
+}
+
+/**
+ * @deprecated Use {@link getEntityLookupQuery} instead, passing context from {@link useSynapseContext}.
+ */
 export function useGetEntityLookupQueryOptions() {
   const { keyFactory, synapseClient } = useSynapseContext()
   return (

@@ -6,13 +6,80 @@ import {
   EntityBundleRequest,
 } from '@sage-bionetworks/synapse-types'
 import {
+  queryOptions,
   skipToken,
   useQuery,
   UseQueryOptions,
   useSuspenseQuery,
   UseSuspenseQueryOptions,
 } from '@tanstack/react-query'
+import type { SynapseQueriesContext } from '../types'
 
+/**
+ * Returns queryOptions for fetching an EntityBundle. entityId is optional; if absent, queryFn is
+ * set to skipToken so the query is disabled.
+ */
+export function getEntityBundleQuery<
+  T extends EntityBundleRequest = typeof ALL_ENTITY_BUNDLE_FIELDS,
+>(
+  entityId: string | undefined,
+  version: number | undefined,
+  bundleRequest: T = ALL_ENTITY_BUNDLE_FIELDS as T,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<EntityBundle<T>, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityBundleQueryKey(
+      entityId,
+      version,
+      bundleRequest,
+    ),
+    queryFn: entityId
+      ? () =>
+          SynapseClient.getEntityBundleV2<T>(
+            entityId,
+            bundleRequest,
+            version,
+            context.accessToken,
+          )
+      : skipToken,
+    staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh longer
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
+  })
+}
+
+/**
+ * Returns queryOptions for fetching an EntityBundle, suitable for use with useSuspenseQuery.
+ * entityId is required because suspense queries cannot use skipToken.
+ */
+export function getEntityBundleSuspenseQuery<
+  T extends EntityBundleRequest = typeof ALL_ENTITY_BUNDLE_FIELDS,
+>(
+  entityId: string,
+  version: number | undefined,
+  bundleRequest: T = ALL_ENTITY_BUNDLE_FIELDS as T,
+  context: SynapseQueriesContext,
+) {
+  return queryOptions<EntityBundle<T>, SynapseClientError>({
+    queryKey: context.keyFactory.getEntityBundleQueryKey(
+      entityId,
+      version,
+      bundleRequest,
+    ),
+    queryFn: () =>
+      SynapseClient.getEntityBundleV2<T>(
+        entityId,
+        bundleRequest,
+        version,
+        context.accessToken,
+      ),
+    staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh longer
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache longer
+  })
+}
+
+/**
+ * @deprecated Use {@link getEntityBundleQuery} instead, passing context from {@link useSynapseContext}.
+ */
 export function useGetEntityBundleQueryOptions<
   T extends EntityBundleRequest = typeof ALL_ENTITY_BUNDLE_FIELDS,
   TSelect = EntityBundle<T>,
@@ -44,6 +111,9 @@ export function useGetEntityBundleQueryOptions<
   }
 }
 
+/**
+ * @deprecated Use {@link getEntityBundleSuspenseQuery} instead, passing context from {@link useSynapseContext}.
+ */
 export function useGetEntityBundleSuspenseQueryOptions<
   T extends EntityBundleRequest = typeof ALL_ENTITY_BUNDLE_FIELDS,
   TSelect = EntityBundle<T>,

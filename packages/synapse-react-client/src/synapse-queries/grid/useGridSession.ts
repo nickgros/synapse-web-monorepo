@@ -1,4 +1,4 @@
-import { KeyFactory } from '@/synapse-queries/index'
+import { SynapseQueriesContext } from '@/synapse-queries/types'
 import { useSynapseContext } from '@/utils/context/SynapseContext'
 import startGridSession from '@/utils/functions/GridApiUtils'
 import {
@@ -9,7 +9,6 @@ import {
   ListGridSessionsRequest,
   ListGridSessionsResponse,
   PostRepoV1GridSessionSessionIdReplicaRequest,
-  SynapseClient,
   SynchronizeGridRequest,
   SynchronizeGridResponse,
   waitForAsyncResult,
@@ -86,10 +85,7 @@ export function useDeleteGridSession(
  */
 export const getGridSessionsQuery = (
   request: ListGridSessionsRequest,
-  context: {
-    keyFactory: KeyFactory
-    synapseClient: SynapseClient
-  },
+  context: SynapseQueriesContext,
 ) =>
   queryOptions({
     queryKey: context.keyFactory.getGridSessionListKey(request),
