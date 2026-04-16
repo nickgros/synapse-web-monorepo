@@ -1,3 +1,4 @@
+import { mergeMeta } from '@sage-bionetworks/synapse-portal-framework/utils/mergeMeta'
 import type { MetaDescriptor } from 'react-router'
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 
@@ -9,12 +10,12 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
  * tabs, etc.) completely replace these defaults. Routes that do NOT export
  * `meta()` inherit these.
  */
-export function meta(): MetaDescriptor[] {
+export function meta(args): MetaDescriptor[] {
   const portalName = import.meta.env.VITE_PORTAL_NAME
   const portalDescription = import.meta.env.VITE_PORTAL_DESCRIPTION
   const portalKey = import.meta.env.VITE_PORTAL_KEY ?? ''
   const baseUrl = `https://${portalKey}.synapse.org`
-  return [
+  return mergeMeta(args, [
     { title: portalName },
     ...(portalDescription
       ? [{ name: 'description', content: portalDescription }]
@@ -29,7 +30,7 @@ export function meta(): MetaDescriptor[] {
     ...(portalDescription
       ? [{ name: 'twitter:description', content: portalDescription }]
       : []),
-  ]
+  ])
 }
 
 export function links() {
