@@ -4029,6 +4029,36 @@
         }
       }
     },
+    "/repo/v1/eDuc/template": {
+      "post": {
+        "tags": ["Data Access Services"],
+        "operationId": "post-/repo/v1/eDuc/template",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/org.sagebionetworks.repo.model.educ.EDucTemplateListRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "a page of eDUC template metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/org.sagebionetworks.repo.model.educ.EDucTemplatePage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/repo/v1/dataAccessSubmission/search": {
       "post": {
         "tags": ["Data Access Services"],
@@ -16779,6 +16809,25 @@
         "responses": { "200": { "description": "Void" } }
       }
     },
+    "/auth/v1/oauth2/identity": {
+      "post": {
+        "tags": ["Authentication Services"],
+        "operationId": "post-/auth/v1/oauth2/identity",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/org.sagebionetworks.repo.model.oauth.OAuthValidationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [{ "bearerAuth": [] }],
+        "responses": { "204": { "description": "Void" } }
+      }
+    },
     "/auth/v1/oauth2/account2": {
       "post": {
         "tags": ["Authentication Services"],
@@ -19016,6 +19065,20 @@
         "type": "string",
         "enum": ["access_token", "refresh_token"]
       },
+      "org.sagebionetworks.repo.model.dataaccess.SigningOfficial": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the signing official."
+          },
+          "institutionalEmail": {
+            "type": "string",
+            "description": "The institutional email address of the signing official."
+          }
+        },
+        "description": "Information about an institution's signing official."
+      },
       "org.sagebionetworks.repo.model.auth.TermsOfServiceSignRequest": {
         "type": "object",
         "properties": {
@@ -20404,7 +20467,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "dataType": {
@@ -20614,6 +20678,24 @@
       "org.sagebionetworks.repo.model.dataaccess.SubmissionOrder": {
         "type": "string",
         "enum": ["CREATED_ON", "MODIFIED_ON"]
+      },
+      "org.sagebionetworks.repo.model.educ.EDucTemplatePage": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/org.sagebionetworks.repo.model.educ.EDucTemplate",
+              "description": "Metadata describing an electronic Data Use Certificate (eDUC) template."
+            },
+            "description": "The templates on the current page."
+          },
+          "nextPageToken": {
+            "type": "string",
+            "description": "The token to get the next page of results."
+          }
+        },
+        "description": "A page of eDUC template metadata."
       },
       "org.sagebionetworks.repo.model.search.FacetTypeNames": {
         "type": "string",
@@ -22708,7 +22790,8 @@
               "GOOGLE_OAUTH_2_0",
               "ORCID",
               "ARCUS_BIOSCIENCES",
-              "SAGE_BIONETWORKS"
+              "SAGE_BIONETWORKS",
+              "NIH_RESEARCHER_AUTH_SERVICE"
             ]
           },
           "authenticationCode": {
@@ -23061,7 +23144,7 @@
             "description": "<p>Optional. Map of caller-chosen name to <a href=\"${org.sagebionetworks.repo.model.search.dsl.Aggregation}\">aggregation<\/a> definition. The raw aggregation result comes back on <code>SearchQueryResults.aggregationResults<\/code>. For the facet-counting pattern (a <code>terms<\/code> aggregation alongside <code>post_filter<\/code>), see the <a href=\"https://docs.opensearch.org/latest/tutorials/faceted-search/#maintaining-facet-options-during-filtering\">faceted search tutorial<\/a>.<\/p>",
             "additionalProperties": {
               "$ref": "#/components/schemas/org.sagebionetworks.repo.model.search.dsl.Aggregation",
-              "description": "<p>A single <a href=\"https://docs.opensearch.org/latest/aggregations/\">OpenSearch aggregation<\/a> definition. Exactly one of the aggregation-kind properties below may be set; <code>aggregations<\/code> may additionally carry nested sub-aggregations.<\/p>"
+              "description": "<p>A single <a href=\"https://docs.opensearch.org/latest/aggregations/\">OpenSearch aggregation<\/a> definition. Exactly one of the aggregation-kind properties below may be set; <code>aggregations<\/code> may additionally carry nested sub-aggregations. The <code>filter<\/code> and <code>filters<\/code> kinds wrap a <a href=\"${org.sagebionetworks.repo.model.search.dsl.Query}\">Query<\/a>; that query is validated identically to the top-level <code>query<\/code> and is scoped by it, so a <code>filter<\/code> aggregation never counts documents outside the top-level query.<\/p>"
             }
           },
           "highlight": {
@@ -23265,6 +23348,32 @@
       "org.sagebionetworks.repo.model.table.TableChangeType": {
         "type": "string",
         "enum": ["ROW", "COLUMN", "SEARCH"]
+      },
+      "org.sagebionetworks.repo.model.educ.EDucTemplate": {
+        "type": "object",
+        "properties": {
+          "templateId": {
+            "type": "string",
+            "description": "The unique identifier of the template."
+          },
+          "name": {
+            "type": "string",
+            "description": "The template name."
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of the template."
+          },
+          "createdOn": {
+            "type": "string",
+            "description": "The date the template was created."
+          },
+          "modifiedOn": {
+            "type": "string",
+            "description": "The date the template was last modified."
+          }
+        },
+        "description": "Metadata describing an electronic Data Use Certificate (eDUC) template."
       },
       "org.sagebionetworks.repo.model.download.Sort": {
         "type": "object",
@@ -24195,6 +24304,18 @@
             "type": "string",
             "description": "Indicates which implementation of RequestInterface this object represents.",
             "enum": ["org.sagebionetworks.repo.model.dataaccess.Request"]
+          },
+          "institution": {
+            "type": "string",
+            "description": "The name of the institution where the collaborators work."
+          },
+          "principalInvestigator": {
+            "$ref": "#/components/schemas/org.sagebionetworks.repo.model.dataaccess.PrincipalInvestigator",
+            "description": "Information about a research project's principal investigator."
+          },
+          "signingOfficial": {
+            "$ref": "#/components/schemas/org.sagebionetworks.repo.model.dataaccess.SigningOfficial",
+            "description": "Information about an institution's signing official."
           }
         },
         "description": "A Request contains information required by an AccessRequirement.",
@@ -27020,6 +27141,18 @@
             "description": "Indicates which implementation of RequestInterface this object represents.",
             "enum": ["org.sagebionetworks.repo.model.dataaccess.Renewal"]
           },
+          "institution": {
+            "type": "string",
+            "description": "The name of the institution where the collaborators work."
+          },
+          "principalInvestigator": {
+            "$ref": "#/components/schemas/org.sagebionetworks.repo.model.dataaccess.PrincipalInvestigator",
+            "description": "Information about a research project's principal investigator."
+          },
+          "signingOfficial": {
+            "$ref": "#/components/schemas/org.sagebionetworks.repo.model.dataaccess.SigningOfficial",
+            "description": "Information about an institution's signing official."
+          },
           "publication": {
             "type": "string",
             "description": "Link(s) to publication that used the controlled data."
@@ -27539,7 +27672,8 @@
               "GOOGLE_OAUTH_2_0",
               "ORCID",
               "ARCUS_BIOSCIENCES",
-              "SAGE_BIONETWORKS"
+              "SAGE_BIONETWORKS",
+              "NIH_RESEARCHER_AUTH_SERVICE"
             ]
           },
           "authenticationCode": {
@@ -27584,6 +27718,10 @@
         },
         "description": "Request for a batch of AccessApprovalInfo."
       },
+      "org.sagebionetworks.repo.model.grid.SyncType": {
+        "type": "string",
+        "enum": ["PULL", "PULL_PUSH"]
+      },
       "org.sagebionetworks.repo.model.daemon.BackupAliasType": {
         "type": "string",
         "enum": ["TABLE_NAME", "MIGRATION_TYPE_NAME"]
@@ -27605,7 +27743,8 @@
               "GOOGLE_OAUTH_2_0",
               "ORCID",
               "ARCUS_BIOSCIENCES",
-              "SAGE_BIONETWORKS"
+              "SAGE_BIONETWORKS",
+              "NIH_RESEARCHER_AUTH_SERVICE"
             ]
           }
         },
@@ -29156,7 +29295,8 @@
               "GOOGLE_OAUTH_2_0",
               "ORCID",
               "ARCUS_BIOSCIENCES",
-              "SAGE_BIONETWORKS"
+              "SAGE_BIONETWORKS",
+              "NIH_RESEARCHER_AUTH_SERVICE"
             ]
           },
           "subject": {
@@ -29816,7 +29956,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -29874,7 +30015,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "pathIds": {
@@ -31323,7 +31465,8 @@
           "GOOGLE_OAUTH_2_0",
           "ORCID",
           "ARCUS_BIOSCIENCES",
-          "SAGE_BIONETWORKS"
+          "SAGE_BIONETWORKS",
+          "NIH_RESEARCHER_AUTH_SERVICE"
         ]
       },
       "org.sagebionetworks.repo.model.table.ColumnType": {
@@ -32038,7 +32181,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "idList": {
@@ -32112,7 +32256,8 @@
               "GOOGLE_OAUTH_2_0",
               "ORCID",
               "ARCUS_BIOSCIENCES",
-              "SAGE_BIONETWORKS"
+              "SAGE_BIONETWORKS",
+              "NIH_RESEARCHER_AUTH_SERVICE"
             ]
           },
           "authenticationCode": {
@@ -32386,7 +32531,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -32559,6 +32705,24 @@
         },
         "description": "A token returned to the user upon successful authentication.",
         "required": ["concreteType"]
+      },
+      "org.sagebionetworks.repo.model.dataaccess.PrincipalInvestigator": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The user ID of the principal investigator."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the principal investigator."
+          },
+          "institutionalEmail": {
+            "type": "string",
+            "description": "The institutional email address of the principal investigator."
+          }
+        },
+        "description": "Information about a research project's principal investigator."
       },
       "org.sagebionetworks.repo.model.asynch.AsynchronousResponseBody": {
         "type": "object",
@@ -32974,7 +33138,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -33135,6 +33300,14 @@
             "$ref": "#/components/schemas/org.sagebionetworks.repo.model.search.dsl.CardinalityAggregation",
             "description": "A <a href=\"https://docs.opensearch.org/latest/aggregations/metric/cardinality/\"><code>cardinality<\/code><\/a> metric aggregation &mdash; an approximate distinct-value count of a column."
           },
+          "filter": {
+            "$ref": "#/components/schemas/org.sagebionetworks.repo.model.search.dsl.Query",
+            "description": "<p>A single <a href=\"https://docs.opensearch.org/latest/query-dsl/\">OpenSearch query DSL<\/a> clause. Exactly one of the properties below may be set &mdash; the set property names the clause kind. See <a href=\"https://docs.opensearch.org/latest/query-dsl/query-filter-context/\">query vs. filter context<\/a> and <a href=\"https://docs.opensearch.org/latest/query-dsl/term-vs-full-text/\">term-level vs. full-text queries<\/a>.<\/p><p>The field-keyed leaf clauses (<code>match<\/code>, <code>term<\/code>, <code>range<\/code>, ...) are maps whose key is the column name and whose value is the per-field options object &mdash; only the long form is accepted (e.g. <code>{\"match\":{\"title\":{\"query\":\"x\"}}}<\/code>, not the <code>{\"match\":{\"title\":\"x\"}}<\/code> shorthand). The compound clauses (<code>bool<\/code>, <code>dis_max<\/code>, ...) nest further Query DSL clauses recursively.<\/p>"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/org.sagebionetworks.repo.model.search.dsl.FiltersAggregation",
+            "description": "A <a href=\"https://docs.opensearch.org/latest/aggregations/bucket/filters/\"><code>filters<\/code><\/a> multi-bucket aggregation. Each entry of <code>filters<\/code> is a named bucket whose documents match its <a href=\"${org.sagebionetworks.repo.model.search.dsl.Query}\">Query<\/a>. The named (keyed) form is the supported contract; each query is validated identically to the top-level <code>query<\/code> and is scoped by it."
+          },
           "aggregations": {
             "type": "object",
             "description": "Optional. Nested sub-aggregations, keyed by caller-chosen name. Bucket aggregations compute these once per bucket.",
@@ -33143,7 +33316,7 @@
             }
           }
         },
-        "description": "<p>A single <a href=\"https://docs.opensearch.org/latest/aggregations/\">OpenSearch aggregation<\/a> definition. Exactly one of the aggregation-kind properties below may be set; <code>aggregations<\/code> may additionally carry nested sub-aggregations.<\/p>"
+        "description": "<p>A single <a href=\"https://docs.opensearch.org/latest/aggregations/\">OpenSearch aggregation<\/a> definition. Exactly one of the aggregation-kind properties below may be set; <code>aggregations<\/code> may additionally carry nested sub-aggregations. The <code>filter<\/code> and <code>filters<\/code> kinds wrap a <a href=\"${org.sagebionetworks.repo.model.search.dsl.Query}\">Query<\/a>; that query is validated identically to the top-level <code>query<\/code> and is scoped by it, so a <code>filter<\/code> aggregation never counts documents outside the top-level query.<\/p>"
       },
       "org.sagebionetworks.repo.model.entity.query.Sort": {
         "type": "object",
@@ -34937,7 +35110,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -35136,7 +35310,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -35677,7 +35852,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -36624,7 +36800,8 @@
               "GOOGLE_OAUTH_2_0",
               "ORCID",
               "ARCUS_BIOSCIENCES",
-              "SAGE_BIONETWORKS"
+              "SAGE_BIONETWORKS",
+              "NIH_RESEARCHER_AUTH_SERVICE"
             ]
           },
           "redirectUrl": {
@@ -36688,7 +36865,8 @@
           "REPLICATED_EVENT",
           "PORTAL",
           "OAUTH_CLIENT",
-          "GRID_SESSION"
+          "GRID_SESSION",
+          "RECORDSET"
         ]
       },
       "org.sagebionetworks.repo.model.grid.query.function.CountStar": {
@@ -37182,6 +37360,16 @@
         },
         "description": "Information about the a notification for an access approval."
       },
+      "org.sagebionetworks.repo.model.educ.EDucTemplateListRequest": {
+        "type": "object",
+        "properties": {
+          "nextPageToken": {
+            "type": "string",
+            "description": "A token used to get the next page of results."
+          }
+        },
+        "description": "A request to list eDUC templates."
+      },
       "org.sagebionetworks.repo.model.file.DownloadOrderSummaryResponse": {
         "type": "object",
         "properties": {
@@ -37469,7 +37657,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -37560,6 +37749,11 @@
           "gridSessionId": {
             "type": "string",
             "description": "The ID of the grid session to synchronize."
+          },
+          "syncType": {
+            "type": "string",
+            "description": "The type of synchronization to perform on a grid session.",
+            "enum": ["PULL", "PULL_PUSH"]
           }
         },
         "description": "Start a new job to synchronize a grid session with its source data.",
@@ -37924,7 +38118,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "targetId": {
@@ -40959,7 +41154,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           }
         },
@@ -41019,7 +41215,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "id": {
@@ -41123,7 +41320,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "objectVersion": {
@@ -41363,6 +41561,10 @@
           "isTwoFaRequired": {
             "type": "boolean",
             "description": "If true, then accessor needs to enable two factor authentication before gaining access to the data."
+          },
+          "eDucTemplateId": {
+            "type": "string",
+            "description": "The ID of the electronic Data Use Certificate (eDUC) template to fill out for data access requests."
           }
         },
         "description": "JSON schema for in-Synapse 'Access Control Team' controlled Access Requirement, a 'tier 3' Access Requirement. This access requirement allows the ACT managing the detail requirements, and submissions within Synapse.",
@@ -41498,6 +41700,32 @@
           }
         },
         "description": "JSON schema for DOI Metadata Creator."
+      },
+      "org.sagebionetworks.repo.model.search.dsl.FiltersAggregation": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "object",
+            "description": "Required. Named buckets, keyed by caller-chosen name; each value is a <a href=\"${org.sagebionetworks.repo.model.search.dsl.Query}\">Query<\/a> selecting that bucket's documents.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/org.sagebionetworks.repo.model.search.dsl.Query",
+              "description": "<p>A single <a href=\"https://docs.opensearch.org/latest/query-dsl/\">OpenSearch query DSL<\/a> clause. Exactly one of the properties below may be set &mdash; the set property names the clause kind. See <a href=\"https://docs.opensearch.org/latest/query-dsl/query-filter-context/\">query vs. filter context<\/a> and <a href=\"https://docs.opensearch.org/latest/query-dsl/term-vs-full-text/\">term-level vs. full-text queries<\/a>.<\/p><p>The field-keyed leaf clauses (<code>match<\/code>, <code>term<\/code>, <code>range<\/code>, ...) are maps whose key is the column name and whose value is the per-field options object &mdash; only the long form is accepted (e.g. <code>{\"match\":{\"title\":{\"query\":\"x\"}}}<\/code>, not the <code>{\"match\":{\"title\":\"x\"}}<\/code> shorthand). The compound clauses (<code>bool<\/code>, <code>dis_max<\/code>, ...) nest further Query DSL clauses recursively.<\/p>"
+            }
+          },
+          "other_bucket": {
+            "type": "boolean",
+            "description": "Optional. When <code>true<\/code>, adds a bucket for documents that match none of the named filters."
+          },
+          "other_bucket_key": {
+            "type": "string",
+            "description": "Optional. The key under which the other bucket is returned."
+          },
+          "keyed": {
+            "type": "boolean",
+            "description": "Optional. Whether buckets are returned as a keyed object (default) rather than an array."
+          }
+        },
+        "description": "A <a href=\"https://docs.opensearch.org/latest/aggregations/bucket/filters/\"><code>filters<\/code><\/a> multi-bucket aggregation. Each entry of <code>filters<\/code> is a named bucket whose documents match its <a href=\"${org.sagebionetworks.repo.model.search.dsl.Query}\">Query<\/a>. The named (keyed) form is the supported contract; each query is validated identically to the top-level <code>query<\/code> and is scoped by it."
       },
       "org.sagebionetworks.repo.model.file.FileEventRecord": {
         "type": "object",
@@ -43804,7 +44032,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -44944,7 +45173,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -45744,6 +45974,11 @@
             "type": "string",
             "description": "The synId of the table/view/csv that this grid was cloned from."
           },
+          "sourceEntityVersionNumber": {
+            "type": "integer",
+            "description": "If referencing a RecordSet (CSV), this represents the version number of the source entity at the time this grid was created or last synchronized. This reference enables the system to identify if rows were deleted in a GridSession.",
+            "format": "int32"
+          },
           "ownerPrincipalId": {
             "type": "string",
             "description": "The principal ID (user or team) that owns this grid session. If the owner is a user, only that user can access the grid. If the owner is a team, all members of that team have equal access to the grid."
@@ -45844,7 +46079,8 @@
               "REPLICATED_EVENT",
               "PORTAL",
               "OAUTH_CLIENT",
-              "GRID_SESSION"
+              "GRID_SESSION",
+              "RECORDSET"
             ]
           },
           "timestamp": {
@@ -47864,6 +48100,18 @@
           "concreteType": {
             "type": "string",
             "description": "Indicates which implementation of RequestInterface this object represents."
+          },
+          "institution": {
+            "type": "string",
+            "description": "The name of the institution where the collaborators work."
+          },
+          "principalInvestigator": {
+            "$ref": "#/components/schemas/org.sagebionetworks.repo.model.dataaccess.PrincipalInvestigator",
+            "description": "Information about a research project's principal investigator."
+          },
+          "signingOfficial": {
+            "$ref": "#/components/schemas/org.sagebionetworks.repo.model.dataaccess.SigningOfficial",
+            "description": "Information about an institution's signing official."
           }
         },
         "description": "This is the base interface that all Request implements.",
