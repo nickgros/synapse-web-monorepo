@@ -1,4 +1,8 @@
 import {
+  AgentChatRequestWithAttachments,
+  AgentChatResponseWithAttachmentStatuses,
+} from '@/components/SynapseChat/chatAttachmentTypes'
+import {
   mockAgentChatResponse,
   mockAgentSession,
   mockChatSessionId,
@@ -18,12 +22,36 @@ import {
   START_CHAT_ASYNC,
 } from '@/utils/APIConstants'
 import { BackendDestinationEnum, getEndpoint } from '@/utils/functions'
-import {
-  AgentChatRequest,
-  AgentChatResponse,
-} from '@sage-bionetworks/synapse-types'
 import { http, HttpResponse } from 'msw'
 import { generateAsyncJobHandlers } from './asyncJobHandlers'
+
+// TODO(PLFM-9827): remove this mock-only response builder once the Curie Attachments backend
+// exists and this can be replaced with a real MSW handler that mirrors backend behavior.
+// For demo/testing purposes: the first attachment in the request "fails" to stage, and the rest
+// "succeed", so stories/tests can exercise both AgentChatAttachmentStatus outcomes.
+function buildMockChatResponse(
+  request: AgentChatRequestWithAttachments,
+): AgentChatResponseWithAttachmentStatuses {
+  if (!request.attachments || request.attachments.length === 0) {
+    return mockAgentChatResponse
+  }
+  return {
+    ...mockAgentChatResponse,
+    attachmentStatuses: request.attachments.map((attachment, index) =>
+      index === 0
+        ? {
+            fileHandleId: attachment.fileHandleId,
+            status: 'FAILED',
+            failureCode: 'UNSUPPORTED_TYPE',
+            failureMessage: 'This file type is not supported.',
+          }
+        : {
+            fileHandleId: attachment.fileHandleId,
+            status: 'STAGED',
+          },
+    ),
+  }
+}
 
 let traceCallCount = 0
 export const getChatbotHandlers = (
@@ -47,10 +75,13 @@ export const getChatbotHandlers = (
     },
   ),
   //Async job to send chat message to the agent
-  generateAsyncJobHandlers<AgentChatRequest, AgentChatResponse>(
+  generateAsyncJobHandlers<
+    AgentChatRequestWithAttachments,
+    AgentChatResponseWithAttachmentStatuses
+  >(
     START_CHAT_ASYNC,
     tokenParam => GET_CHAT_ASYNC(tokenParam),
-    mockAgentChatResponse,
+    buildMockChatResponse,
     backendOrigin,
   ),
 

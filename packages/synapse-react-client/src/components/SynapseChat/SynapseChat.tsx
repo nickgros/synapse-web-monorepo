@@ -4,29 +4,20 @@ import {
   useUpdateAgentSession,
 } from '@/synapse-queries/chat/useChat'
 import { useSynapseContext } from '@/utils'
-import { ArrowUpward } from '@mui/icons-material'
-import {
-  Alert,
-  Box,
-  Chip,
-  IconButton,
-  List,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from '@mui/material'
-import { Color } from '@mui/material/styles'
+import { Alert, Box, Chip, List, Stack, Typography } from '@mui/material'
 import { GridAgentSessionContext } from '@sage-bionetworks/synapse-client'
 import {
   AgentAccessLevel,
   AgentSession,
   TraceEvent,
 } from '@sage-bionetworks/synapse-types'
-import { KeyboardEventHandler, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SkeletonParagraph } from '../Skeleton'
 import { displayToast } from '../ToastMessage'
 import AccessLevelMenu from './AccessLevelMenu'
+import { buildChatAttachmentAssociation } from './buildChatAttachmentAssociation'
+import { ChatAttachment } from './chatAttachmentTypes'
+import { ChatInputArea } from './ChatInputArea'
 import SynapseChatInteraction from './SynapseChatInteraction'
 import SynapseChatMessage from './SynapseChatMessage'
 
@@ -56,6 +47,11 @@ export type SynapseChatProps = {
   onChatResponse?: (responseText: string) => void
   /** Optional list of prompt suggestions shown as clickable pills above the text input */
   suggestedPrompts?: string[]
+  /**
+   * Whether to allow the user to attach local files to their chat message.
+   * @default false
+   */
+  allowAttachments?: boolean
 }
 
 export type ChatInteraction = {
@@ -82,6 +78,7 @@ export function SynapseChat({
   showAccessLevelMenu = true,
   onChatResponse,
   suggestedPrompts,
+  allowAttachments = false,
 }: SynapseChatProps) {
   const { accessToken } = useSynapseContext()
   const [localAgentSession, setLocalAgentSession] = useState<AgentSession>()
@@ -101,7 +98,6 @@ export function SynapseChat({
         'danger',
       ),
   })
-  const theme = useTheme()
   const [agentAccessLevel, setAgentAccessLevel] = useState<AgentAccessLevel>(
     sessionContext
       ? AgentAccessLevel.WRITE_YOUR_PRIVATE_DATA
@@ -115,6 +111,13 @@ export function SynapseChat({
   // Keep track of the text that the user is currently typing into the textfield
   const [userChatTextfieldValue, setUserChatTextfieldValue] = useState('')
   const [initialMessageProcessed, setInitialMessageProcessed] = useState(false)
+
+  // A copy of the attachments sent with the optimistic/pending message, so the pending turn can
+  // still show rich (name/type) chips after ChatInputArea has cleared its own attachment state.
+  // Cleared once the pending message resolves (see effect below).
+  const [lastSentAttachments, setLastSentAttachments] = useState<
+    ChatAttachment[]
+  >([])
 
   // Restore chat session history, if exists.
   // TODO: currently only a single page is restored.  Add support for multiple pages (and detect the user scrolling up to restore the next page of results older)
@@ -165,26 +168,27 @@ export function SynapseChat({
     }
   }, [agentSession, initialMessage, initialMessageProcessed, sendChat])
 
-  const handleSendMessage = () => {
-    if (userChatTextfieldValue.trim()) {
-      sendChat(userChatTextfieldValue.trim())
-      setUserChatTextfieldValue('')
+  useEffect(() => {
+    // once the pending message resolves (moves into chatJobIds), its attachments no longer need
+    // to be shown via lastSentAttachments -- SynapseChatMessage takes over from the async job.
+    if (!pendingMessage) {
+      setLastSentAttachments([])
     }
+  }, [pendingMessage])
+
+  const handleSend = (message: string, attachments: ChatAttachment[]) => {
+    sendChat(
+      message,
+      attachments.length
+        ? attachments.map(attachment =>
+            buildChatAttachmentAssociation(attachment.fileHandleId),
+          )
+        : undefined,
+    )
+    setUserChatTextfieldValue('')
+    setLastSentAttachments(attachments)
   }
 
-  const isDisabled =
-    !agentSession || !userChatTextfieldValue || !!pendingMessage
-
-  const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = event => {
-    if (!isDisabled && event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault()
-      handleSendMessage()
-    }
-  }
-
-  const sendMessageButtonColor = (
-    theme.palette.secondary as unknown as Color
-  )[300]
   if (createAgentSessionError) {
     return (
       <Alert severity={'error'} sx={{ my: 2 }}>
@@ -270,6 +274,7 @@ export function SynapseChat({
                 chatErrorReason={''}
                 scrollIntoView
                 onSendChat={sendChat}
+                attachments={lastSentAttachments}
               />
             )}
           </List>
@@ -303,54 +308,20 @@ export function SynapseChat({
               ))}
             </Stack>
           )}
-        <Box
-          component="form"
-          sx={{
-            pt: '8px',
-            mt: '5px',
-            pb: '10px',
-            position: 'sticky',
-            borderTop: '1px solid',
-            borderColor: 'grey.400',
-          }}
-          onSubmit={handleSendMessage}
-        >
-          <TextField
-            fullWidth
+        <Box sx={{ mt: '5px' }}>
+          <ChatInputArea
             value={userChatTextfieldValue}
-            onChange={e => setUserChatTextfieldValue(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onValueChange={setUserChatTextfieldValue}
+            onSend={handleSend}
             placeholder={`Message ${chatbotName}`}
-            slotProps={{
-              input: {
-                sx: { borderRadius: 96.6 },
-                endAdornment: (
-                  <IconButton
-                    disabled={isDisabled}
-                    onClick={handleSendMessage}
-                    sx={{
-                      ml: '7px',
-                      mr: '-8px',
-                      color: sendMessageButtonColor,
-                      borderStyle: 'solid',
-                      borderWidth: isDisabled ? '1px' : '2px',
-                      borderColor: isDisabled ? 'gray' : sendMessageButtonColor,
-                    }}
-                  >
-                    <ArrowUpward />
-                  </IconButton>
-                ),
-              },
-            }}
+            disabled={!agentSession || !!pendingMessage}
+            allowAttachments={allowAttachments}
           />
-          <Typography
-            variant="smallText1"
-            sx={{ pt: '8px', textAlign: 'center' }}
-          >
-            {chatbotName} can make mistakes.
-          </Typography>
         </Box>
       </Box>
+      <Typography variant="smallText1" sx={{ pt: '8px', textAlign: 'center' }}>
+        {chatbotName} can make mistakes.
+      </Typography>
     </Box>
   )
 }

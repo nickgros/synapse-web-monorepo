@@ -23,6 +23,19 @@ import { Color } from '@mui/material/styles'
 import { TraceEvent } from '@sage-bionetworks/synapse-types'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import MarkdownSynapse from '../Markdown/MarkdownSynapse'
+import { AttachmentStripItem, ChatAttachmentStrip } from './ChatAttachmentStrip'
+import { AgentChatAttachmentStatus } from './chatAttachmentTypes'
+
+/**
+ * A chat attachment to display on a sent/pending turn. Only `fileHandleId` is guaranteed --
+ * `fileName`/`contentType` are omitted for a restored/polled turn, where only the fileHandleId
+ * that was sent to the server is known (see SynapseChatMessage).
+ */
+export type SynapseChatInteractionAttachment = {
+  fileHandleId: string
+  fileName?: string
+  contentType?: string
+}
 
 export type SynapseChatInteractionProps = {
   userMessage: string
@@ -31,6 +44,10 @@ export type SynapseChatInteractionProps = {
   scrollIntoView?: boolean
   chatErrorReason?: string
   onSendChat?: (message: string) => void
+  /** Attachments the user sent with this message, if any. */
+  attachments?: SynapseChatInteractionAttachment[]
+  /** Server-reported outcome of staging each attachment, if available (see AgentChatResponseWithAttachmentStatuses). */
+  attachmentStatuses?: AgentChatAttachmentStatus[]
 }
 
 // Show tool calls in the trace. Useful for development. We may want to show them to users in the future.
@@ -59,6 +76,8 @@ export function SynapseChatInteraction({
   chatResponseTrace,
   scrollIntoView = false,
   onSendChat,
+  attachments,
+  attachmentStatuses,
 }: SynapseChatInteractionProps) {
   const theme = useTheme()
   const ref = useRef<HTMLLIElement | null>(null)
@@ -133,6 +152,23 @@ export function SynapseChatInteraction({
     }
   }, [chatResponseText])
 
+  const attachmentItems: AttachmentStripItem[] = useMemo(
+    () =>
+      (attachments ?? []).map(attachment => {
+        const status = attachmentStatuses?.find(
+          s => s.fileHandleId === attachment.fileHandleId,
+        )
+        return {
+          fileHandleId: attachment.fileHandleId,
+          label: attachment.fileName ?? attachment.fileHandleId,
+          contentType: attachment.contentType,
+          status: status?.status === 'FAILED' ? 'failed' : 'default',
+          errorMessage: status?.failureMessage,
+        }
+      }),
+    [attachments, attachmentStatuses],
+  )
+
   return (
     <>
       <ListItem
@@ -151,6 +187,11 @@ export function SynapseChatInteraction({
       >
         <ListItemText primary={userMessage} />
       </ListItem>
+      {attachmentItems.length > 0 && (
+        <ListItem sx={{ display: 'block', p: '0px', mb: '5px' }}>
+          <ChatAttachmentStrip items={attachmentItems} wrap />
+        </ListItem>
+      )}
       <ListItem
         sx={{
           display: 'grid',

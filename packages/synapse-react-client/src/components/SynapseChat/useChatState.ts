@@ -4,11 +4,13 @@ import {
   AgentChatResponse,
   AgentSession,
   AsynchronousJobStatus,
+  FileHandleAssociation,
 } from '@sage-bionetworks/synapse-types'
 import { useCallback, useMemo, useState } from 'react'
+import { AgentChatRequestWithAttachments } from './chatAttachmentTypes'
 
 export type ChatState = {
-  sendChat: (message: string) => void
+  sendChat: (message: string, attachments?: FileHandleAssociation[]) => void
   pendingMessage: string | null
   chatJobIds: string[]
 }
@@ -40,15 +42,19 @@ export function useChatState(
   )
 
   const sendChat = useCallback(
-    (message: string) => {
+    (message: string, attachments?: FileHandleAssociation[]) => {
       if (!agentSession?.sessionId) {
         throw new Error('No agent session available to send chat message.')
       }
-      sendChatMessageToAgent({
+      const request: AgentChatRequestWithAttachments = {
         chatText: message,
         sessionId: agentSession.sessionId,
         enableTrace: true,
-      })
+        ...(attachments && attachments.length > 0 ? { attachments } : {}),
+      }
+      // TODO(PLFM-9827): remove this cast once `attachments` is part of the generated
+      // AgentChatRequest type.
+      sendChatMessageToAgent(request as AgentChatRequest)
     },
     [agentSession?.sessionId, sendChatMessageToAgent],
   )

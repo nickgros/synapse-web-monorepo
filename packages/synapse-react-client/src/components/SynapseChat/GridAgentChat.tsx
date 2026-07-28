@@ -59,6 +59,7 @@ export function GridAgentChat({
         setExternalSession={setAgentSession}
         externalChatState={chatState}
         suggestedPrompts={suggestedPrompts}
+        allowAttachments={true}
       />
     </DraggableDialog>
   )

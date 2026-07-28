@@ -48,4 +48,49 @@ describe('SynapseChatInteraction tests', () => {
     expect(alertElement).toBeInTheDocument()
     expect(screen.queryByText(errorMessage)).toBeInTheDocument()
   })
+
+  it('renders no attachment chips when attachments is omitted', () => {
+    renderComponent()
+
+    expect(screen.queryByText('PDF')).not.toBeInTheDocument()
+  })
+
+  it('renders a chip with the filename/type for a rich attachment', () => {
+    renderComponent({
+      attachments: [
+        {
+          fileHandleId: '9999999',
+          fileName: 'report.pdf',
+          contentType: 'application/pdf',
+        },
+      ],
+    })
+
+    expect(screen.getByText('report.pdf')).toBeInTheDocument()
+    expect(screen.getByText('PDF')).toBeInTheDocument()
+  })
+
+  it('falls back to the fileHandleId as the label for a generic attachment', () => {
+    renderComponent({
+      attachments: [{ fileHandleId: '9999999' }],
+    })
+
+    expect(screen.getByText('9999999')).toBeInTheDocument()
+  })
+
+  it('shows a failed status for an attachment reported as FAILED', () => {
+    renderComponent({
+      attachments: [{ fileHandleId: '9999999', fileName: 'report.pdf' }],
+      attachmentStatuses: [
+        {
+          fileHandleId: '9999999',
+          status: 'FAILED',
+          failureCode: 'NOT_FOUND',
+          failureMessage: 'The file could not be found.',
+        },
+      ],
+    })
+
+    expect(screen.getByText('Failed')).toBeInTheDocument()
+  })
 })

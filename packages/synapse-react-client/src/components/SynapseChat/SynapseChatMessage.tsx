@@ -1,12 +1,12 @@
 import SynapseChatInteraction from '@/components/SynapseChat/SynapseChatInteraction'
 import usePollAsynchronousJob from '@/synapse-queries/asynchronous/usePollAsynchronousJob'
 import { useGetChatAgentTraceEvents } from '@/synapse-queries/chat/useChat'
-import {
-  AgentChatRequest,
-  AgentChatResponse,
-  TraceEvent,
-} from '@sage-bionetworks/synapse-types'
+import { TraceEvent } from '@sage-bionetworks/synapse-types'
 import { useCallback, useEffect, useState } from 'react'
+import {
+  AgentChatRequestWithAttachments,
+  AgentChatResponseWithAttachmentStatuses,
+} from './chatAttachmentTypes'
 
 function useTraceEvent(chatJobId: string, enabled: boolean) {
   const [traceEvents, setTraceEvents] = useState<TraceEvent[]>([])
@@ -53,9 +53,12 @@ export default function SynapseChatMessage(props: SynapseChatMessageProps) {
   const { chatJobId, onSendChat } = props
   const { data: asyncJobStatus } = usePollAsynchronousJob(chatJobId)
 
-  const chatRequest = asyncJobStatus?.requestBody as AgentChatRequest
+  // TODO(PLFM-9827): remove these casts once `attachments`/`attachmentStatuses` are part of the
+  // generated AgentChatRequest/AgentChatResponse types.
+  const chatRequest =
+    asyncJobStatus?.requestBody as AgentChatRequestWithAttachments
   const chatResponse = asyncJobStatus?.responseBody as
-    | AgentChatResponse
+    | AgentChatResponseWithAttachmentStatuses
     | undefined
   const chatError = asyncJobStatus?.errorMessage
 
@@ -72,6 +75,10 @@ export default function SynapseChatMessage(props: SynapseChatMessageProps) {
       chatResponseTrace={traceEvents}
       chatErrorReason={chatError}
       onSendChat={onSendChat}
+      attachments={chatRequest?.attachments?.map(attachment => ({
+        fileHandleId: attachment.fileHandleId,
+      }))}
+      attachmentStatuses={chatResponse?.attachmentStatuses}
     />
   )
 }

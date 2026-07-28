@@ -1,3 +1,4 @@
+import { ChatAttachment } from '@/components/SynapseChat/chatAttachmentTypes'
 import {
   AgentAccessLevel,
   AgentChatRequest,
@@ -102,4 +103,20 @@ export const mockTraceEventsResponse3: TraceEventsResponse = {
 export const mockEmptyTraceEventsResponse: TraceEventsResponse = {
   jobId: ':id',
   page: [],
+}
+
+let mockChatAttachmentIdCounter = 0
+
+// TODO(PLFM-9827): update/remove once the Curie Attachments backend exists.
+export function mockChatAttachment(
+  overrides: Partial<ChatAttachment> = {},
+): ChatAttachment {
+  mockChatAttachmentIdCounter++
+  return {
+    fileHandleId: `${9999990 + mockChatAttachmentIdCounter}`,
+    fileName: `file-${mockChatAttachmentIdCounter}.txt`,
+    contentType: 'text/plain',
+    sizeBytes: 1024,
+    ...overrides,
+  }
 }
