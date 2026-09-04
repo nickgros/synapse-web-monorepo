@@ -77,6 +77,13 @@ const routes: RouteObject[] = [
                 convertModuleToRouteObject,
               ),
           },
+          {
+            path: 'Request/:datasetCode',
+            lazy: () =>
+              import('@/pages/DataAccessRequest').then(
+                convertModuleToRouteObject,
+              ),
+          },
         ],
       },
       {

@@ -15,6 +15,7 @@ import {
   parseFairFormSections,
   summarizeFormAnswers,
 } from '@/components/Aridhia/fairFormToRjsf'
+import { RdcaDapEligibilityExplainer } from '@/components/Aridhia/RdcaDapEligibilityDialog'
 import { useDarDraft } from './useDarDraft'
 import { DarDestinationStep } from './DarDestinationStep'
 import { DarWorkspaceStep } from './DarWorkspaceStep'
@@ -162,6 +163,17 @@ function useAridhiaDarWizardParts(
       onSubmitted?.(code)
     },
   })
+
+  const eligibilityError = [
+    settingsQuery.error,
+    workflowQuery.error,
+    dictionariesQuery.error,
+    submitMutation.error,
+  ].find(error => error?.isEligibilityFailure)
+
+  if (eligibilityError) {
+    return { content: <RdcaDapEligibilityExplainer /> }
+  }
 
   if (settingsQuery.isLoading) {
     return { content: <Skeleton height={400} /> }

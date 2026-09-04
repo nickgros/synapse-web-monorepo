@@ -122,6 +122,36 @@ describe('AridhiaAccessStatus', () => {
     ).toBeInTheDocument()
   })
 
+  it('opens the status popover showing the request code when a request is pending', async () => {
+    const user = userEvent.setup()
+    server.use(
+      authenticateHandler(),
+      requestsHandler([
+        {
+          code: 'ampals-sdtm_als1003-abc12345',
+          name: 'My Request',
+          status: 'pending',
+          datasets: { code: DATASET_CODE },
+          updated_at: '2024-01-01T00:00:00Z',
+        },
+      ]),
+    )
+    renderStatus()
+
+    await waitFor(() =>
+      expect(
+        document.querySelector('#icon-accessPendingCloud'),
+      ).toBeInTheDocument(),
+    )
+    await user.click(screen.getByRole('button'))
+
+    await waitFor(() =>
+      expect(
+        screen.getByText('ampals-sdtm_als1003-abc12345', { exact: false }),
+      ).toBeInTheDocument(),
+    )
+  })
+
   it('links out to RDCA-DAP when the request is approved', async () => {
     server.use(
       authenticateHandler(),
@@ -142,6 +172,19 @@ describe('AridhiaAccessStatus', () => {
     expect(link).toHaveAttribute(
       'href',
       'https://portal.rdca.c-path.org/datasets/sdtm_als1003',
+    )
+  })
+
+  it('shows the account-not-linked icon when the token exchange fails eligibility', async () => {
+    server.use(
+      http.post(`${GATEWAY}/authenticate`, () =>
+        HttpResponse.json({ error: 'invalid_token' }, { status: 400 }),
+      ),
+    )
+    renderStatus()
+
+    await waitFor(() =>
+      expect(document.querySelector('#icon-linkOff')).toBeInTheDocument(),
     )
   })
 

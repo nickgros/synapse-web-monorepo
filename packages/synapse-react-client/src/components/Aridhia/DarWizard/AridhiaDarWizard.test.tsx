@@ -1085,6 +1085,21 @@ describe('AridhiaDarWizard', () => {
     expect(capturedRequestBodies[0].code).toBe(capturedRequestBodies[1].code)
   })
 
+  it('renders the ineligibility explainer, never the form, when the token exchange is rejected', async () => {
+    server.use(
+      http.post(`${GATEWAY}/authenticate`, () =>
+        HttpResponse.json({ error: 'invalid_token' }, { status: 400 }),
+      ),
+      settingsHandler(),
+    )
+    renderWizard()
+
+    await waitFor(() =>
+      expect(screen.getByText(/linked rdca-dap account/i)).toBeInTheDocument(),
+    )
+    expect(screen.queryByLabelText('Tables')).not.toBeInTheDocument()
+  })
+
   it('blocks submission and names an unsupported field type', async () => {
     server.use(
       authenticateHandler(),

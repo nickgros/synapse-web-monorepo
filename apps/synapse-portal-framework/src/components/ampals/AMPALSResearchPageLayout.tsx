@@ -85,6 +85,7 @@ const AMPALSResearchPageLayout = (
         <Box
           sx={{
             marginTop: '0px',
+            width: '100%',
             maxWidth: '720px',
             height: 'auto',
             '&h1.first-child': {

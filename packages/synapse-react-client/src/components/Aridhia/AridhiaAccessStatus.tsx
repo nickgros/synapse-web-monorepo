@@ -1,15 +1,17 @@
-import { Button } from '@mui/material'
 import { useGetAridhiaRequests } from '@/aridhia-queries'
-import AccessIcon, { RestrictionUiType } from '../HasAccess/AccessIcon'
-import { SRC_SIGN_IN_CLASS } from '@/utils/SynapseConstants'
 import { useSynapseContext } from '@/utils'
-import {
-  getRestrictionUiTypeFromAridhiaRequest,
-  findRequestForDataset,
-} from './aridhiaAccessStatusUtils'
+import { SRC_SIGN_IN_CLASS } from '@/utils/SynapseConstants'
+import { Button } from '@mui/material'
 import { useState } from 'react'
 import { DialogBase } from '../DialogBase'
+import AccessIcon, { RestrictionUiType } from '../HasAccess/AccessIcon'
+import {
+  findRequestForDataset,
+  getRestrictionUiTypeFromAridhiaRequest,
+} from './aridhiaAccessStatusUtils'
+import AridhiaDarStatusPopover from './AridhiaDarStatusPopover'
 import { useAridhiaDarWizardParts } from './DarWizard/AridhiaDarWizard'
+import RdcaDapEligibilityDialog from './RdcaDapEligibilityDialog'
 
 const buttonSx = { p: '0px', minWidth: 'unset' }
 
@@ -35,7 +37,10 @@ export default function AridhiaAccessStatus(props: AridhiaAccessStatusProps) {
     isError,
     error,
   } = useGetAridhiaRequests()
-
+  const [popoverAnchorEl, setPopoverAnchorEl] = useState<HTMLElement | null>(
+    null,
+  )
+  const [eligibilityDialogOpen, setEligibilityDialogOpen] = useState(false)
   const [requestDialogOpen, setRequestDialogOpen] = useState(false)
   const { content: wizardContent, actions: wizardActions } =
     useAridhiaDarWizardParts(
@@ -84,6 +89,30 @@ export default function AridhiaAccessStatus(props: AridhiaAccessStatusProps) {
     return <></>
   }
 
+  // The token exchange (or any other request) failed because this user has no linked RDCA-DAP
+  // account yet — the DAR wizard is unreachable until that's resolved.
+  if (isError && error.isEligibilityFailure) {
+    return (
+      <>
+        <Button
+          sx={buttonSx}
+          onClick={() => setEligibilityDialogOpen(true)}
+          aria-label="Link your RDCA-DAP account"
+        >
+          <AccessIcon
+            restrictionUiType={
+              RestrictionUiType.AccessBlockedByRDCADAPAccountNotLinked
+            }
+          />
+        </Button>
+        <RdcaDapEligibilityDialog
+          open={eligibilityDialogOpen}
+          onClose={() => setEligibilityDialogOpen(false)}
+        />
+      </>
+    )
+  }
+
   // Check if there's a request for this dataset
   const entityRequest = findRequestForDataset(
     requestsResponse?.items ?? [],
@@ -106,6 +135,29 @@ export default function AridhiaAccessStatus(props: AridhiaAccessStatusProps) {
     )
   }
 
+  if (entityRequest) {
+    // Pending or denied — click opens the status popover.
+    return (
+      <>
+        <Button
+          sx={buttonSx}
+          onClick={ev => setPopoverAnchorEl(ev.currentTarget)}
+          aria-label="View data access request status"
+        >
+          {icon}
+        </Button>
+        <AridhiaDarStatusPopover
+          open={!!popoverAnchorEl}
+          anchorEl={popoverAnchorEl}
+          onClose={() => setPopoverAnchorEl(null)}
+          request={entityRequest}
+        />
+      </>
+    )
+  }
+
+  // No request yet — the icon opens the request wizard in a dialog. The same wizard also
+  // renders at the route-based, non-modal `AridhiaDarWizard` page for a full-page entry point.
   return (
     <>
       <Button
