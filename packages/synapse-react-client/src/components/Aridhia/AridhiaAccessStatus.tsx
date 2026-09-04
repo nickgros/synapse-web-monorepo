@@ -29,7 +29,12 @@ export type AridhiaAccessStatusProps = {
 export default function AridhiaAccessStatus(props: AridhiaAccessStatusProps) {
   const { datasetCode, url } = props
   const { isAuthenticated } = useSynapseContext()
-  const { data: requestsResponse, isLoading } = useGetAridhiaRequests()
+  const {
+    data: requestsResponse,
+    isLoading,
+    isError,
+    error,
+  } = useGetAridhiaRequests()
 
   const [requestDialogOpen, setRequestDialogOpen] = useState(false)
   const { content: wizardContent, actions: wizardActions } =
