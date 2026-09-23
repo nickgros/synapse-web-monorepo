@@ -15,7 +15,7 @@ export const grantsSchema: TableToGenericCardMapping = {
   title: 'grantName',
   subTitle: 'grantInstitution',
   description: 'abstract',
-  includeShareButton: true,
+  includeShareButton: false,
   secondaryLabels: [
     'investigator',
     'grantNumber',
