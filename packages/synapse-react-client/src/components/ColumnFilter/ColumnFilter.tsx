@@ -62,7 +62,7 @@ function ColumnFilter(props: FilterProps) {
           value={selectedValues}
           onChange={onChange}
           renderInput={params => (
-            <TextField {...params} placeholder="Select Filter(s)" />
+            <TextField {...params} placeholder="Select Column Filter(s)" />
           )}
         />
       )}
